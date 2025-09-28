@@ -1,0 +1,539 @@
+---
+title: "Migration Guide"
+sidebarTitle: "Migration Guide"
+description: "Migrate your existing MCP implementation to Agentflare in minutes"
+icon: "arrow-right-arrow-left"
+keywords: ["migration", "upgrade", "convert", "MCP", "existing code", "before after"]
+---
+
+## Overview
+
+This guide shows you how to migrate your existing MCP implementation to Agentflare Telepathy with minimal code changes. In most cases, you only need to change import statements and add configuration.
+
+## Migration Scenarios
+
+### 1. Standard MCP Client Migration
+
+#### Before: Standard MCP Client
+
+```typescript
+// Before - Standard MCP implementation
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
+// Direct connection to MCP server
+const client = new Client({
+  transport: new StdioServerTransport({
+    command: "mcp-server",
+    args: ["--config", "config.json"]
+  })
+});
+
+// Manual connection management
+await client.connect();
+
+// Basic tool calls without observability
+const result = await client.callTool({
+  name: "search",
+  arguments: { query: "documentation" }
+});
+
+// No visibility into performance or reasoning
+console.log(result);
+```
+
+#### After: Agentflare Telepathy
+
+```typescript
+// After - Agentflare Telepathy (Enhanced observability)
+import { TelepathyClient } from "@agentflare/telepathy-sdk";
+
+// Single client with built-in observability
+const client = new TelepathyClient({
+  apiKey: process.env.API_JWT_SECRET,
+  projectId: process.env.AGENTFLARE_PROJECT_ID,
+  // Optional: configure servers or use proxy
+  servers: [{
+    name: "search-server",
+    transport: "stdio",
+    command: "mcp-server",
+    args: ["--config", "config.json"]
+  }]
+});
+
+// Same interface with enhanced capabilities
+const result = await client.callTool({
+  name: "search",
+  arguments: { query: "documentation" },
+  // Optional: Add reasoning context for better observability
+  metadata: {
+    reasoning: "User requested documentation search",
+    confidence: 0.95,
+    alternatives: ["browse website", "ask support"]
+  }
+});
+
+// Rich observability data automatically captured
+console.log(result);
+// Performance metrics, cost tracking, and reasoning available in dashboard
+```
+
+### 2. HTTP Transport Migration
+
+#### Before: Direct HTTP Connection
+
+```typescript
+// Before - Direct HTTP transport
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
+const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: "https://my-mcp-server.com",
+    headers: {
+      "Authorization": "Bearer my-server-token"
+    }
+  })
+});
+
+// Manual error handling
+try {
+  const result = await client.callTool({
+    name: "database_query",
+    arguments: { table: "users", limit: 10 }
+  });
+} catch (error) {
+  console.error("Tool call failed:", error);
+  // Limited error context
+}
+```
+
+#### After: Proxy-Enhanced HTTP
+
+```typescript
+// After - Proxy-enhanced with full observability
+import { TelepathyClient } from "@agentflare/telepathy-sdk";
+
+const client = new TelepathyClient({
+  apiKey: process.env.API_JWT_SECRET,
+  // Route through Agentflare proxy for observability
+  proxy: {
+    enabled: true,
+    workspace: "my-workspace"
+  },
+  servers: [{
+    name: "database-server",
+    endpoint: "https://my-mcp-server.com",
+    authentication: {
+      type: "bearer",
+      token: "my-server-token"
+    }
+  }]
+});
+
+// Same interface with enhanced error handling
+try {
+  const result = await client.callTool({
+    name: "database_query",
+    arguments: { table: "users", limit: 10 },
+    metadata: {
+      reasoning: "Fetching user data for dashboard display",
+      expected_cost: 0.001,
+      timeout: 5000
+    }
+  });
+} catch (error) {
+  // Rich error context automatically captured
+  console.error("Tool call failed:", error);
+  // Error details available in Telepathy dashboard
+}
+```
+
+### 3. Multi-Server Setup Migration
+
+#### Before: Manual Multi-Server Management
+
+```typescript
+// Before - Managing multiple servers manually
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
+// Separate clients for different servers
+const searchClient = new Client({
+  transport: new StdioServerTransport({
+    command: "search-server",
+    args: ["--config", "search-config.json"]
+  })
+});
+
+const databaseClient = new Client({
+  transport: new HTTPTransport({
+    baseUrl: "https://database.example.com"
+  })
+});
+
+const emailClient = new Client({
+  transport: new HTTPTransport({
+    baseUrl: "https://email.example.com"
+  })
+});
+
+// Manual connection management for each client
+await Promise.all([
+  searchClient.connect(),
+  databaseClient.connect(),
+  emailClient.connect()
+]);
+
+// Routing logic in application code
+async function callTool(serverType, toolName, args) {
+  switch (serverType) {
+    case 'search':
+      return searchClient.callTool({ name: toolName, arguments: args });
+    case 'database':
+      return databaseClient.callTool({ name: toolName, arguments: args });
+    case 'email':
+      return emailClient.callTool({ name: toolName, arguments: args });
+    default:
+      throw new Error(`Unknown server type: ${serverType}`);
+  }
+}
+```
+
+#### After: Unified Multi-Server Management
+
+```typescript
+// After - Unified client with intelligent routing
+import { TelepathyClient } from "@agentflare/telepathy-sdk";
+
+// Single client managing multiple servers
+const client = new TelepathyClient({
+  apiKey: process.env.API_JWT_SECRET,
+  projectId: process.env.AGENTFLARE_PROJECT_ID,
+  servers: [
+    {
+      name: "search-server",
+      transport: "stdio",
+      command: "search-server",
+      args: ["--config", "search-config.json"]
+    },
+    {
+      name: "database-server",
+      transport: "http",
+      endpoint: "https://database.example.com",
+      authentication: {
+        type: "bearer",
+        token: process.env.DATABASE_TOKEN
+      }
+    },
+    {
+      name: "email-server",
+      transport: "http",
+      endpoint: "https://email.example.com",
+      authentication: {
+        type: "api_key",
+        key: process.env.EMAIL_API_KEY
+      }
+    }
+  ]
+});
+
+// Simplified tool calls with automatic routing
+async function callTool(serverName, toolName, args, reasoning = "") {
+  return client.callTool({
+    name: toolName,
+    arguments: args,
+    server: serverName, // Automatic routing to correct server
+    metadata: {
+      reasoning,
+      timestamp: new Date().toISOString()
+    }
+  });
+}
+
+// Usage remains simple
+const searchResult = await callTool(
+  "search-server", 
+  "search", 
+  { query: "documentation" },
+  "User requested documentation search"
+);
+
+const users = await callTool(
+  "database-server",
+  "query", 
+  { table: "users", limit: 10 },
+  "Fetching users for admin dashboard"
+);
+```
+
+### 4. Framework Integration Migration
+
+#### Before: LangChain Integration
+
+```typescript
+// Before - Basic LangChain with MCP
+import { ChatOpenAI } from "@langchain/openai";
+import { MCPTool } from "@langchain/mcp";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+
+const mcpClient = new Client({
+  transport: new StdioServerTransport({
+    command: "mcp-server"
+  })
+});
+
+const tools = [
+  new MCPTool({
+    name: "search",
+    description: "Search for information",
+    client: mcpClient
+  })
+];
+
+const llm = new ChatOpenAI({
+  modelName: "gpt-4",
+  temperature: 0
+});
+
+// Limited observability
+const agent = createReActAgent({
+  llm,
+  tools,
+  prompt: "You are a helpful assistant"
+});
+```
+
+#### After: LangChain with Telepathy
+
+```typescript
+// After - LangChain with full observability
+import { ChatOpenAI } from "@langchain/openai";
+import { TelepathyLangChainTool } from "@agentflare/telepathy-langchain";
+import { TelepathyClient } from "@agentflare/telepathy-sdk";
+
+const telepathyClient = new TelepathyClient({
+  apiKey: process.env.API_JWT_SECRET,
+  projectId: process.env.AGENTFLARE_PROJECT_ID,
+  servers: [{
+    name: "search-server",
+    transport: "stdio",
+    command: "mcp-server"
+  }]
+});
+
+const tools = [
+  new TelepathyLangChainTool({
+    name: "search",
+    description: "Search for information",
+    client: telepathyClient,
+    serverName: "search-server"
+  })
+];
+
+const llm = new ChatOpenAI({
+  modelName: "gpt-4",
+  temperature: 0
+});
+
+// Enhanced observability with reasoning capture
+const agent = createReActAgent({
+  llm,
+  tools,
+  prompt: "You are a helpful assistant",
+  // Automatic reasoning capture
+  callbacks: [telepathyClient.getLangChainCallback()]
+});
+```
+
+## Migration Checklist
+
+<Steps>
+  <Step title="Install Agentflare SDK"
+    Replace or add the Agentflare SDK to your project
+    ```bash
+    npm install @agentflare/telepathy-sdk
+    # or
+    pip install agentflare-telepathy
+    ```
+  </Step>
+  
+  <Step title="Get API Credentials">
+    - Sign up for Agentflare account
+    - Create API key and project ID
+    - Add credentials to environment variables
+  </Step>
+  
+  <Step title="Update Import Statements">
+    Replace MCP client imports with Telepathy client imports
+    ```typescript
+    // Replace this
+    import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+    
+    // With this
+    import { TelepathyClient } from "@agentflare/telepathy-sdk";
+    ```
+  </Step>
+  
+  <Step title="Update Client Configuration">
+    Replace MCP client initialization with Telepathy client
+    - Add API key and project ID
+    - Configure servers or use proxy mode
+    - Add optional reasoning metadata
+  </Step>
+  
+  <Step title="Test Migration">
+    Run your existing tool calls to verify functionality
+    - Check tool calls work as expected
+    - Verify observability data appears in dashboard
+    - Test error handling and edge cases
+  </Step>
+  
+  <Step title="Enhanced Features (Optional)">
+    Add advanced features for better observability
+    - Reasoning context in tool calls
+    - Cost tracking metadata
+    - Performance monitoring
+    - Custom OTEL exporters
+  </Step>
+</Steps>
+
+## Common Migration Patterns
+
+### Environment Variables Setup
+
+```bash
+# Add to your .env file
+API_JWT_SECRET=your_jwt_secret_here
+AGENTFLARE_PROJECT_ID=your_project_id
+AGENTFLARE_WORKSPACE=your_workspace_name
+```
+
+### Configuration Migration
+
+<Tabs>
+  <Tab title="From JSON Config">
+    ```json
+    // Before: MCP config.json
+    {
+      "mcpServers": {
+        "search": {
+          "command": "search-server",
+          "args": ["--config", "search.json"]
+        }
+      }
+    }
+    ```
+    
+    ```typescript
+    // After: Telepathy configuration
+    const client = new TelepathyClient({
+      apiKey: process.env.API_JWT_SECRET,
+      projectId: process.env.AGENTFLARE_PROJECT_ID,
+      servers: [{
+        name: "search",
+        transport: "stdio",
+        command: "search-server",
+        args: ["--config", "search.json"]
+      }]
+    });
+    ```
+  </Tab>
+  
+  <Tab title="From Environment Variables">
+    ```bash
+    # Before: MCP environment variables
+    MCP_SERVER_COMMAND=search-server
+    MCP_SERVER_ARGS=--config,search.json
+    ```
+    
+    ```typescript
+    // After: Telepathy with environment variables
+    const client = new TelepathyClient({
+      apiKey: process.env.API_JWT_SECRET,
+      projectId: process.env.AGENTFLARE_PROJECT_ID,
+      servers: [{
+        name: "search",
+        transport: "stdio",
+        command: process.env.MCP_SERVER_COMMAND,
+        args: process.env.MCP_SERVER_ARGS?.split(',') || []
+      }]
+    });
+    ```
+  </Tab>
+</Tabs>
+
+## Migration Benefits
+
+<CardGroup cols={2}>
+  <Card title="Zero Code Changes" icon="code">
+    Most tool calls work without modification
+  </Card>
+  <Card title="Instant Observability" icon="eye">
+    Immediately see tool calls, performance, and costs
+  </Card>
+  <Card title="Enhanced Debugging" icon="bug">
+    Rich error context and reasoning capture
+  </Card>
+  <Card title="Better Performance" icon="gauge">
+    Optimized routing and connection management
+  </Card>
+</CardGroup>
+
+## Troubleshooting Migration
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="Authentication Errors">
+    **Issue**: Getting 401 unauthorized errors
+    
+    **Solution**: 
+    - Verify API key is correct
+    - Check environment variables are loaded
+    - Ensure project ID matches your dashboard
+  </Accordion>
+  
+  <Accordion title="Tool Calls Not Appearing">
+    **Issue**: Tool calls work but don't appear in dashboard
+    
+    **Solution**:
+    - Check client initialization includes proper credentials
+    - Verify network connectivity to Agentflare
+    - Look for errors in console logs
+  </Accordion>
+  
+  <Accordion title="Server Connection Issues">
+    **Issue**: Cannot connect to MCP servers
+    
+    **Solution**:
+    - Verify server configuration is correct
+    - Check server is running and accessible
+    - Test direct connection before migration
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Advanced Configuration" icon="gear" href="/content/advanced-configuration">
+    Configure advanced features and optimizations
+  </Card>
+  <Card title="Dashboard Overview" icon="chart-line" href="/content/telepathy-overview">
+    Learn about the observability dashboard
+  </Card>
+  <Card title="Best Practices" icon="lightbulb" href="/content/best-practices">
+    Follow best practices for optimal performance
+  </Card>
+  <Card title="API Reference" icon="api" href="/api-reference/introduction">
+    Explore the full API capabilities
+  </Card>
+</CardGroup>
+
+---
+
+<Note>
+  Most migrations can be completed in under 30 minutes with zero downtime. The Agentflare SDK is designed to be a drop-in replacement for standard MCP clients.
+</Note>

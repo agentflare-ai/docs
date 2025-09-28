@@ -1,0 +1,569 @@
+---
+title: "Cost Tracking"
+sidebarTitle: "Cost Tracking"
+description: "Monitor and optimize API costs, resource usage, and operational expenses"
+icon: "dollar-sign"
+keywords: ["cost tracking", "API costs", "cost optimization", "budget management", "cost analytics", "resource costs", "expense monitoring", "cost forecasting"]
+---
+
+## Overview
+
+Cost Tracking provides comprehensive visibility into all expenses associated with your AI agents, from API calls to compute resources. Make informed decisions about resource allocation and optimize your operational costs.
+
+{/* Cost Tracking Dashboard visualization will be added when available */}
+
+## What Gets Tracked
+
+### 1. API Costs
+Monitor costs from external service providers:
+
+<CardGroup cols={2}>
+  <Card title="Model API Costs" icon="robot">
+    OpenAI, Anthropic, Google, and other LLM providers
+  </Card>
+  <Card title="Tool API Costs" icon="wrench">
+    Third-party tools and services your agents use
+  </Card>
+  <Card title="Infrastructure Costs" icon="server">
+    Cloud computing and hosting expenses
+  </Card>
+  <Card title="Data Transfer Costs" icon="cloud-arrow-up">
+    Network and bandwidth usage charges
+  </Card>
+</CardGroup>
+
+### 2. Cost Attribution
+Understand where your money goes:
+
+```typescript
+{
+  session_id: "session_abc123",
+  total_cost: 0.145,
+  breakdown: {
+    model_costs: {
+      gpt_4: 0.089,
+      claude_3: 0.023
+    },
+    tool_costs: {
+      search_api: 0.015,
+      email_service: 0.008,
+      database_query: 0.010
+    },
+    infrastructure: 0.000
+  },
+  cost_per_token: 0.00002,
+  tokens_used: 7250
+}
+```
+
+### 3. Cost Granularity
+Track costs at multiple levels:
+
+<Tabs>
+  <Tab title="Per Tool Call">
+    ```typescript
+    const toolCallCost = {
+      call_id: "call_def456",
+      tool_name: "search_database",
+      cost: 0.012,
+      tokens: 600,
+      duration: 234,
+      cost_per_ms: 0.000051
+    };
+    ```
+  </Tab>
+  <Tab title="Per Session">
+    ```typescript
+    const sessionCost = {
+      session_id: "session_ghi789",
+      total_cost: 0.89,
+      duration: 900000, // 15 minutes
+      tool_calls: 23,
+      avg_cost_per_call: 0.039
+    };
+    ```
+  </Tab>
+  <Tab title="Per User">
+    ```typescript
+    const userCost = {
+      user_id: "user_jkl012",
+      monthly_cost: 24.67,
+      sessions: 45,
+      avg_cost_per_session: 0.55,
+      cost_trend: "+12% vs last month"
+    };
+    ```
+  </Tab>
+</Tabs>
+
+## Real-Time Cost Monitoring
+
+### 1. Live Cost Dashboard
+Monitor spending as it happens:
+
+<AccordionGroup>
+  <Accordion title="Current Spending Rate" icon="gauge">
+    Real-time view of your spending velocity:
+    - **Cost per hour** - Current hourly spending rate
+    - **Daily projection** - Estimated daily costs
+    - **Monthly forecast** - Projected monthly expenses
+    - **Budget burn rate** - How quickly you're using your budget
+  </Accordion>
+  
+  <Accordion title="Cost Alerts" icon="bell">
+    Get notified when spending exceeds thresholds:
+    - **Budget alerts** - When approaching budget limits
+    - **Spike alerts** - Sudden increases in spending
+    - **Anomaly alerts** - Unusual cost patterns
+    - **Threshold alerts** - Custom spending thresholds
+  </Accordion>
+  
+  <Accordion title="Cost Breakdown" icon="chart-pie">
+    Visualize where your money goes:
+    - **By service** - Costs per API provider
+    - **By tool** - Costs per tool type
+    - **By user** - Costs per user or team
+    - **By time** - Costs over time periods
+  </Accordion>
+</AccordionGroup>
+
+### 2. Budget Management
+Set and track spending limits:
+
+<CodeGroup>
+```typescript Budget Setup
+const budgetConfig = {
+  monthly_limit: 1000.00,
+  alerts: [
+    { threshold: 0.50, action: "email" },
+    { threshold: 0.80, action: "slack" },
+    { threshold: 0.95, action: "disable_non_essential" }
+  ],
+  auto_actions: {
+    hard_limit: 1000.00,
+    action: "suspend_all"
+  }
+};
+```
+
+```typescript Budget Tracking
+const budgetStatus = {
+  current_month: {
+    spent: 687.45,
+    remaining: 312.55,
+    percentage_used: 0.687,
+    days_remaining: 12,
+    projected_total: 945.23
+  },
+  trend: {
+    vs_last_month: "+15%",
+    vs_avg: "+8%",
+    explanation: "Increased usage due to new features"
+  }
+};
+```
+</CodeGroup>
+
+## Cost Optimization
+
+### 1. Cost Analysis Tools
+
+<CardGroup cols={2}>
+  <Card title="Cost Hotspots" icon="fire">
+    Identify the most expensive operations
+  </Card>
+  <Card title="Efficiency Metrics" icon="bolt">
+    Measure cost per successful outcome
+  </Card>
+  <Card title="Trend Analysis" icon="chart-line">
+    Track cost trends over time
+  </Card>
+  <Card title="Comparative Analysis" icon="balance-scale">
+    Compare costs across different approaches
+  </Card>
+</CardGroup>
+
+### 2. Optimization Strategies
+
+<Tabs>
+  <Tab title="Model Selection">
+    ```typescript
+    // Compare model cost-effectiveness
+    const modelComparison = {
+      gpt_4: {
+        cost_per_token: 0.00003,
+        success_rate: 0.95,
+        cost_per_success: 0.032
+      },
+      claude_3: {
+        cost_per_token: 0.000015,
+        success_rate: 0.92,
+        cost_per_success: 0.016
+      },
+      recommendation: "Use Claude 3 for cost optimization"
+    };
+    ```
+  </Tab>
+  <Tab title="Caching Strategy">
+    ```typescript
+    // Implement cost-saving caching
+    const cachingImpact = {
+      cache_hit_rate: 0.73,
+      cost_savings: 245.67, // per month
+      cache_costs: 12.34,
+      net_savings: 233.33,
+      roi: 18.9 // 1890% ROI
+    };
+    ```
+  </Tab>
+  <Tab title="Request Optimization">
+    ```typescript
+    // Optimize request patterns
+    const optimizations = {
+      batch_requests: {
+        before: 100, // individual requests
+        after: 20,   // batched requests
+        savings: 0.80
+      },
+      token_optimization: {
+        before: 1500, // average tokens
+        after: 900,   // optimized tokens
+        savings: 0.40
+      }
+    };
+    ```
+  </Tab>
+</Tabs>
+
+### 3. Cost Forecasting
+Predict future costs based on usage patterns:
+
+<AccordionGroup>
+  <Accordion title="Usage Forecasting" icon="crystal-ball">
+    Predict future usage and costs:
+    - **Seasonal patterns** - Account for seasonal variations
+    - **Growth trends** - Factor in user growth
+    - **Feature impact** - Estimate impact of new features
+    - **Confidence intervals** - Provide prediction ranges
+  </Accordion>
+  
+  <Accordion title="Scenario Planning" icon="map">
+    Model different cost scenarios:
+    - **Best case** - Optimal cost scenarios
+    - **Worst case** - Maximum cost scenarios
+    - **Most likely** - Realistic cost projections
+    - **What-if analysis** - Impact of different decisions
+  </Accordion>
+</AccordionGroup>
+
+## Advanced Cost Features
+
+### 1. Cost Attribution Models
+Different ways to allocate costs:
+
+<CodeGroup>
+```typescript User-Based Attribution
+// Allocate costs to users
+const userAttribution = {
+  method: "direct_usage",
+  user_costs: {
+    "user_123": 45.67,
+    "user_456": 23.89,
+    "user_789": 67.23
+  },
+  shared_costs: {
+    infrastructure: 12.34,
+    overhead: 8.90
+  }
+};
+```
+
+```typescript Feature-Based Attribution
+// Allocate costs to features
+const featureAttribution = {
+  method: "weighted_allocation",
+  feature_costs: {
+    search: 234.56,
+    recommendations: 123.45,
+    chat: 345.67,
+    analytics: 89.12
+  },
+  allocation_weights: {
+    search: 0.35,
+    recommendations: 0.25,
+    chat: 0.30,
+    analytics: 0.10
+  }
+};
+```
+</CodeGroup>
+
+### 2. Cost Allocation Strategies
+
+<Tabs>
+  <Tab title="Direct Allocation">
+    ```typescript
+    // Direct cost allocation
+    const directAllocation = {
+      principle: "costs_follow_usage",
+      example: {
+        user_a: {
+          api_calls: 100,
+          cost: 12.50,
+          cost_per_call: 0.125
+        },
+        user_b: {
+          api_calls: 50,
+          cost: 6.25,
+          cost_per_call: 0.125
+        }
+      }
+    };
+    ```
+  </Tab>
+  <Tab title="Shared Cost Allocation">
+    ```typescript
+    // Shared cost allocation
+    const sharedAllocation = {
+      principle: "proportional_sharing",
+      shared_costs: {
+        infrastructure: 100.00,
+        monitoring: 25.00,
+        support: 15.00
+      },
+      allocation_basis: "usage_percentage",
+      result: {
+        user_a: 93.33, // 66.7% of usage
+        user_b: 46.67  // 33.3% of usage
+      }
+    };
+    ```
+  </Tab>
+</Tabs>
+
+### 3. Cost Optimization Recommendations
+AI-powered cost optimization suggestions:
+
+<CardGroup cols={2}>
+  <Card title="Smart Recommendations" icon="lightbulb">
+    AI-generated cost optimization suggestions
+  </Card>
+  <Card title="Impact Analysis" icon="chart-bar">
+    Projected impact of optimization changes
+  </Card>
+  <Card title="Implementation Guide" icon="list-check">
+    Step-by-step optimization instructions
+  </Card>
+  <Card title="ROI Calculator" icon="calculator">
+    Calculate return on optimization investments
+  </Card>
+</CardGroup>
+
+## Cost Reporting
+
+### 1. Executive Reports
+High-level cost summaries for leadership:
+
+<AccordionGroup>
+  <Accordion title="Monthly Cost Summary" icon="calendar">
+    Executive-level cost overview:
+    - **Total costs** - Complete monthly spending
+    - **Cost trends** - Month-over-month changes
+    - **Budget variance** - Actual vs. planned spending
+    - **Key insights** - Major cost drivers and changes
+  </Accordion>
+  
+  <Accordion title="Cost Efficiency Metrics" icon="gauge">
+    Measure cost-effectiveness:
+    - **Cost per user** - Average cost per active user
+    - **Cost per transaction** - Cost per successful operation
+    - **ROI metrics** - Return on AI investment
+    - **Benchmarking** - Industry cost comparisons
+  </Accordion>
+</AccordionGroup>
+
+### 2. Detailed Analytics
+In-depth cost analysis:
+
+<Tabs>
+  <Tab title="Cost Breakdown">
+    ```typescript
+    const costBreakdown = {
+      timeframe: "last_30_days",
+      total_cost: 1247.89,
+      breakdown: {
+        api_costs: {
+          amount: 923.45,
+          percentage: 0.74,
+          top_services: [
+            { name: "OpenAI GPT-4", cost: 456.78 },
+            { name: "Anthropic Claude", cost: 234.56 },
+            { name: "Google Search", cost: 123.45 }
+          ]
+        },
+        infrastructure: {
+          amount: 234.56,
+          percentage: 0.19
+        },
+        overhead: {
+          amount: 89.88,
+          percentage: 0.07
+        }
+      }
+    };
+    ```
+  </Tab>
+  <Tab title="Cost Trends">
+    ```typescript
+    const costTrends = {
+      daily_avg: 41.60,
+      weekly_trend: "+5.2%",
+      monthly_projection: 1274.50,
+      seasonal_adjustment: 1.08,
+      growth_rate: 0.12, // 12% monthly growth
+      efficiency_trend: "+8%", // cost efficiency improving
+      recommendations: [
+        "Consider implementing caching for search queries",
+        "Optimize token usage in conversation contexts",
+        "Evaluate alternative model options for simple tasks"
+      ]
+    };
+    ```
+  </Tab>
+</Tabs>
+
+## Integration & Automation
+
+### 1. Cost Data Export
+Export cost data for analysis:
+
+<CodeGroup>
+```typescript CSV Export
+const costExport = await client.exportCostData({
+  format: "csv",
+  timeRange: "last_quarter",
+  groupBy: ["service", "user", "day"],
+  includeMetadata: true
+});
+```
+
+```typescript API Integration
+// Integrate with accounting systems
+const costData = await client.getCostData({
+  timeRange: "last_month",
+  currency: "USD",
+  breakdown: "detailed"
+});
+
+// Send to accounting system
+await accountingSystem.recordExpense({
+  category: "AI_Services",
+  amount: costData.total,
+  breakdown: costData.breakdown
+});
+```
+</CodeGroup>
+
+### 2. Automated Cost Management
+Set up automated cost controls:
+
+<Tabs>
+  <Tab title="Budget Enforcement">
+    ```typescript
+    const budgetEnforcement = {
+      soft_limit: 800.00,
+      hard_limit: 1000.00,
+      actions: {
+        at_soft_limit: ["notify_admins", "throttle_non_essential"],
+        at_hard_limit: ["suspend_all", "emergency_notification"]
+      },
+      exceptions: {
+        critical_users: ["admin_user_1", "admin_user_2"],
+        emergency_override: true
+      }
+    };
+    ```
+  </Tab>
+  <Tab title="Smart Scaling">
+    ```typescript
+    const smartScaling = {
+      cost_threshold: 50.00, // per hour
+      scaling_rules: [
+        {
+          condition: "hourly_cost > 50",
+          action: "reduce_concurrency",
+          parameters: { max_concurrent: 10 }
+        },
+        {
+          condition: "daily_cost > 500",
+          action: "switch_to_cheaper_model",
+          parameters: { model: "gpt-3.5-turbo" }
+        }
+      ]
+    };
+    ```
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+### 1. Cost Monitoring Strategy
+
+<Warning>
+  Monitor costs proactively, not reactively. Set up alerts before you hit budget limits.
+</Warning>
+
+<Steps>
+  <Step title="Set Realistic Budgets">
+    Based on historical data and growth projections
+  </Step>
+  <Step title="Monitor Daily">
+    Check cost trends and anomalies daily
+  </Step>
+  <Step title="Optimize Continuously">
+    Regularly review and optimize cost-driving operations
+  </Step>
+  <Step title="Plan for Growth">
+    Scale cost management as your usage grows
+  </Step>
+</Steps>
+
+### 2. Cost Optimization Principles
+
+<CardGroup cols={2}>
+  <Card title="Measure Everything" icon="ruler">
+    Track all costs to understand spending patterns
+  </Card>
+  <Card title="Optimize Gradually" icon="arrows-rotate">
+    Make incremental improvements rather than drastic changes
+  </Card>
+  <Card title="Balance Cost & Quality" icon="scale-balanced">
+    Don't sacrifice quality for cost savings
+  </Card>
+  <Card title="Automate Controls" icon="robot">
+    Use automated systems to prevent overspending
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Performance Analytics" icon="chart-line" href="/content/performance-analytics">
+    Optimize performance to reduce costs
+  </Card>
+  <Card title="Tool Calls" icon="terminal" href="/content/tool-calls">
+    Analyze tool usage and costs
+  </Card>
+  <Card title="Thought Tracing" icon="brain" href="/content/thought-tracing">
+    Understand decision costs
+  </Card>
+  <Card title="Memory Replay" icon="history" href="/content/memory-replay">
+    Analyze cost patterns over time
+  </Card>
+</CardGroup>
+
+---
+
+<Note>
+  Effective cost management requires balancing cost optimization with performance and user experience. Use cost data to make informed decisions, not just to cut expenses.
+</Note>

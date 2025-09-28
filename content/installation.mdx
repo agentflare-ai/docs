@@ -1,0 +1,288 @@
+---
+title: "Installation"
+sidebarTitle: "Installation"
+description: "Complete installation guide for Agentflare Telepathy"
+icon: "download"
+keywords: ["installation", "setup", "npm", "pip", "yarn", "pnpm", "requirements", "environment variables", "configuration"]
+---
+
+## System Requirements
+
+Before installing Telepathy, ensure your system meets these requirements:
+
+<CardGroup cols={2}>
+  <Card title="Node.js" icon="node">
+    Version 18.0 or higher
+  </Card>
+  <Card title="Python" icon="python">
+    Version 3.8 or higher
+  </Card>
+  <Card title="Memory" icon="memory">
+    Minimum 4GB RAM
+  </Card>
+  <Card title="Storage" icon="hard-drive">
+    100MB available space
+  </Card>
+</CardGroup>
+
+## Installation Methods
+
+Choose your preferred installation method:
+
+<Tabs>
+  <Tab title="npm">
+    ```bash
+    npm install @agentflare/telepathy-sdk
+    ```
+  </Tab>
+  <Tab title="yarn">
+    ```bash
+    yarn add @agentflare/telepathy-sdk
+    ```
+  </Tab>
+  <Tab title="pnpm">
+    ```bash
+    pnpm add @agentflare/telepathy-sdk
+    ```
+  </Tab>
+  <Tab title="pip">
+    ```bash
+    pip install agentflare-telepathy
+    ```
+  </Tab>
+</Tabs>
+
+## Environment Setup
+
+### 1. Create Environment Variables
+
+Create a `.env` file in your project root:
+
+```bash
+# Agentflare API credentials
+AGENTFLARE_JWT_SECRET=your_jwt_secret_here
+AGENTFLARE_PROJECT_ID=your_project_id_here
+
+# Optional: Custom API endpoint
+AGENTFLARE_API_URL=https://api.agentflare.com/v1
+
+# Optional: Export configuration
+AGENTFLARE_EXPORT_JAEGER=true
+AGENTFLARE_JAEGER_ENDPOINT=http://localhost:14268/api/traces
+```
+
+### 2. TypeScript Configuration
+
+If using TypeScript, add these compiler options:
+
+```json tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node"
+  }
+}
+```
+
+### 3. Python Configuration
+
+For Python projects, create a configuration file:
+
+```python config.py
+import os
+from agentflare_telepathy import Config
+
+config = Config(
+    api_key=os.environ.get("AGENTFLARE_JWT_SECRET"),
+    project_id=os.environ.get("AGENTFLARE_PROJECT_ID"),
+    # Optional settings
+    batch_size=100,
+    flush_interval=5.0,
+    max_retries=3
+)
+```
+
+## Verify Installation
+
+### TypeScript/JavaScript
+
+```typescript
+import { TelepathyClient } from "@agentflare/telepathy-sdk";
+
+// Verify installation
+const client = new TelepathyClient({
+  apiKey: process.env.AGENTFLARE_JWT_SECRET,
+  projectId: process.env.AGENTFLARE_PROJECT_ID,
+});
+
+// Test connection
+client
+  .testConnection()
+  .then(() => console.log("✅ Telepathy connected successfully"))
+  .catch((err) => console.error("❌ Connection failed:", err));
+```
+
+### Python
+
+```python
+from agentflare_telepathy import TelepathyClient
+import asyncio
+
+async def verify_installation():
+    # Initialize client
+    client = TelepathyClient(
+        api_key=os.getenv("AGENTFLARE_JWT_SECRET"),
+        project_id=os.getenv("AGENTFLARE_PROJECT_ID")
+    )
+
+    # Test connection
+    try:
+        await client.test_connection()
+        print("✅ Telepathy connected successfully")
+    except Exception as e:
+        print(f"❌ Connection failed: {e}")
+
+# Run verification
+asyncio.run(verify_installation())
+```
+
+## Platform-Specific Instructions
+
+<AccordionGroup>
+  <Accordion title="Docker Installation">
+    ```dockerfile
+    FROM node:18-alpine
+    
+    WORKDIR /app
+    
+    # Install dependencies
+    COPY package*.json ./
+    RUN npm ci --only=production
+    
+    # Copy application
+    COPY . .
+    
+    # Set environment variables
+    ENV NODE_ENV=production
+    
+    CMD ["node", "index.js"]
+    ```
+  </Accordion>
+  
+  <Accordion title="Kubernetes Setup">
+    ```yaml
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: telepathy-config
+    data:
+      AGENTFLARE_API_URL: "https://api.agentflare.com/v1"
+    ---
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: telepathy-secrets
+    type: Opaque
+    stringData:
+      AGENTFLARE_JWT_SECRET: "your_jwt_secret_here"
+      AGENTFLARE_PROJECT_ID: "your_project_id_here"
+    ```
+  </Accordion>
+  
+  <Accordion title="AWS Lambda">
+    ```javascript
+    const { TelepathyClient } = require('@agentflare/telepathy-sdk');
+    
+    const client = new TelepathyClient({
+      apiKey: process.env.AGENTFLARE_JWT_SECRET,
+      projectId: process.env.AGENTFLARE_PROJECT_ID,
+      // Lambda-specific configuration
+      flushOnExit: true,
+      timeout: 5000
+    });
+    
+    exports.handler = async (event) => {
+      // Your Lambda function code
+      await client.flush(); // Ensure data is sent before Lambda freezes
+    };
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Common Installation Issues
+
+<Warning>
+  If you encounter installation issues, check our [troubleshooting
+  guide](/docs/troubleshooting) or contact support.
+</Warning>
+
+### Permission Errors
+
+If you get permission errors during installation:
+
+```bash
+# npm/yarn/pnpm
+sudo npm install -g @agentflare/telepathy-sdk
+
+# pip
+pip install --user agentflare-telepathy
+```
+
+### Network Issues
+
+Behind a corporate proxy? Configure npm/pip:
+
+```bash
+# npm proxy configuration
+npm config set proxy http://proxy.company.com:8080
+npm config set https-proxy http://proxy.company.com:8080
+
+# pip proxy configuration
+pip install --proxy http://proxy.company.com:8080 agentflare-telepathy
+```
+
+### Version Conflicts
+
+Check for conflicting package versions:
+
+```bash
+# Check installed versions
+npm list @agentflare/telepathy-sdk
+pip show agentflare-telepathy
+
+# Force specific version
+npm install @agentflare/telepathy-sdk@1.2.3
+pip install agentflare-telepathy==1.2.3
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/content/quickstart">
+    Get up and running in 5 minutes
+  </Card>
+  <Card title="Configuration" icon="cog" href="/content/configuration">
+    Advanced configuration options
+  </Card>
+  <Card title="Examples" icon="code" href="/content/examples">
+    See real-world examples
+  </Card>
+  <Card title="API Reference" icon="book" href="/api-reference/introduction">
+    Explore the full API
+  </Card>
+</CardGroup>
+
+## Getting Help
+
+Need assistance with installation?
+
+- 📧 Email: support@agentflare.com
+- 💬 Discord: [Join our community](https://discord.gg/agentflare)
+- 📚 Docs: [Full documentation](https://docs.agentflare.com)
+- 🐛 Issues: [GitHub Issues](https://github.com/agentflare-ai/agentflare/issues)

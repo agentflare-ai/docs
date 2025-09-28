@@ -1,0 +1,405 @@
+/* Agentflare Mintlify Documentation Theme */
+/* Optimized to work with Mintlify's native theming system */
+
+/* Font Loading */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Brand Color Overrides - Minimal, targeted approach */
+:root {
+  /* Let Mintlify handle most theming, only override brand specifics */
+  --agentflare-primary: #db5c33;
+  --agentflare-primary-hover: #c54a26;
+  --agentflare-light: #f6b66d;
+  --agentflare-dark: #202836;
+  --agentflare-cream: #faf7f2; /* Lightened for better contrast */
+  --agentflare-cream-dark: #f2e4c9;
+
+  /* Improved contrast ratios */
+  --text-on-cream: #1a1f2a; /* Darker text for cream backgrounds */
+  --text-on-dark: #f9f9f9; /* Lighter text for dark backgrounds */
+
+  /* Spacing and radius */
+  --border-radius: 0.5rem;
+  --content-max-width: 1280px;
+}
+
+/* Dark mode adjustments */
+.dark {
+  --agentflare-cream: #2a3647;
+  --agentflare-cream-dark: #232d3d;
+  --text-on-cream: #f2e4c9;
+  --text-on-dark: #f2e4c9;
+}
+
+/* Global Enhancements - Work with Mintlify, not against it */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.025em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle background enhancement for light mode */
+body:not(.dark) {
+  background: linear-gradient(to bottom, var(--agentflare-cream) 0%, #ffffff 100vh);
+}
+
+/* Brand-specific link styling */
+a {
+  color: var(--agentflare-primary);
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+a:hover {
+  color: var(--agentflare-primary-hover);
+  opacity: 0.9;
+}
+
+/* Enhanced headings with better contrast */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--text-on-cream);
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 2rem;
+  border-bottom: 2px solid rgba(219, 92, 51, 0.2);
+  padding-bottom: 0.5rem;
+  margin-top: 2rem;
+}
+
+/* Improve code block styling without forcing colors */
+pre {
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(219, 92, 51, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin: 1rem 0;
+}
+
+/* Inline code with brand accent */
+code:not(pre code) {
+  background: rgba(219, 92, 51, 0.08);
+  color: var(--agentflare-primary);
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+  font-weight: 500;
+}
+
+/* Enhanced blockquotes with brand accent */
+blockquote {
+  border-left: 4px solid var(--agentflare-primary);
+  background: rgba(219, 92, 51, 0.03);
+  padding: 1rem 1.5rem;
+  border-radius: var(--border-radius);
+  margin: 1.5rem 0;
+}
+
+/* Callout/Card enhancements */
+.card,
+.callout,
+.admonition {
+  border-radius: var(--border-radius);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s ease;
+}
+
+.card:hover,
+.callout:hover {
+  box-shadow: 0 4px 20px rgba(219, 92, 51, 0.1);
+}
+
+/* Callout variants with brand colors */
+.callout.info,
+.admonition.info {
+  border-left: 4px solid var(--agentflare-primary);
+  background: linear-gradient(90deg, rgba(219, 92, 51, 0.05) 0%, transparent 100%);
+}
+
+.callout.warning,
+.admonition.warning {
+  border-left: 4px solid var(--agentflare-light);
+  background: linear-gradient(90deg, rgba(246, 182, 109, 0.05) 0%, transparent 100%);
+}
+
+/* Button enhancements */
+button,
+.button,
+.btn {
+  background: linear-gradient(135deg, var(--agentflare-primary) 0%, var(--agentflare-primary-hover) 100%);
+  border-radius: var(--border-radius);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover,
+.button:hover,
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(219, 92, 51, 0.25);
+}
+
+button:active,
+.button:active,
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Navigation enhancements */
+.sidebar a,
+.nav-sidebar a {
+  border-radius: calc(var(--border-radius) - 2px);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.sidebar a:hover,
+.nav-sidebar a:hover {
+  background: rgba(219, 92, 51, 0.08);
+  padding-left: 1.25rem;
+}
+
+.sidebar a.active,
+.nav-sidebar a.active {
+  background: linear-gradient(90deg, rgba(219, 92, 51, 0.15) 0%, transparent 100%);
+  color: var(--agentflare-primary);
+  font-weight: 600;
+}
+
+.sidebar a.active::before,
+.nav-sidebar a.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: var(--agentflare-primary);
+  border-radius: 0 2px 2px 0;
+}
+
+/* Search input styling */
+.search,
+.search-input,
+input[type="search"] {
+  border: 1px solid rgba(219, 92, 51, 0.2);
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease;
+}
+
+.search:focus,
+.search-input:focus,
+input[type="search"]:focus {
+  border-color: var(--agentflare-primary);
+  box-shadow: 0 0 0 3px rgba(219, 92, 51, 0.1);
+  outline: none;
+}
+
+/* Table enhancements */
+table {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+thead th {
+  background: linear-gradient(180deg, rgba(219, 92, 51, 0.05) 0%, rgba(219, 92, 51, 0.02) 100%);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+tbody tr:hover {
+  background: rgba(219, 92, 51, 0.02);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(219, 92, 51, 0.03);
+  border-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(219, 92, 51, 0.3);
+  border-radius: var(--border-radius);
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--agentflare-primary);
+}
+
+/* Selection color */
+::selection {
+  background: rgba(219, 92, 51, 0.2);
+  color: var(--text-on-cream);
+}
+
+/* Focus states with brand color */
+*:focus-visible {
+  outline: 2px solid var(--agentflare-primary);
+  outline-offset: 2px;
+}
+
+/* Mermaid diagram adjustments - subtle brand theming */
+.mermaid .node rect,
+.mermaid .node circle,
+.mermaid .node ellipse {
+  stroke: var(--agentflare-primary);
+  stroke-width: 1.5px;
+}
+
+.mermaid .edgePath .path {
+  stroke: var(--agentflare-primary);
+  opacity: 0.6;
+}
+
+/* Dark mode specific adjustments */
+.dark .mermaid .node rect,
+.dark .mermaid .node circle,
+.dark .mermaid .node ellipse {
+  stroke: var(--agentflare-light);
+}
+
+.dark .mermaid .edgePath .path {
+  stroke: var(--agentflare-light);
+  opacity: 0.6;
+}
+
+/* Pagination with brand styling */
+.pagination a,
+.pagination button {
+  border: 1px solid rgba(219, 92, 51, 0.2);
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease;
+}
+
+.pagination a:hover,
+.pagination button:hover {
+  background: var(--agentflare-primary);
+  border-color: var(--agentflare-primary);
+  transform: translateY(-2px);
+}
+
+.pagination a.active,
+.pagination button.active {
+  background: var(--agentflare-primary);
+  border-color: var(--agentflare-primary);
+}
+
+/* Breadcrumb styling */
+.breadcrumb a,
+.breadcrumbs a {
+  color: var(--agentflare-primary);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.breadcrumb a:hover,
+.breadcrumbs a:hover {
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  pre {
+    font-size: 0.8rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+
+  .sidebar,
+  .nav-sidebar,
+  nav {
+    display: none;
+  }
+
+  a {
+    color: var(--agentflare-primary);
+    text-decoration: underline;
+  }
+
+  .card,
+  .callout {
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+}
+
+/* Utility classes for brand consistency */
+.text-brand {
+  color: var(--agentflare-primary);
+}
+
+.bg-brand-light {
+  background: var(--agentflare-cream);
+}
+
+.border-brand {
+  border-color: var(--agentflare-primary);
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Accessibility improvements */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--agentflare-primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  z-index: 100;
+}
+
+.skip-to-content:focus {
+  top: 10px;
+}

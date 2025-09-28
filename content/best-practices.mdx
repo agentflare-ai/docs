@@ -1,0 +1,640 @@
+---
+title: "Best Practices"
+sidebarTitle: "Best Practices"
+description: "Optimize your Agentflare Telepathy implementation for performance, security, and reliability"
+icon: "lightbulb"
+keywords: ["best practices", "optimization", "performance", "security", "reliability", "guidelines"]
+---
+
+## Overview
+
+Follow these best practices to get the most out of Agentflare Telepathy while ensuring optimal performance, security, and reliability.
+
+## Performance Optimization
+
+### Connection Management
+
+<CardGroup cols={2}>
+  <Card title="Connection Pooling" icon="link">
+    Enable connection pooling for better performance
+  </Card>
+  <Card title="Keep-Alive" icon="heartbeat">
+    Use persistent connections to reduce latency
+  </Card>
+</CardGroup>
+
+```typescript
+// Optimal connection configuration
+const client = new TelepathyClient({
+  apiKey: process.env.API_JWT_SECRET,
+  projectId: process.env.AGENTFLARE_PROJECT_ID,
+  connectionPool: {
+    maxConnections: 10,        // Adjust based on your load
+    keepAlive: true,          // Enable persistent connections
+    timeout: 30000,           // 30 second timeout
+    retryDelayMin: 1000,      // 1 second minimum retry delay
+    retryDelayMax: 30000      // 30 second maximum retry delay
+  }
+});
+```
+
+### Batching and Sampling
+
+```typescript
+// Configure for high-volume production use
+const client = new TelepathyClient({
+  apiKey: process.env.API_JWT_SECRET,
+  projectId: process.env.AGENTFLARE_PROJECT_ID,
+  batching: {
+    enabled: true,
+    size: 50,                 // Batch size for better throughput
+    timeout: 5000,            // Max wait time before sending batch
+    maxBufferSize: 1000       // Prevent memory issues
+  },
+  sampling: {
+    rate: 0.1,               // 10% sampling for high-volume production
+    smartSampling: true,      // Prioritize errors and slow calls
+    alwaysSample: ['error', 'timeout', 'retry']
+  }
+});
+```
+
+### Caching Strategy
+
+```typescript
+// Enable intelligent caching
+const client = new TelepathyClient({
+  apiKey: process.env.API_JWT_SECRET,
+  projectId: process.env.AGENTFLARE_PROJECT_ID,
+  caching: {
+    enabled: true,
+    ttl: 300,                // 5-minute cache for metadata
+    maxSize: 1000,           // Maximum cache entries
+    strategies: {
+      metadata: 'aggressive',  // Cache tool schemas, server info
+      responses: 'selective'   // Cache deterministic tool responses
+    }
+  }
+});
+```
+
+## Security Best Practices
+
+### API Key Management
+
+<Warning>
+  Never commit API keys to version control or expose them in client-side code.
+</Warning>
+
+<Steps>
+  <Step title="Environment Variables">
+    Store API keys in environment variables
+    ```bash
+    # .env file (never commit this)
+    API_JWT_SECRET=your_jwt_secret_here
+    AGENTFLARE_PROJECT_ID=proj_abc123
+    ```
+  </Step>
+  
+  <Step title="Key Rotation">
+    Rotate API keys regularly
+    ```typescript
+    // Set up key rotation reminder
+    const client = new TelepathyClient({
+      apiKey: process.env.API_JWT_SECRET,
+      keyRotationWarning: true,  // Warn before key expires
+      keyRotationDays: 30        // Rotate every 30 days
+    });
+    ```
+  </Step>
+  
+  <Step title="Scope Limitation">
+    Use the minimum required scopes
+    ```typescript
+    // Create keys with specific scopes in dashboard
+    const scopes = [
+      'tools:read',     // Read tool call data
+      'servers:read',   // Read server configurations
+      'analytics:read'  // Read analytics data
+      // Avoid 'admin' or 'write' scopes unless necessary
+    ];
+    ```
+  </Step>
+  
+  <Step title="Network Security">
+    Restrict network access when possible
+    ```typescript
+    const client = new TelepathyClient({
+      apiKey: process.env.API_JWT_SECRET,
+      allowedIPs: ['192.168.1.0/24'],  // Restrict to specific networks
+      requireTLS: true,                 // Enforce TLS 1.3
+      verifyCertificates: true         // Verify SSL certificates
+    });
+    ```
+  </Step>
+</Steps>
+
+### Double Authentication
+
+For highly sensitive environments, implement double authentication:
+
+```typescript
+// Primary authentication (Agentflare)
+const client = new TelepathyClient({
+  apiKey: process.env.API_JWT_SECRET,
+  projectId: process.env.AGENTFLARE_PROJECT_ID
+});
+
+// Secondary authentication (Your MCP servers)
+const servers = [{
+  name: "secure-server",
+  endpoint: "https://secure.yourcompany.com/mcp",
+  authentication: {
+    type: "bearer",
+    token: process.env.YOUR_SERVER_TOKEN,
+    headers: {
+      "X-Client-ID": "agentflare-telepathy",
+      "X-Request-Signature": computeSignature(request)
+    }
+  }
+}];
+```
+
+## Reliability and Error Handling
+
+### Comprehensive Error Handling
+
+```typescript
+import { TelepathyError, ToolCallError, NetworkError } from "@agentflare/telepathy-sdk";
+
+async function robustToolCall(client, toolName, args, options = {}) {
+  const maxRetries = options.maxRetries || 3;
+  const retryDelay = options.retryDelay || 1000;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await client.callTool({
+        name: toolName,
+        arguments: args,
+        timeout: options.timeout || 30000,
+        metadata: {
+          attempt: attempt,
+          maxRetries: maxRetries,
+          reasoning: options.reasoning || `Calling ${toolName}`
+        }
+      });
+      
+      return result;
+      
+    } catch (error) {
+      if (error instanceof NetworkError && attempt < maxRetries) {
+        console.warn(`Network error on attempt ${attempt}, retrying...`);
+        await new Promise(resolve => setTimeout(resolve, retryDelay * attempt));
+        continue;
+      }
+      
+      if (error instanceof ToolCallError) {
+        console.error(`Tool call failed: ${error.message}`, {
+          tool: toolName,
+          arguments: args,
+          error: error.details
+        });
+        throw error;
+      }
+      
+      // Re-throw for unexpected errors
+      throw error;
+    }
+  }
+}
+```
+
+### Circuit Breaker Pattern
+
+```typescript
+class CircuitBreaker {
+  constructor(threshold = 5, timeout = 60000) {
+    this.failureThreshold = threshold;
+    this.timeout = timeout;
+    this.failureCount = 0;
+    this.lastFailureTime = null;
+    this.state = 'CLOSED'; // CLOSED, OPEN, HALF_OPEN
+  }
+  
+  async call(fn) {
+    if (this.state === 'OPEN') {
+      if (Date.now() - this.lastFailureTime < this.timeout) {
+        throw new Error('Circuit breaker is OPEN');
+      }
+      this.state = 'HALF_OPEN';
+    }
+    
+    try {
+      const result = await fn();
+      this.onSuccess();
+      return result;
+    } catch (error) {
+      this.onFailure();
+      throw error;
+    }
+  }
+  
+  onSuccess() {
+    this.failureCount = 0;
+    this.state = 'CLOSED';
+  }
+  
+  onFailure() {
+    this.failureCount++;
+    this.lastFailureTime = Date.now();
+    
+    if (this.failureCount >= this.failureThreshold) {
+      this.state = 'OPEN';
+    }
+  }
+}
+
+// Usage
+const circuitBreaker = new CircuitBreaker(5, 60000);
+
+async function protectedToolCall(client, toolName, args) {
+  return circuitBreaker.call(() => 
+    client.callTool({ name: toolName, arguments: args })
+  );
+}
+```
+
+### Health Monitoring
+
+```typescript
+// Add health checks to your application
+class HealthMonitor {
+  constructor(client) {
+    this.client = client;
+    this.healthy = true;
+    this.lastCheck = null;
+    this.startMonitoring();
+  }
+  
+  async checkHealth() {
+    try {
+      await this.client.ping();
+      this.healthy = true;
+      this.lastCheck = new Date();
+      return true;
+    } catch (error) {
+      this.healthy = false;
+      console.error('Health check failed:', error);
+      return false;
+    }
+  }
+  
+  startMonitoring() {
+    setInterval(() => {
+      this.checkHealth();
+    }, 30000); // Check every 30 seconds
+  }
+  
+  getStatus() {
+    return {
+      healthy: this.healthy,
+      lastCheck: this.lastCheck
+    };
+  }
+}
+
+const healthMonitor = new HealthMonitor(client);
+
+// Expose health endpoint
+app.get('/health', (req, res) => {
+  const status = healthMonitor.getStatus();
+  res.status(status.healthy ? 200 : 503).json(status);
+});
+```
+
+## Observability Best Practices
+
+### Structured Reasoning
+
+Provide structured reasoning for better observability:
+
+```typescript
+// Good: Structured reasoning
+await client.callTool({
+  name: "database_query",
+  arguments: { 
+    table: "users", 
+    filters: { active: true },
+    limit: 100 
+  },
+  metadata: {
+    reasoning: "Fetching active users for dashboard display",
+    context: {
+      userRole: "admin",
+      requestId: "req_abc123",
+      feature: "user_management"
+    },
+    confidence: 0.95,
+    alternatives: ["cache_lookup", "api_call"],
+    expectedCost: 0.001,
+    expectedDuration: 500
+  }
+});
+
+// Bad: Minimal context
+await client.callTool({
+  name: "database_query",
+  arguments: { table: "users" }
+});
+```
+
+### Cost Attribution
+
+Track costs effectively:
+
+```typescript
+// Track costs by feature/user/session
+await client.callTool({
+  name: "ai_analysis",
+  arguments: { data: analysisData },
+  metadata: {
+    costAttribution: {
+      userId: "user_123",
+      sessionId: "session_456", 
+      feature: "data_analysis",
+      department: "engineering"
+    },
+    budgetTracking: {
+      category: "ai_operations",
+      maxCost: 0.50,
+      alertThreshold: 0.40
+    }
+  }
+});
+```
+
+### Performance Tracking
+
+Add performance markers:
+
+```typescript
+// Track performance with markers
+const startTime = performance.now();
+
+await client.callTool({
+  name: "complex_calculation",
+  arguments: { dataset: largeDataset },
+  metadata: {
+    performance: {
+      startTime: startTime,
+      datasetSize: largeDataset.length,
+      complexity: "high",
+      cacheable: false
+    },
+    timing: {
+      expectedDuration: 5000,
+      timeoutWarning: 4000,
+      maxAcceptableDuration: 10000
+    }
+  }
+});
+
+const endTime = performance.now();
+console.log(`Tool call completed in ${endTime - startTime}ms`);
+```
+
+## Development Workflow
+
+### Environment Management
+
+<Tabs>
+  <Tab title="Development">
+    ```typescript
+    // Development configuration
+    const client = new TelepathyClient({
+      apiKey: process.env.API_JWT_SECRET_DEV,
+      projectId: process.env.AGENTFLARE_PROJECT_ID_DEV,
+      environment: 'development',
+      debug: true,
+      logLevel: 'debug',
+      sampling: { rate: 1.0 }, // 100% sampling in dev
+      validateRequests: true,   // Validate all requests
+      dryRun: false            // Actually make calls
+    });
+    ```
+  </Tab>
+  
+  <Tab title="Testing">
+    ```typescript
+    // Testing configuration
+    const client = new TelepathyClient({
+      apiKey: process.env.API_JWT_SECRET_TEST,
+      projectId: process.env.AGENTFLARE_PROJECT_ID_TEST,
+      environment: 'test',
+      debug: false,
+      sampling: { rate: 0.1 },  // Minimal sampling in tests
+      dryRun: true,            // Don't make actual API calls
+      mockResponses: true      // Use mock responses
+    });
+    ```
+  </Tab>
+  
+  <Tab title="Production">
+    ```typescript
+    // Production configuration
+    const client = new TelepathyClient({
+      apiKey: process.env.API_JWT_SECRET,
+      projectId: process.env.AGENTFLARE_PROJECT_ID,
+      environment: 'production',
+      debug: false,
+      logLevel: 'warn',
+      sampling: { rate: 0.05 }, // 5% sampling for performance
+      alerting: {
+        enabled: true,
+        errorThreshold: 0.01,   // Alert if error rate > 1%
+        latencyThreshold: 5000  // Alert if avg latency > 5s
+      }
+    });
+    ```
+  </Tab>
+</Tabs>
+
+### Testing Strategy
+
+```typescript
+// Unit tests
+describe('Tool Calls', () => {
+  beforeEach(() => {
+    // Use test client with mocking
+    client = new TelepathyClient({
+      apiKey: 'test-key',
+      dryRun: true,
+      mockResponses: {
+        'search': { results: ['test result'] },
+        'database_query': { rows: [{ id: 1, name: 'test' }] }
+      }
+    });
+  });
+  
+  it('should handle search tool calls', async () => {
+    const result = await client.callTool({
+      name: 'search',
+      arguments: { query: 'test' }
+    });
+    
+    expect(result.results).toHaveLength(1);
+    expect(result.results[0]).toBe('test result');
+  });
+});
+
+// Integration tests
+describe('Integration Tests', () => {
+  it('should connect to real services in staging', async () => {
+    const client = new TelepathyClient({
+      apiKey: process.env.API_JWT_SECRET_STAGING,
+      environment: 'staging'
+    });
+    
+    const health = await client.ping();
+    expect(health.status).toBe('healthy');
+  });
+});
+```
+
+## Monitoring and Alerting
+
+### Key Metrics to Monitor
+
+<CardGroup cols={2}>
+  <Card title="Error Rate" icon="triangle-exclamation">
+    Monitor tool call failure rates
+  </Card>
+  <Card title="Latency" icon="clock">
+    Track response times and timeouts
+  </Card>
+  <Card title="Cost" icon="dollar-sign">
+    Monitor API usage costs
+  </Card>
+  <Card title="Throughput" icon="gauge">
+    Track requests per second
+  </Card>
+</CardGroup>
+
+### Custom Alerting
+
+```typescript
+// Set up custom alerting
+const client = new TelepathyClient({
+  apiKey: process.env.API_JWT_SECRET,
+  alerting: {
+    enabled: true,
+    webhookUrl: process.env.SLACK_WEBHOOK_URL,
+    rules: [
+      {
+        metric: 'error_rate',
+        threshold: 0.05,      // 5% error rate
+        window: '5m',         // Over 5 minutes
+        severity: 'critical'
+      },
+      {
+        metric: 'avg_latency',
+        threshold: 2000,      // 2 second avg latency
+        window: '10m',
+        severity: 'warning'
+      },
+      {
+        metric: 'cost_per_hour',
+        threshold: 10.00,     // $10/hour
+        window: '1h',
+        severity: 'warning'
+      }
+    ]
+  }
+});
+```
+
+## Scaling Considerations
+
+### Load Balancing
+
+```typescript
+// Multiple client instances for load balancing
+const clients = [
+  new TelepathyClient({ 
+    apiKey: process.env.API_JWT_SECRET,
+    region: 'us-east-1' 
+  }),
+  new TelepathyClient({ 
+    apiKey: process.env.API_JWT_SECRET,
+    region: 'us-west-2' 
+  })
+];
+
+function getClient() {
+  // Simple round-robin load balancing
+  return clients[Math.floor(Math.random() * clients.length)];
+}
+
+async function scaledToolCall(toolName, args) {
+  const client = getClient();
+  return client.callTool({ name: toolName, arguments: args });
+}
+```
+
+### Resource Management
+
+```typescript
+// Resource management for high-volume applications
+class ResourceManager {
+  constructor() {
+    this.activeConnections = 0;
+    this.maxConnections = 100;
+    this.queue = [];
+  }
+  
+  async acquireConnection() {
+    if (this.activeConnections < this.maxConnections) {
+      this.activeConnections++;
+      return true;
+    }
+    
+    // Queue the request
+    return new Promise((resolve) => {
+      this.queue.push(resolve);
+    });
+  }
+  
+  releaseConnection() {
+    this.activeConnections--;
+    
+    if (this.queue.length > 0) {
+      const next = this.queue.shift();
+      this.activeConnections++;
+      next(true);
+    }
+  }
+}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Performance Analytics" icon="chart-line" href="/content/performance-analytics">
+    Learn about performance monitoring
+  </Card>
+  <Card title="Cost Tracking" icon="dollar-sign" href="/content/cost-tracking">
+    Optimize your cost usage
+  </Card>
+  <Card title="Security Guide" icon="shield" href="/content/security">
+    Advanced security configurations
+  </Card>
+  <Card title="Troubleshooting" icon="wrench" href="/content/troubleshooting">
+    Debug common issues
+  </Card>
+</CardGroup>
+
+---
+
+<Note>
+  Following these best practices will help you build reliable, performant, and secure applications with Agentflare Telepathy.
+</Note>

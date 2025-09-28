@@ -1,0 +1,505 @@
+---
+title: "Tool Calls"
+sidebarTitle: "Tool Calls"
+description: "Monitor and analyze all tool invocations with complete context"
+icon: "terminal"
+keywords: ["tool calls", "tool invocations", "API monitoring", "performance metrics", "cost tracking", "real-time monitoring", "analytics", "optimization"]
+---
+
+## Overview
+
+Tool Calls are the fundamental building blocks of AI agent interactions. Every action your agent takes - from searching a database to sending an email - is captured as a tool call with complete context, timing, and reasoning.
+
+{/* Tool Calls Dashboard visualization will be added when available */}
+
+## What Gets Tracked
+
+### 1. Complete Call Information
+Every tool call includes comprehensive metadata:
+
+```typescript
+{
+  id: "call_abc123",
+  tool_name: "search_products",
+  arguments: {
+    query: "wireless headphones",
+    filters: { price_max: 200, category: "electronics" }
+  },
+  timestamp: "2024-01-15T10:32:15Z",
+  duration: 234,
+  status: "success",
+  result: {
+    products: [...],
+    count: 15,
+    confidence: 0.92
+  },
+  cost: 0.023,
+  session_id: "session_456def",
+  user_id: "user_789ghi"
+}
+```
+
+### 2. Contextual Metadata
+Rich context about why the call was made:
+
+<CardGroup cols={2}>
+  <Card title="Reasoning" icon="brain">
+    Why the agent chose this tool
+  </Card>
+  <Card title="Confidence" icon="percentage">
+    How certain the agent was about the choice
+  </Card>
+  <Card title="Alternatives" icon="route">
+    What other tools were considered
+  </Card>
+  <Card title="Context" icon="location-dot">
+    Situational information affecting the decision
+  </Card>
+</CardGroup>
+
+### 3. Performance Metrics
+Detailed timing and resource usage:
+
+<Tabs>
+  <Tab title="Response Times">
+    - **Call duration** - Total time from invocation to completion
+    - **Network latency** - Time spent in network requests
+    - **Processing time** - Time spent on computation
+    - **Queue time** - Time waiting in processing queue
+  </Tab>
+  <Tab title="Resource Usage">
+    - **Memory consumption** - RAM used during execution
+    - **CPU utilization** - Processing power consumed
+    - **API calls** - External service calls made
+    - **Data transfer** - Bytes sent and received
+  </Tab>
+  <Tab title="Cost Tracking">
+    - **API costs** - Direct costs from external services
+    - **Compute costs** - Internal processing costs
+    - **Storage costs** - Data storage and retrieval
+    - **Total cost** - Complete cost per tool call
+  </Tab>
+</Tabs>
+
+## Live Tool Call Feed
+
+### 1. Real-time Monitoring
+Watch tool calls as they happen:
+
+<AccordionGroup>
+  <Accordion title="Live Stream" icon="satellite-dish">
+    Real-time feed of all tool calls across your agents:
+    - **Streaming updates** - See calls as they happen
+    - **Filtering** - Focus on specific tools or agents
+    - **Search** - Find calls by content or metadata
+    - **Alerts** - Get notified of important events
+  </Accordion>
+  
+  <Accordion title="Interactive Details" icon="magnifying-glass">
+    Click any call to see complete details:
+    - **Full request/response** - Complete call data
+    - **Timing breakdown** - Where time was spent
+    - **Cost analysis** - Detailed cost breakdown
+    - **Related calls** - Calls in the same session
+  </Accordion>
+  
+  <Accordion title="Historical View" icon="clock">
+    Switch between live and historical views:
+    - **Time range selection** - View calls from specific periods
+    - **Replay mode** - Watch historical calls unfold
+    - **Comparison** - Compare current vs. historical performance
+    - **Trends** - See patterns over time
+  </Accordion>
+</AccordionGroup>
+
+### 2. Filtering & Search
+Find exactly what you're looking for:
+
+<CodeGroup>
+```typescript Basic Filtering
+// Filter by tool name
+const searchCalls = await client.getToolCalls({
+  tool_name: "search_products",
+  timeRange: "last_24_hours"
+});
+
+// Filter by status
+const failedCalls = await client.getToolCalls({
+  status: "error",
+  timeRange: "last_week"
+});
+```
+
+```typescript Advanced Search
+// Complex filtering
+const complexQuery = await client.getToolCalls({
+  filters: {
+    tool_name: ["search_products", "get_reviews"],
+    duration: { min: 100, max: 5000 },
+    cost: { max: 0.10 },
+    confidence: { min: 0.8 }
+  },
+  search: "wireless headphones",
+  sort: "duration_desc",
+  limit: 50
+});
+```
+</CodeGroup>
+
+## Analytics & Insights
+
+### 1. Performance Analytics
+
+<CardGroup cols={2}>
+  <Card title="Response Time Trends" icon="clock">
+    Monitor how tool response times change over time
+  </Card>
+  <Card title="Success Rates" icon="check-circle">
+    Track success/failure rates by tool
+  </Card>
+  <Card title="Usage Patterns" icon="chart-bar">
+    See which tools are used most frequently
+  </Card>
+  <Card title="Cost Efficiency" icon="dollar-sign">
+    Analyze cost per successful tool call
+  </Card>
+</CardGroup>
+
+### 2. Tool Effectiveness Analysis
+
+<Tabs>
+  <Tab title="Success Metrics">
+    ```typescript
+    const toolMetrics = {
+      search_products: {
+        success_rate: 0.96,
+        avg_duration: 234,
+        avg_cost: 0.023,
+        user_satisfaction: 0.87
+      },
+      send_email: {
+        success_rate: 0.99,
+        avg_duration: 156,
+        avg_cost: 0.005,
+        user_satisfaction: 0.94
+      }
+    };
+    ```
+  </Tab>
+  <Tab title="Performance Trends">
+    ```typescript
+    const trends = {
+      search_products: {
+        duration_trend: -12,  // 12ms faster this week
+        cost_trend: -0.003,   // $0.003 cheaper per call
+        usage_trend: +23      // 23% more usage
+      }
+    };
+    ```
+  </Tab>
+  <Tab title="User Impact">
+    ```typescript
+    const userImpact = {
+      search_products: {
+        satisfaction_score: 8.7,
+        completion_rate: 0.92,
+        abandonment_rate: 0.08,
+        repeat_usage: 0.74
+      }
+    };
+    ```
+  </Tab>
+</Tabs>
+
+### 3. Error Analysis
+
+<AccordionGroup>
+  <Accordion title="Error Patterns" icon="triangle-exclamation">
+    Identify common failure modes:
+    - **Timeout errors** - Tools taking too long to respond
+    - **Authentication failures** - API key or permission issues
+    - **Rate limiting** - Exceeding API limits
+    - **Data validation** - Invalid arguments or responses
+  </Accordion>
+  
+  <Accordion title="Error Impact" icon="exclamation-circle">
+    Understand the business impact of errors:
+    - **User experience** - How errors affect users
+    - **Cost implications** - Wasted resources on failed calls
+    - **Cascading effects** - How errors propagate
+    - **Recovery patterns** - How agents handle failures
+  </Accordion>
+  
+  <Accordion title="Resolution Tracking" icon="wrench">
+    Monitor error resolution:
+    - **Time to resolution** - How quickly errors are fixed
+    - **Resolution effectiveness** - Whether fixes work
+    - **Preventive measures** - Steps to prevent recurrence
+    - **Learning opportunities** - Insights from errors
+  </Accordion>
+</AccordionGroup>
+
+## Optimization Strategies
+
+### 1. Performance Optimization
+
+<Steps>
+  <Step title="Identify Bottlenecks">
+    Use tool call analytics to find slow or expensive tools
+  </Step>
+  <Step title="Optimize Arguments">
+    Refine tool arguments based on success patterns
+  </Step>
+  <Step title="Improve Caching">
+    Cache frequently used results to reduce calls
+  </Step>
+  <Step title="Batch Operations">
+    Combine multiple small calls into batch operations
+  </Step>
+</Steps>
+
+### 2. Cost Optimization
+
+<CardGroup cols={2}>
+  <Card title="Tool Selection" icon="arrows-rotate">
+    Choose the most cost-effective tools for each task
+  </Card>
+  <Card title="Argument Optimization" icon="sliders">
+    Optimize tool arguments to reduce costs
+  </Card>
+  <Card title="Caching Strategy" icon="database">
+    Implement smart caching to avoid duplicate calls
+  </Card>
+  <Card title="Usage Monitoring" icon="gauge">
+    Set budgets and alerts for tool usage
+  </Card>
+</CardGroup>
+
+### 3. User Experience Optimization
+
+<Tabs>
+  <Tab title="Response Time">
+    ```typescript
+    // Optimize for faster responses
+    const optimizations = {
+      parallel_calls: true,      // Run independent calls in parallel
+      early_termination: true,   // Stop on first good result
+      progressive_loading: true, // Show results as they arrive
+      timeout_handling: true     // Graceful timeout management
+    };
+    ```
+  </Tab>
+  <Tab title="Success Rate">
+    ```typescript
+    // Improve success rates
+    const improvements = {
+      input_validation: true,    // Validate before calling
+      retry_logic: true,         // Retry failed calls
+      fallback_tools: true,      // Use alternatives on failure
+      error_recovery: true       // Recover from errors gracefully
+    };
+    ```
+  </Tab>
+</Tabs>
+
+## Advanced Features
+
+### 1. Tool Call Correlation
+Understand relationships between tool calls:
+
+```typescript
+// Find related calls
+const relatedCalls = await client.getRelatedToolCalls({
+  callId: "call_abc123",
+  relationship: "same_session",
+  depth: 3
+});
+
+// Analyze call sequences
+const sequences = await client.analyzeCallSequences({
+  pattern: "search_products -> get_reviews -> add_to_cart",
+  timeRange: "last_month"
+});
+```
+
+### 2. Predictive Analytics
+Anticipate future tool usage:
+
+<AccordionGroup>
+  <Accordion title="Usage Prediction" icon="crystal-ball">
+    Predict future tool usage patterns:
+    - **Seasonal trends** - Tools used more during certain periods
+    - **User behavior** - How different users utilize tools
+    - **Capacity planning** - Prepare for expected load
+    - **Cost forecasting** - Predict future tool costs
+  </Accordion>
+  
+  <Accordion title="Anomaly Detection" icon="warning">
+    Detect unusual patterns:
+    - **Sudden spikes** - Unexpected increases in tool usage
+    - **Performance degradation** - Tools becoming slower
+    - **Cost anomalies** - Unusual increases in costs
+    - **Error clusters** - Groups of related errors
+  </Accordion>
+</AccordionGroup>
+
+### 3. Custom Metrics
+Define your own tool call metrics:
+
+<CodeGroup>
+```typescript Custom Metrics
+const customMetrics = {
+  business_value: {
+    name: "Business Value Score",
+    calculation: (call) => {
+      // Custom logic to calculate business value
+      return call.result.revenue_impact * call.confidence;
+    }
+  },
+  user_satisfaction: {
+    name: "User Satisfaction",
+    calculation: (call) => {
+      // Based on user feedback and behavior
+      return call.user_feedback?.rating || 0;
+    }
+  }
+};
+```
+
+```typescript Metric Tracking
+// Track custom metrics
+await client.trackCustomMetric({
+  callId: "call_abc123",
+  metric: "business_value",
+  value: 8.5,
+  timestamp: new Date()
+});
+```
+</CodeGroup>
+
+## Best Practices
+
+### 1. Effective Monitoring
+
+<Warning>
+  Don't just collect data - actively monitor and act on tool call insights to improve your agents continuously.
+</Warning>
+
+<Tabs>
+  <Tab title="Set Up Alerts">
+    ```typescript
+    const alerts = {
+      slow_calls: {
+        condition: "duration > 5000",
+        notification: "slack"
+      },
+      high_error_rate: {
+        condition: "error_rate > 0.05",
+        notification: "email"
+      },
+      cost_spike: {
+        condition: "hourly_cost > 10",
+        notification: "pagerduty"
+      }
+    };
+    ```
+  </Tab>
+  <Tab title="Regular Review">
+    - **Daily monitoring** - Check key metrics daily
+    - **Weekly deep dive** - Analyze trends and patterns
+    - **Monthly optimization** - Implement improvements
+    - **Quarterly strategy** - Review overall tool strategy
+  </Tab>
+</Tabs>
+
+### 2. Data-Driven Decisions
+
+<Steps>
+  <Step title="Establish Baselines">
+    Measure current performance before making changes
+  </Step>
+  <Step title="A/B Testing">
+    Test optimizations with controlled experiments
+  </Step>
+  <Step title="Impact Measurement">
+    Measure the impact of changes on key metrics
+  </Step>
+  <Step title="Continuous Improvement">
+    Iterate based on results and new insights
+  </Step>
+</Steps>
+
+## Integration & Export
+
+### 1. API Access
+Access tool call data programmatically:
+
+<CodeGroup>
+```typescript Real-time API
+// Get live tool calls
+const liveStream = client.streamToolCalls({
+  filters: { tool_name: "search_products" },
+  onCall: (call) => {
+    console.log(`New call: ${call.id}`);
+    // Process call data
+  }
+});
+```
+
+```typescript Batch API
+// Export historical data
+const historicalData = await client.exportToolCalls({
+  timeRange: "last_week",
+  format: "json",
+  includeMetadata: true
+});
+```
+</CodeGroup>
+
+### 2. External Integrations
+Send data to your existing tools:
+
+<Tabs>
+  <Tab title="Analytics Platforms">
+    ```typescript
+    // Send to Google Analytics
+    await analytics.track("tool_call", {
+      tool_name: call.tool_name,
+      duration: call.duration,
+      success: call.status === "success"
+    });
+    ```
+  </Tab>
+  <Tab title="Monitoring Systems">
+    ```typescript
+    // Send to Datadog
+    await datadog.increment("tool_calls.count", 1, {
+      tool_name: call.tool_name,
+      status: call.status
+    });
+    ```
+  </Tab>
+</Tabs>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Performance Analytics" icon="chart-line" href="/content/performance-analytics">
+    Dive deeper into performance metrics
+  </Card>
+  <Card title="Cost Tracking" icon="dollar-sign" href="/content/cost-tracking">
+    Monitor and optimize costs
+  </Card>
+  <Card title="Thought Tracing" icon="brain" href="/content/thought-tracing">
+    Understand decision reasoning
+  </Card>
+  <Card title="Memory Replay" icon="history" href="/content/memory-replay">
+    Analyze complete sessions
+  </Card>
+</CardGroup>
+
+---
+
+<Note>
+  Tool calls are the foundation of agent observability. The more context you capture with each call, the more valuable insights you'll gain about your agents' behavior.
+</Note>

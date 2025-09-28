@@ -1,0 +1,390 @@
+---
+title: "Thought Tracing"
+sidebarTitle: "Thought Tracing"
+description: "Understand exactly why your AI agents make the decisions they do"
+icon: "brain"
+keywords: ["thought tracing", "decision reasoning", "AI agent decisions", "reasoning capture", "confidence scoring", "alternatives analysis", "decision trees"]
+---
+
+## What is Thought Tracing?
+
+Thought Tracing is Telepathy's flagship feature that captures and visualizes the reasoning process behind every AI agent decision. Instead of just seeing *what* your agent did, you can see *why* it made that choice.
+
+{/* Thought Tracing Example visualization will be added when available */}
+
+## How It Works
+
+### 1. Reasoning Capture
+Every tool call can include reasoning metadata:
+
+<CodeGroup>
+```typescript TypeScript
+const result = await client.callTool({
+  name: "search_database",
+  arguments: { query: "customer support tickets" },
+  metadata: {
+    reasoning: "User asked about recent support issues, need to query database for latest tickets",
+    confidence: 0.95,
+    alternatives: ["search_knowledge_base", "ask_human_agent"],
+    context: "Customer service manager requesting weekly report"
+  }
+});
+```
+
+```python Python
+result = await client.call_tool(
+    name="search_database",
+    arguments={"query": "customer support tickets"},
+    metadata={
+        "reasoning": "User asked about recent support issues, need to query database for latest tickets",
+        "confidence": 0.95,
+        "alternatives": ["search_knowledge_base", "ask_human_agent"],
+        "context": "Customer service manager requesting weekly report"
+    }
+)
+```
+</CodeGroup>
+
+### 2. Decision Trees
+Telepathy automatically builds decision trees showing:
+- **Primary path** - The chosen action
+- **Alternative paths** - What else was considered
+- **Confidence scores** - How certain the agent was
+- **Reasoning chains** - Step-by-step thought process
+
+### 3. Visual Timeline
+See the complete thought process in an intuitive timeline:
+
+<Steps>
+  <Step title="Intent Recognition">
+    Agent identifies what the user wants
+  </Step>
+  <Step title="Option Generation">
+    Agent considers available actions
+  </Step>
+  <Step title="Evaluation">
+    Agent weighs pros/cons of each option
+  </Step>
+  <Step title="Decision">
+    Agent selects the best action
+  </Step>
+  <Step title="Execution">
+    Agent performs the chosen action
+  </Step>
+</Steps>
+
+## Key Benefits
+
+### 1. Debugging & Optimization
+
+<CardGroup cols={2}>
+  <Card title="Identify Issues" icon="bug">
+    Quickly spot where agents make wrong decisions
+  </Card>
+  <Card title="Optimize Prompts" icon="pencil">
+    Refine prompts based on reasoning patterns
+  </Card>
+  <Card title="Test Variations" icon="flask">
+    A/B test different reasoning approaches
+  </Card>
+  <Card title="Validate Logic" icon="check-circle">
+    Ensure agents think as expected
+  </Card>
+</CardGroup>
+
+### 2. Transparency & Trust
+
+<AccordionGroup>
+  <Accordion title="Explainable AI" icon="eye">
+    Provide clear explanations for AI decisions to stakeholders:
+    - **Audit trails** - Complete decision history
+    - **Compliance reports** - Regulatory documentation
+    - **User explanations** - Help users understand AI behavior
+  </Accordion>
+  
+  <Accordion title="Bias Detection" icon="balance-scale">
+    Identify potential biases in agent reasoning:
+    - **Pattern analysis** - Detect recurring biases
+    - **Fairness metrics** - Measure decision fairness
+    - **Corrective actions** - Suggestions for improvement
+  </Accordion>
+  
+  <Accordion title="Quality Assurance" icon="shield">
+    Ensure consistent, high-quality decisions:
+    - **Reasoning standards** - Define quality criteria
+    - **Deviation alerts** - Flag unusual reasoning patterns
+    - **Continuous improvement** - Learn from each decision
+  </Accordion>
+</AccordionGroup>
+
+## Implementation Guide
+
+### Step 1: Enable Thought Tracing
+
+<Tabs>
+  <Tab title="SDK Configuration">
+    ```typescript
+    const client = new TelepathyClient({
+      apiKey: process.env.API_JWT_SECRET,
+      projectId: process.env.AGENTFLARE_PROJECT_ID,
+      thoughtTracing: {
+        enabled: true,
+        captureAlternatives: true,
+        includeConfidence: true,
+        maxReasoningLength: 1000
+      }
+    });
+    ```
+  </Tab>
+  <Tab title="Proxy Configuration">
+    ```bash
+    # Enable thought tracing via proxy headers
+    curl -X POST \
+      -H "X-Telepathy-Thought-Tracing: enabled" \
+      -H "X-Telepathy-Capture-Alternatives: true" \
+      https://<your-workspace>.agentflare.com/proxy/tool-call
+    ```
+  </Tab>
+</Tabs>
+
+### Step 2: Add Reasoning Context
+
+<CodeGroup>
+```typescript Rich Context
+await client.callTool({
+  name: "send_email",
+  arguments: {
+    to: "<customer@example.com>",
+    subject: "Order Status Update",
+    body: "Your order #12345 has been shipped"
+  },
+  metadata: {
+    reasoning: "Customer inquired about order status. Found order #12345 is shipped. Sending proactive notification to improve satisfaction.",
+    confidence: 0.88,
+    alternatives: [
+      "wait_for_customer_followup",
+      "call_customer_directly",
+      "update_order_status_only"
+    ],
+    context: {
+      user_segment: "premium_customer",
+      previous_interactions: 3,
+      satisfaction_score: 4.2,
+      order_value: 299.99
+    },
+    decision_factors: [
+      "customer_premium_status",
+      "order_shipping_delay",
+      "proactive_communication_policy"
+    ]
+  }
+});
+```
+
+```python Minimal Context
+await client.call_tool(
+    name="search_products",
+    arguments={"query": "wireless headphones"},
+    metadata={
+        "reasoning": "User looking for headphones, searching product catalog",
+        "confidence": 0.92
+    }
+)
+```
+</CodeGroup>
+
+### Step 3: View in Dashboard
+
+Navigate to **Dashboard → Thought Tracing** to see:
+
+<Tabs>
+  <Tab title="Live Feed">
+    Real-time stream of agent decisions with reasoning
+  </Tab>
+  <Tab title="Decision Trees">
+    Visual representation of decision paths
+  </Tab>
+  <Tab title="Analytics">
+    Patterns and insights from reasoning data
+  </Tab>
+  <Tab title="Search">
+    Find specific decisions or reasoning patterns
+  </Tab>
+</Tabs>
+
+## Advanced Features
+
+### 1. Reasoning Patterns
+
+Telepathy identifies common reasoning patterns:
+
+<CardGroup cols={2}>
+  <Card title="Sequential Reasoning" icon="arrow-right">
+    Step-by-step logical progression
+  </Card>
+  <Card title="Comparative Analysis" icon="balance-scale">
+    Weighing multiple options
+  </Card>
+  <Card title="Contextual Decisions" icon="location-dot">
+    Decisions based on situational context
+  </Card>
+  <Card title="Fallback Logic" icon="life-ring">
+    Backup plans when primary options fail
+  </Card>
+</CardGroup>
+
+### 2. Confidence Tracking
+
+Monitor decision confidence over time:
+
+```typescript
+// Track confidence trends
+const confidenceMetrics = {
+  average: 0.87,
+  trend: "+0.03 this week",
+  distribution: {
+    high: 0.75,    // > 0.8
+    medium: 0.20,  // 0.5-0.8
+    low: 0.05      // < 0.5
+  }
+};
+```
+
+### 3. Alternative Analysis
+
+Understand what agents *didn't* choose:
+
+<AccordionGroup>
+  <Accordion title="Path Not Taken" icon="route">
+    Analyze alternative actions that were considered but rejected
+  </Accordion>
+  <Accordion title="Opportunity Cost" icon="coins">
+    Measure the potential value of alternative decisions
+  </Accordion>
+  <Accordion title="Learning Opportunities" icon="graduation-cap">
+    Identify cases where alternatives might have been better
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+### 1. Reasoning Quality
+
+<Tabs>
+  <Tab title="Clear & Concise">
+    ```typescript
+    // Good
+    reasoning: "User wants product info. Searching catalog for 'wireless headphones' to find relevant options."
+    
+    // Avoid
+    reasoning: "The user has expressed interest in potentially purchasing audio equipment"
+    ```
+  </Tab>
+  <Tab title="Actionable Context">
+    ```typescript
+    // Good
+    reasoning: "Customer is premium tier with 2 previous complaints. Escalating to senior support to prevent churn."
+    
+    // Avoid
+    reasoning: "Doing something with the customer"
+    ```
+  </Tab>
+  <Tab title="Appropriate Detail">
+    ```typescript
+    // Good balance
+    reasoning: "Order delayed 2 days. Sending apology email with 10% discount code to maintain satisfaction."
+    
+    // Too verbose
+    reasoning: "The customer placed an order on Monday and it was supposed to ship on Tuesday but due to warehouse issues it was delayed until Wednesday and the customer might be unhappy so we should probably send an email with some kind of compensation..."
+    ```
+  </Tab>
+</Tabs>
+
+### 2. Confidence Calibration
+
+<Warning>
+  Ensure confidence scores are well-calibrated. A confidence of 0.9 should mean the agent is correct 90% of the time.
+</Warning>
+
+<CodeGroup>
+```typescript Well-Calibrated
+{
+  confidence: 0.95,  // Very certain
+  reasoning: "Exact match found in knowledge base with verified answer"
+}
+```
+
+```typescript Poorly Calibrated
+{
+  confidence: 0.95,  // Overconfident
+  reasoning: "I think this might be right but not sure"
+}
+```
+</CodeGroup>
+
+### 3. Alternative Selection
+
+Include meaningful alternatives that were genuinely considered:
+
+```typescript
+{
+  alternatives: [
+    "search_knowledge_base",    // Relevant alternative
+    "escalate_to_human",       // Relevant alternative
+    "ask_for_clarification"    // Relevant alternative
+  ],
+  // Avoid generic alternatives like:
+  // ["do_nothing", "random_action", "give_up"]
+}
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Missing Reasoning Data">
+    If reasoning isn't appearing:
+    1. Check that `thoughtTracing.enabled` is true
+    2. Verify API key has thought tracing permissions
+    3. Ensure reasoning metadata is properly formatted
+    4. Check for any middleware filtering
+  </Accordion>
+  
+  <Accordion title="Poor Reasoning Quality">
+    If reasoning is unclear or unhelpful:
+    1. Review reasoning guidelines with your team
+    2. Use reasoning templates for consistency
+    3. Implement reasoning validation
+    4. Train agents on better reasoning practices
+  </Accordion>
+  
+  <Accordion title="Performance Impact">
+    If thought tracing affects performance:
+    1. Use asynchronous reasoning capture
+    2. Implement reasoning sampling
+    3. Optimize reasoning length
+    4. Consider batch processing
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Memory Replay" icon="history" href="/content/memory-replay">
+    See complete decision sequences
+  </Card>
+  <Card title="Performance Analytics" icon="chart-line" href="/content/performance-analytics">
+    Monitor reasoning performance
+  </Card>
+  <Card title="Cost Tracking" icon="dollar-sign" href="/content/cost-tracking">
+    Track reasoning costs
+  </Card>
+  <Card title="Tool Calls" icon="terminal" href="/content/tool-calls">
+    Understand tool call patterns
+  </Card>
+</CardGroup>
+
+---
+
+<Note>
+  Thought Tracing is most effective when reasoning is added consistently across all tool calls. Start simple and gradually add more context as you learn what's most valuable.
+</Note>

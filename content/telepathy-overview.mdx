@@ -1,0 +1,238 @@
+---
+title: "Telepathy Overview"
+sidebarTitle: "Telepathy Overview"
+description: "Deep dive into Agentflare Telepathy's comprehensive observability features"
+icon: "telescope"
+keywords: ["telepathy", "observability", "AI agents", "multi-tenant proxy", "SDK", "dashboard", "thought tracing", "performance monitoring", "cost tracking"]
+---
+
+## What is Telepathy?
+
+Telepathy is Agentflare's flagship observability service that provides unprecedented visibility into AI agent decision-making processes. It's designed to answer the fundamental questions every AI developer faces:
+
+- **Why did my agent make that decision?**
+- **What was the agent thinking at each step?**
+- **How much is each decision costing me?**
+- **Where are the performance bottlenecks?**
+
+## Core Architecture
+
+{/* Telepathy Architecture diagram will be added when available */}
+
+Telepathy operates on three foundational pillars:
+
+### 1. Multi-Tenant Proxy
+A hosted proxy service that sits between your AI agents and MCP servers, providing:
+- **Zero-configuration observability** - No code changes required
+- **Custom domain support** - Use your own domain (e.g., `mcp.yourcompany.com`)
+- **Automatic model detection** - Identifies AI models via self-identification
+- **Real-time cost tracking** - Tracks API costs per call, session, and model
+
+### 2. Enhanced SDK Integration
+Drop-in replacement SDKs that instrument your existing code:
+- **Automatic span generation** - Every tool call becomes a traceable span
+- **Reasoning capture** - Records the "why" behind each decision
+- **Performance metrics** - Latency, throughput, and resource usage
+- **Confidence scoring** - Tracks decision confidence and alternatives
+
+### 3. Telepathy Dashboard
+A comprehensive web interface for visualizing agent behavior:
+- **Live tool call feed** - Real-time stream of all agent actions
+- **Thought tracing** - Step-by-step decision visualization
+- **Performance analytics** - Identify bottlenecks and optimize
+- **Cost breakdown** - Detailed cost analysis per tool, session, and model
+
+## Key Features
+
+### Mind-Reading Capabilities
+
+<CardGroup cols={2}>
+  <Card title="Thought Tracing" icon="brain" href="/content/thought-tracing">
+    See exactly why your AI agents make specific decisions
+  </Card>
+  <Card title="Memory Replay" icon="history" href="/content/memory-replay">
+    Reconstruct complete agent decision sequences
+  </Card>
+  <Card title="Confidence Scoring" icon="chart-line">
+    Track decision confidence and alternative paths considered
+  </Card>
+  <Card title="Reasoning Context" icon="lightbulb">
+    Capture rich context about each decision point
+  </Card>
+</CardGroup>
+
+### Performance Monitoring
+
+<Tabs>
+  <Tab title="Real-time Metrics">
+    - **Latency tracking** - Response times for each tool call
+    - **Throughput monitoring** - Requests per second, per minute
+    - **Error rates** - Track failures and their causes
+    - **Resource usage** - Memory, CPU, and network utilization
+  </Tab>
+  <Tab title="Historical Analysis">
+    - **Trend analysis** - Performance over time
+    - **Comparative benchmarks** - Compare different models/tools
+    - **Regression detection** - Identify performance degradations
+    - **Capacity planning** - Predict future resource needs
+  </Tab>
+  <Tab title="Alerting">
+    - **Performance thresholds** - Alert on latency/error spikes
+    - **Cost alerts** - Monitor spending and set budgets
+    - **Anomaly detection** - Identify unusual patterns
+    - **Integration** - Slack, PagerDuty, webhook notifications
+  </Tab>
+</Tabs>
+
+### Cost Management
+
+<AccordionGroup>
+  <Accordion title="Granular Cost Tracking" icon="dollar-sign">
+    Track costs at multiple levels:
+    - **Per tool call** - Individual operation costs
+    - **Per session** - Complete conversation costs
+    - **Per model** - Compare cost efficiency across models
+    - **Per user/workspace** - Multi-tenant cost attribution
+  </Accordion>
+  
+  <Accordion title="Budget Management" icon="wallet">
+    Set and monitor budgets:
+    - **Monthly/daily budgets** - Control spending limits
+    - **Cost alerts** - Get notified before exceeding budgets
+    - **Usage forecasting** - Predict future costs
+    - **Cost optimization** - Recommendations for reducing expenses
+  </Accordion>
+  
+  <Accordion title="Cost Analytics" icon="chart-bar">
+    Analyze spending patterns:
+    - **Cost trends** - Track spending over time
+    - **Tool efficiency** - Identify most/least cost-effective tools
+    - **Model comparison** - Compare cost vs. performance
+    - **ROI analysis** - Measure return on AI investment
+  </Accordion>
+</AccordionGroup>
+
+## Integration Options
+
+### 1. Proxy Integration (Recommended)
+The easiest way to get started - no code changes required:
+
+```bash
+# Point your MCP client to our proxy
+export MCP_SERVER_URL="https://<your-workspace>.agentflare.com/proxy"
+```
+
+### 2. SDK Integration
+For maximum observability, use our enhanced SDKs:
+
+<CodeGroup>
+```typescript TypeScript
+import { TelepathyClient } from '@agentflare/telepathy-sdk';
+
+const client = new TelepathyClient({
+  apiKey: process.env.API_JWT_SECRET,
+  projectId: process.env.AGENTFLARE_PROJECT_ID
+});
+```
+
+```python Python
+from agentflare_telepathy import TelepathyClient
+
+client = TelepathyClient(
+    api_key=os.getenv("API_JWT_SECRET"),
+    project_id=os.getenv("AGENTFLARE_PROJECT_ID")
+)
+```
+</CodeGroup>
+
+### 3. OTEL Export
+Send data to your existing observability stack:
+
+<Tabs>
+  <Tab title="Jaeger">
+    ```yaml
+    exporters:
+      jaeger:
+        endpoint: http://localhost:14268/api/traces
+        headers:
+          x-api-key: <your-jaeger-key>
+    ```
+  </Tab>
+  <Tab title="Datadog">
+    ```yaml
+    exporters:
+      datadog:
+        api_key: ${DD_API_KEY}
+        site: datadoghq.com
+        service: telepathy-agent
+    ```
+  </Tab>
+  <Tab title="New Relic">
+    ```yaml
+    exporters:
+      newrelic:
+        api_key: ${NEW_RELIC_API_KEY}
+        endpoint: https://trace-api.newrelic.com/trace/v1
+    ```
+  </Tab>
+</Tabs>
+
+## Use Cases
+
+### Development & Debugging
+- **Debug agent behavior** - Understand why agents make specific choices
+- **Optimize performance** - Identify and fix bottlenecks
+- **Test different prompts** - A/B test prompt variations
+- **Validate reasoning** - Ensure agents think as expected
+
+### Production Monitoring
+- **Real-time alerting** - Get notified of issues immediately
+- **Performance tracking** - Monitor SLAs and response times
+- **Cost control** - Stay within budget and optimize spending
+- **Compliance** - Audit agent decisions for regulatory requirements
+
+### Business Intelligence
+- **Usage analytics** - Understand how agents are being used
+- **ROI measurement** - Calculate return on AI investment
+- **Capacity planning** - Plan for future growth
+- **Competitive analysis** - Compare different AI solutions
+
+## Getting Started
+
+<Steps>
+  <Step title="Sign up for Agentflare">
+    Create your account at [agentflare.com](https://agentflare.com)
+  </Step>
+  <Step title="Get your API key">
+    Navigate to Dashboard → Settings → API Keys
+  </Step>
+  <Step title="Choose integration method">
+    Proxy (easiest) or SDK (most features)
+  </Step>
+  <Step title="Start monitoring">
+    Make your first tool call and see the data flow
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quick Start" icon="rocket" href="/content/quickstart">
+    Get up and running in 5 minutes
+  </Card>
+  <Card title="Thought Tracing" icon="brain" href="/content/thought-tracing">
+    Learn about decision visibility
+  </Card>
+  <Card title="Performance Analytics" icon="chart-line" href="/content/performance-analytics">
+    Monitor and optimize performance
+  </Card>
+  <Card title="Cost Tracking" icon="dollar-sign" href="/content/cost-tracking">
+    Control and optimize costs
+  </Card>
+</CardGroup>
+
+---
+
+<Note>
+  Telepathy is designed to be minimally invasive with < 1ms latency overhead and asynchronous data collection.
+</Note>

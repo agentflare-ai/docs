@@ -1,0 +1,463 @@
+---
+title: "Memory Replay"
+sidebarTitle: "Memory Replay"
+description: "Reconstruct and analyze complete agent decision sequences"
+icon: "play"
+keywords: ["memory replay", "session reconstruction", "decision sequences", "agent behavior", "timeline analysis", "state reconstruction", "conversation flows"]
+---
+
+## What is Memory Replay?
+
+Memory Replay allows you to reconstruct and analyze complete sequences of agent decisions, providing a comprehensive view of how your AI agents process information and make choices over time. Think of it as a "time machine" for your agent's thought process.
+
+{/* Memory Replay Timeline visualization will be added when available */}
+
+## Key Features
+
+### 1. Complete Session Reconstruction
+View entire conversation flows with full context:
+
+<CardGroup cols={2}>
+  <Card title="Chronological Timeline" icon="clock">
+    See events in the exact order they occurred
+  </Card>
+  <Card title="Decision Context" icon="lightbulb">
+    Understand what information was available at each step
+  </Card>
+  <Card title="State Changes" icon="arrows-rotate">
+    Track how agent state evolved over time
+  </Card>
+  <Card title="Branching Paths" icon="code-branch">
+    See where different decisions could have been made
+  </Card>
+</CardGroup>
+
+### 2. Interactive Playback
+Control how you review agent behavior:
+
+<Tabs>
+  <Tab title="Step-by-Step">
+    Move through decisions one at a time to understand the logic
+  </Tab>
+  <Tab title="Fast Forward">
+    Skip to specific events or time periods
+  </Tab>
+  <Tab title="Slow Motion">
+    Analyze complex decision sequences in detail
+  </Tab>
+  <Tab title="Breakpoints">
+    Set breakpoints at critical decision points
+  </Tab>
+</Tabs>
+
+### 3. Multi-Perspective Analysis
+View the same session from different angles:
+
+<AccordionGroup>
+  <Accordion title="Agent Perspective" icon="robot">
+    See what the agent was thinking and why
+  </Accordion>
+  <Accordion title="User Perspective" icon="user">
+    Understand the user experience and satisfaction
+  </Accordion>
+  <Accordion title="System Perspective" icon="server">
+    Monitor resource usage and performance
+  </Accordion>
+  <Accordion title="Business Perspective" icon="chart-line">
+    Analyze costs, outcomes, and business impact
+  </Accordion>
+</AccordionGroup>
+
+## How It Works
+
+### 1. Session Tracking
+Every user session is automatically tracked:
+
+```typescript
+// Sessions are created automatically
+const session = {
+  id: "session_123abc",
+  user_id: "user_456def",
+  start_time: "2024-01-15T10:30:00Z",
+  end_time: "2024-01-15T10:45:00Z",
+  total_tool_calls: 23,
+  total_cost: 0.45,
+  outcome: "successful"
+};
+```
+
+### 2. Event Capture
+All agent actions are recorded with rich metadata:
+
+<CodeGroup>
+```typescript Tool Call Event
+{
+  type: "tool_call",
+  timestamp: "2024-01-15T10:32:15Z",
+  tool_name: "search_products",
+  arguments: {
+    query: "wireless headphones",
+    filters: { price_max: 200 }
+  },
+  reasoning: "User wants headphones under $200, searching catalog",
+  confidence: 0.92,
+  alternatives: ["browse_categories", "ask_preferences"],
+  result: {
+    products: [...],
+    count: 15,
+    execution_time: 234
+  }
+}
+```
+
+```typescript Decision Event
+{
+  type: "decision",
+  timestamp: "2024-01-15T10:32:16Z",
+  decision: "recommend_product",
+  reasoning: "Found 3 highly rated options in budget, recommending top choice",
+  confidence: 0.88,
+  factors: [
+    "user_budget_constraint",
+    "product_ratings",
+    "availability"
+  ],
+  outcome: "product_recommended"
+}
+```
+</CodeGroup>
+
+### 3. State Reconstruction
+Agent state is reconstructed at any point in time:
+
+```typescript
+// State at specific timestamp
+const stateAtTime = {
+  timestamp: "2024-01-15T10:32:15Z",
+  context: {
+    user_preferences: {
+      budget: 200,
+      brand_preference: "Sony",
+      use_case: "gaming"
+    },
+    conversation_history: [...],
+    available_tools: ["search_products", "get_reviews", "check_inventory"],
+    current_goal: "find_suitable_headphones"
+  },
+  memory: {
+    facts: ["user_likes_wireless", "budget_is_200", "needs_good_sound"],
+    constraints: ["wireless_required", "budget_under_200"],
+    preferences: ["sony_preferred", "gaming_focused"]
+  }
+};
+```
+
+## Using Memory Replay
+
+### 1. Access from Dashboard
+Navigate to **Dashboard → Memory Replay** and select:
+
+<Steps>
+  <Step title="Choose Session">
+    Select a session from the list or search by user/time
+  </Step>
+  <Step title="Set Playback Speed">
+    Choose how fast to replay the session
+  </Step>
+  <Step title="Select Perspective">
+    Choose which viewpoint to analyze from
+  </Step>
+  <Step title="Start Replay">
+    Watch the session unfold with full context
+  </Step>
+</Steps>
+
+### 2. Programmatic Access
+Access replay data via API:
+
+<CodeGroup>
+```typescript JavaScript
+const replay = await client.getSessionReplay({
+  sessionId: "session_123abc",
+  includeState: true,
+  includeReasoning: true,
+  format: "timeline"
+});
+
+// Navigate through events
+replay.events.forEach(event => {
+  console.log(`${event.timestamp}: ${event.type}`);
+  console.log(`Reasoning: ${event.reasoning}`);
+});
+```
+
+```python Python
+replay = await client.get_session_replay(
+    session_id="session_123abc",
+    include_state=True,
+    include_reasoning=True,
+    format="timeline"
+)
+
+# Navigate through events
+for event in replay.events:
+    print(f"{event.timestamp}: {event.type}")
+    print(f"Reasoning: {event.reasoning}")
+```
+</CodeGroup>
+
+## Use Cases
+
+### 1. Debugging & Troubleshooting
+
+<CardGroup cols={2}>
+  <Card title="Error Investigation" icon="bug">
+    Trace back to see exactly what led to errors
+  </Card>
+  <Card title="Performance Analysis" icon="gauge">
+    Identify bottlenecks and slow decision points
+  </Card>
+  <Card title="Logic Validation" icon="check-circle">
+    Verify agent reasoning matches expectations
+  </Card>
+  <Card title="Edge Case Analysis" icon="warning">
+    Understand how agents handle unusual situations
+  </Card>
+</CardGroup>
+
+### 2. Optimization & Improvement
+
+<Tabs>
+  <Tab title="Prompt Engineering">
+    See how different prompts affect decision quality:
+    ```typescript
+    // Compare different prompt versions
+    const promptA_sessions = await client.getSessionsByPrompt("v1.0");
+    const promptB_sessions = await client.getSessionsByPrompt("v1.1");
+    
+    // Analyze success rates
+    const comparison = {
+      promptA: { success_rate: 0.82, avg_confidence: 0.75 },
+      promptB: { success_rate: 0.89, avg_confidence: 0.83 }
+    };
+    ```
+  </Tab>
+  <Tab title="Model Comparison">
+    Compare how different models handle the same scenarios:
+    ```typescript
+    // Compare model performance
+    const gpt4_sessions = await client.getSessionsByModel("gpt-4");
+    const claude_sessions = await client.getSessionsByModel("claude-3");
+    
+    // Analyze decision patterns
+    const modelComparison = {
+      reasoning_quality: { gpt4: 0.87, claude: 0.91 },
+      decision_speed: { gpt4: 1.2, claude: 0.8 },
+      cost_efficiency: { gpt4: 0.15, claude: 0.12 }
+    };
+    ```
+  </Tab>
+</Tabs>
+
+### 3. Compliance & Auditing
+
+<AccordionGroup>
+  <Accordion title="Decision Audit Trail" icon="file-text">
+    Complete record of all decisions for compliance:
+    - **Regulatory compliance** - Meet audit requirements
+    - **Decision justification** - Explain AI choices to stakeholders
+    - **Risk assessment** - Identify potential compliance issues
+  </Accordion>
+  
+  <Accordion title="Bias Detection" icon="balance-scale">
+    Identify potential biases in decision patterns:
+    - **Pattern analysis** - Look for systematic biases
+    - **Fairness metrics** - Measure decision fairness
+    - **Corrective actions** - Implement bias mitigation
+  </Accordion>
+  
+  <Accordion title="Quality Assurance" icon="shield">
+    Ensure consistent decision quality:
+    - **Standard adherence** - Verify decisions follow guidelines
+    - **Deviation detection** - Flag unusual patterns
+    - **Continuous improvement** - Learn from each session
+  </Accordion>
+</AccordionGroup>
+
+## Advanced Features
+
+### 1. Counterfactual Analysis
+Explore "what if" scenarios:
+
+```typescript
+// Analyze alternative paths
+const counterfactual = await client.analyzeCounterfactual({
+  sessionId: "session_123abc",
+  changePoint: "2024-01-15T10:32:15Z",
+  alternative: "browse_categories",
+  reasoning: "What if agent chose to browse categories instead of searching?"
+});
+
+// Compare outcomes
+const comparison = {
+  original: { success: true, cost: 0.45, time: 15 },
+  counterfactual: { success: true, cost: 0.38, time: 18 }
+};
+```
+
+### 2. Pattern Recognition
+Identify recurring decision patterns:
+
+<CardGroup cols={2}>
+  <Card title="Success Patterns" icon="chart-line">
+    Patterns that lead to successful outcomes
+  </Card>
+  <Card title="Failure Patterns" icon="triangle-exclamation">
+    Patterns that commonly lead to errors
+  </Card>
+  <Card title="Efficiency Patterns" icon="bolt">
+    Patterns that optimize for speed/cost
+  </Card>
+  <Card title="User Satisfaction" icon="heart">
+    Patterns that improve user experience
+  </Card>
+</CardGroup>
+
+### 3. Collaborative Analysis
+Share replays with team members:
+
+<Tabs>
+  <Tab title="Annotations">
+    Add notes and observations to specific events
+  </Tab>
+  <Tab title="Bookmarks">
+    Mark important moments for easy reference
+  </Tab>
+  <Tab title="Comments">
+    Discuss decisions with team members
+  </Tab>
+  <Tab title="Export">
+    Export analysis for reports or presentations
+  </Tab>
+</Tabs>
+
+## Best Practices
+
+### 1. Effective Analysis
+
+<Warning>
+  Focus on learning rather than just problem-solving. Each replay session should generate insights for future improvements.
+</Warning>
+
+<Steps>
+  <Step title="Define Goals">
+    Know what you're looking for before starting the replay
+  </Step>
+  <Step title="Take Notes">
+    Document observations and insights as you watch
+  </Step>
+  <Step title="Look for Patterns">
+    Don't just analyze single events - look for trends
+  </Step>
+  <Step title="Test Hypotheses">
+    Use replays to validate or refute theories about agent behavior
+  </Step>
+</Steps>
+
+### 2. Collaborative Review
+
+<Tabs>
+  <Tab title="Regular Sessions">
+    Schedule weekly replay review sessions with your team
+  </Tab>
+  <Tab title="Cross-Functional">
+    Include developers, product managers, and domain experts
+  </Tab>
+  <Tab title="Structured Process">
+    Use a consistent framework for analyzing sessions
+  </Tab>
+  <Tab title="Action Items">
+    Always end with concrete next steps
+  </Tab>
+</Tabs>
+
+### 3. Privacy & Security
+
+<AccordionGroup>
+  <Accordion title="Data Sensitivity" icon="shield">
+    Be mindful of sensitive information in replays:
+    - **Anonymize user data** - Remove or mask personal information
+    - **Access controls** - Limit who can view sensitive sessions
+    - **Retention policies** - Set appropriate data retention periods
+  </Accordion>
+  
+  <Accordion title="Compliance" icon="scale-balanced">
+    Ensure replay analysis complies with regulations:
+    - **GDPR compliance** - Respect user privacy rights
+    - **Industry regulations** - Follow sector-specific requirements
+    - **Audit trails** - Maintain records of who accessed what
+  </Accordion>
+</AccordionGroup>
+
+## Integration with Other Tools
+
+### 1. Export Options
+
+<CodeGroup>
+```typescript JSON Export
+const exportData = await client.exportSessionReplay({
+  sessionId: "session_123abc",
+  format: "json",
+  includeMetadata: true
+});
+```
+
+```typescript Video Export
+const videoExport = await client.exportSessionReplay({
+  sessionId: "session_123abc",
+  format: "video",
+  speed: 1.5,
+  annotations: true
+});
+```
+</CodeGroup>
+
+### 2. API Integration
+
+```typescript
+// Integrate with your existing tools
+const replay = await client.getSessionReplay({
+  sessionId: "session_123abc"
+});
+
+// Send to your analytics platform
+await analytics.track("session_analyzed", {
+  session_id: replay.id,
+  duration: replay.duration,
+  decision_count: replay.events.length,
+  outcome: replay.outcome
+});
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Thought Tracing" icon="brain" href="/content/thought-tracing">
+    Understand individual decisions
+  </Card>
+  <Card title="Performance Analytics" icon="chart-line" href="/content/performance-analytics">
+    Monitor system performance
+  </Card>
+  <Card title="Cost Tracking" icon="dollar-sign" href="/content/cost-tracking">
+    Analyze session costs
+  </Card>
+  <Card title="Tool Calls" icon="terminal" href="/content/tool-calls">
+    Dive into tool usage patterns
+  </Card>
+</CardGroup>
+
+---
+
+<Note>
+  Memory Replay is most valuable when used regularly as part of your development and optimization process. Set up recurring reviews to continuously improve your agents.
+</Note>

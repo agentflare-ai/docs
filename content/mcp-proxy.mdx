@@ -1,0 +1,754 @@
+---
+title: "MCP Proxy Setup"
+sidebarTitle: "MCP Proxy"
+description: "Configure the multi-tenant proxy for instant observability"
+icon: "server"
+keywords: ["MCP proxy", "Model Context Protocol", "multi-tenant", "proxy setup", "configuration", "custom domains", "routing", "observability"]
+---
+
+## Overview
+
+The MCP Proxy is a hosted service that sits between your AI agents and MCP servers, providing instant observability without requiring code changes. Simply point your MCP client to our proxy endpoint and gain complete visibility into your agent's behavior.
+
+## MCP Proxy Architecture
+
+```mermaid
+sequenceDiagram
+    participant Agent as AI Agent
+    participant Proxy as Agentflare Proxy
+    participant Server as MCP Server
+    participant Pipeline as Observability Pipeline
+    participant Dashboard as Telepathy Dashboard
+    
+    Agent->>Proxy: Tool Call Request
+    Note over Proxy: Authentication & Routing
+    Proxy->>Server: Forwarded Request
+    Server->>Proxy: Tool Response
+    
+    Proxy->>Pipeline: Capture Metrics
+    Pipeline->>Dashboard: Real-time Updates
+    
+    Proxy->>Agent: Enhanced Response
+    
+    Note over Pipeline: Cost Attribution
+    Note over Pipeline: Performance Tracking
+    Note over Pipeline: Reasoning Capture
+```
+
+### Request Flow Diagram
+
+```mermaid
+graph LR
+    A[Agent Request] --> B{Authentication}
+    B -->|Valid| C[Route to Server]
+    B -->|Invalid| D[Return Error]
+    
+    C --> E[Forward Request]
+    E --> F[Capture Metrics]
+    F --> G[Process Response]
+    G --> H[Return to Agent]
+    
+    F --> I[Observability Pipeline]
+    I --> J[Real-time Dashboard]
+    I --> K[OTEL Export]
+    
+    classDef request fill:#3b82f6,stroke:#2563eb,stroke-width:2px
+    classDef auth fill:#e67e22,stroke:#d35400,stroke-width:2px
+    classDef success fill:#10b981,stroke:#059669,stroke-width:2px
+    classDef error fill:#ef4444,stroke:#dc2626,stroke-width:2px
+    classDef process fill:#6366f1,stroke:#4f46e5,stroke-width:2px
+    classDef observability fill:#f59e0b,stroke:#d97706,stroke-width:2px
+    classDef export fill:#6b7280,stroke:#4b5563,stroke-width:2px
+    
+    class A request
+    class B,F auth
+    class C,H success
+    class D error
+    class E,G process
+    class I,J observability
+    class K export
+```
+
+## How It Works
+
+### 1. Request Routing
+The proxy intelligently routes requests to the appropriate MCP servers:
+
+```typescript
+// Instead of connecting directly to MCP servers
+const client = new Client({
+  transport: new StdioServerTransport({
+    command: "mcp-server",
+    args: ["--config", "config.json"]
+  })
+});
+
+// Connect through Agentflare proxy
+const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: "https://<your-workspace>.agentflare.com/proxy",
+    headers: {
+      "Authorization": `Bearer ${process.env.API_JWT_SECRET}`,
+      "X-Target-Server": "<your-mcp-server>"
+    }
+  })
+});
+```
+
+### 2. Transparent Observability
+Every request and response is captured automatically:
+
+<CardGroup cols={2}>
+  <Card title="Request Capture" icon="arrow-right">
+    Complete request data including parameters and context
+  </Card>
+  <Card title="Response Logging" icon="arrow-left">
+    Full response data with timing and status
+  </Card>
+  <Card title="Error Tracking" icon="triangle-exclamation">
+    Detailed error information and stack traces
+  </Card>
+  <Card title="Performance Metrics" icon="gauge">
+    Response times, throughput, and resource usage
+  </Card>
+</CardGroup>
+
+### 3. Multi-Tenant Architecture
+Secure isolation for multiple workspaces:
+
+<Tabs>
+  <Tab title="Workspace Isolation">
+    ```typescript
+    // Each workspace gets its own isolated environment
+    const workspaceConfig = {
+      workspace_id: "ws_abc123",
+      subdomain: "<your-company>",
+      custom_domain: "mcp.yourcompany.com",
+      servers: [
+        {
+          name: "search-server",
+          endpoint: "https://search.yourcompany.com",
+          auth: "bearer_token"
+        },
+        {
+          name: "email-server", 
+          endpoint: "https://email.yourcompany.com",
+          auth: "api_key"
+        }
+      ]
+    };
+    ```
+  </Tab>
+  <Tab title="Security">
+    ```typescript
+    // Built-in security features
+    const securityFeatures = {
+      request_validation: true,
+      rate_limiting: {
+        requests_per_minute: 1000,
+        burst_limit: 50
+      },
+      authentication: {
+        methods: ["bearer_token", "api_key", "oauth2"],
+        required: true
+      },
+      encryption: {
+        in_transit: "TLS 1.3",
+        at_rest: "AES-256"
+      }
+    };
+    ```
+  </Tab>
+</Tabs>
+
+## Quick Setup
+
+### 1. Get Your Proxy URL
+From your Agentflare dashboard:
+
+<Steps>
+  <Step title="Navigate to Proxy Settings">
+    Go to Dashboard → Settings → Proxy Configuration
+  </Step>
+  <Step title="Copy Proxy URL">
+    Copy your unique proxy URL: `https://<your-workspace>.agentflare.com/proxy`
+  </Step>
+  <Step title="Generate API Key">
+    Create an API key for proxy authentication
+  </Step>
+  <Step title="Configure Servers">
+    Add your MCP servers to the proxy configuration
+  </Step>
+</Steps>
+
+### 2. Update Your Client
+Modify your MCP client to use the proxy:
+
+<CodeGroup>
+```typescript TypeScript
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
+const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: "https://proxy.agentflare.com/<your-workspace>/<your-server-slug>",
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
+  })
+});
+```
+
+```python Python
+from mcp import Client
+from mcp.transport import HTTPTransport
+
+client = Client(
+    transport=HTTPTransport(
+        base_url="https://<your-workspace>.agentflare.com/proxy",
+        headers={
+            "Authorization": f"Bearer {os.getenv('API_JWT_SECRET')}",
+            "X-Target-Server": "<<your-server>-name>"
+        }
+    )
+)
+```
+
+```go Go
+import (
+    "github.com/agentflare/mcp-go/client"
+    "github.com/agentflare/mcp-go/transport"
+)
+
+client := client.New(
+    transport.NewHTTP(
+        "https://<your-workspace>.agentflare.com/proxy",
+        transport.WithHeaders(map[string]string{
+            "Authorization": "Bearer " + os.Getenv("API_JWT_SECRET"),
+            "X-Target-Server": "<<your-server>-name>",
+        }),
+    ),
+)
+```
+</CodeGroup>
+
+## Server Configuration
+
+### 1. Add MCP Servers
+Configure your MCP servers in the proxy:
+
+<AccordionGroup>
+  <Accordion title="HTTP/HTTPS Servers" icon="globe">
+    ```json
+    {
+      "name": "search-server",
+      "type": "http",
+      "endpoint": "https://search.yourcompany.com/mcp",
+      "authentication": {
+        "type": "bearer",
+        "token": "<<your-server>-token>"
+      },
+      "timeout": 30000,
+      "retry": {
+        "enabled": true,
+        "max_attempts": 3,
+        "backoff": "exponential"
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="WebSocket Servers" icon="plug">
+    ```json
+    {
+      "name": "realtime-server",
+      "type": "websocket",
+      "endpoint": "wss://realtime.yourcompany.com/mcp",
+      "authentication": {
+        "type": "oauth2",
+        "client_id": "<your-client-id>",
+        "client_secret": "<your-client-secret>"
+      },
+      "heartbeat": {
+        "enabled": true,
+        "interval": 30000
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Stdio Servers" icon="terminal">
+    ```json
+    {
+      "name": "local-server",
+      "type": "stdio",
+      "command": "/usr/local/bin/mcp-server",
+      "args": ["--config", "/etc/mcp/config.json"],
+      "env": {
+        "MCP_SERVER_TOKEN": "<your-token>",
+        "LOG_LEVEL": "info"
+      },
+      "working_directory": "/app"
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### 2. Load Balancing
+Distribute requests across multiple server instances:
+
+<CodeGroup>
+```json Round Robin
+{
+  "name": "search-cluster",
+  "type": "load_balanced",
+  "strategy": "round_robin",
+  "servers": [
+    {
+      "endpoint": "https://search1.yourcompany.com/mcp",
+      "weight": 1
+    },
+    {
+      "endpoint": "https://search2.yourcompany.com/mcp", 
+      "weight": 1
+    },
+    {
+      "endpoint": "https://search3.yourcompany.com/mcp",
+      "weight": 2
+    }
+  ]
+}
+```
+
+```json Failover
+{
+  "name": "database-cluster",
+  "type": "failover",
+  "primary": {
+    "endpoint": "https://db-primary.yourcompany.com/mcp"
+  },
+  "secondary": [
+    {
+      "endpoint": "https://db-secondary1.yourcompany.com/mcp",
+      "priority": 1
+    },
+    {
+      "endpoint": "https://db-secondary2.yourcompany.com/mcp",
+      "priority": 2
+    }
+  ]
+}
+```
+</CodeGroup>
+
+## Custom Domains
+
+### 1. Domain Setup
+Use your own domain for the proxy:
+
+<Steps>
+  <Step title="Choose Domain">
+    Select a subdomain like `mcp.yourcompany.com`
+  </Step>
+  <Step title="Configure DNS">
+    Add a CNAME record pointing to our proxy
+  </Step>
+  <Step title="Upload SSL Certificate">
+    Provide your SSL certificate or use our automatic SSL
+  </Step>
+  <Step title="Verify Setup">
+    Test the custom domain configuration
+  </Step>
+</Steps>
+
+### 2. SSL Configuration
+Secure your proxy with SSL/TLS:
+
+<Tabs>
+  <Tab title="Automatic SSL">
+    ```json
+    {
+      "domain": "mcp.yourcompany.com",
+      "ssl": {
+        "type": "automatic",
+        "provider": "letsencrypt",
+        "auto_renew": true
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Custom Certificate">
+    ```json
+    {
+      "domain": "mcp.yourcompany.com",
+      "ssl": {
+        "type": "custom",
+        "certificate": "-----BEGIN CERTIFICATE-----...",
+        "private_key": "-----BEGIN PRIVATE KEY-----...",
+        "chain": "-----BEGIN CERTIFICATE-----..."
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Advanced Features
+
+### 1. Request Transformation
+Modify requests before forwarding:
+
+<CodeGroup>
+```typescript Request Middleware
+const transformationRules = {
+  headers: {
+    add: {
+      "X-Client-ID": "agentflare-proxy",
+      "X-Request-ID": "{{ request_id }}"
+    },
+    remove: ["X-Internal-Token"],
+    transform: {
+      "Authorization": "Bearer {{ server_token }}"
+    }
+  },
+  body: {
+    add_fields: {
+      "proxy_timestamp": "{{ timestamp }}",
+      "workspace_id": "{{ workspace_id }}"
+    }
+  }
+};
+```
+
+```typescript Response Middleware
+const responseRules = {
+  headers: {
+    add: {
+      "X-Proxy-Response-Time": "{{ response_time }}",
+      "X-Cache-Status": "{{ cache_status }}"
+    }
+  },
+  body: {
+    filter_fields: ["internal_id", "server_debug"],
+    add_metadata: {
+      "processed_by": "agentflare-proxy",
+      "cached": "{{ is_cached }}"
+    }
+  }
+};
+```
+</CodeGroup>
+
+### 2. Caching Strategy
+Improve performance with intelligent caching:
+
+<AccordionGroup>
+  <Accordion title="Response Caching" icon="database">
+    ```json
+    {
+      "caching": {
+        "enabled": true,
+        "strategy": "adaptive",
+        "rules": [
+          {
+            "path": "/tools/search",
+            "method": "POST",
+            "ttl": 300,
+            "cache_key": "body.query + body.filters"
+          },
+          {
+            "path": "/tools/static-data",
+            "method": "GET",
+            "ttl": 3600,
+            "cache_key": "path + query_params"
+          }
+        ]
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Cache Invalidation" icon="trash">
+    ```json
+    {
+      "cache_invalidation": {
+        "strategies": [
+          {
+            "trigger": "time_based",
+            "ttl": 1800
+          },
+          {
+            "trigger": "event_based",
+            "events": ["data_update", "schema_change"]
+          },
+          {
+            "trigger": "manual",
+            "api_endpoint": "/cache/invalidate"
+          }
+        ]
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+### 3. Rate Limiting
+Protect your servers from overload:
+
+<Tabs>
+  <Tab title="Global Limits">
+    ```json
+    {
+      "rate_limiting": {
+        "global": {
+          "requests_per_minute": 10000,
+          "burst_limit": 100,
+          "window_size": 60
+        },
+        "per_workspace": {
+          "requests_per_minute": 1000,
+          "burst_limit": 50
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Per-Tool Limits">
+    ```json
+    {
+      "rate_limiting": {
+        "per_tool": {
+          "search": {
+            "requests_per_minute": 500,
+            "burst_limit": 20
+          },
+          "email": {
+            "requests_per_minute": 100,
+            "burst_limit": 5
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Monitoring & Debugging
+
+### 1. Request Tracing
+Track requests through the proxy:
+
+<CodeGroup>
+```typescript Request Tracing
+const traceConfig = {
+  enabled: true,
+  sample_rate: 1.0, // 100% sampling
+  include: {
+    headers: true,
+    body: true,
+    response: true,
+    timing: true,
+    errors: true
+  },
+  export: {
+    jaeger: {
+      endpoint: "http://jaeger:14268/api/traces"
+    },
+    datadog: {
+      api_key: "<your-datadog-key>"
+    }
+  }
+};
+```
+
+```typescript Trace Analysis
+const trace = await client.getTrace({
+  trace_id: "trace_abc123",
+  include_spans: true
+});
+
+// Analyze trace data
+const analysis = {
+  total_time: trace.duration,
+  proxy_overhead: trace.spans.proxy.duration,
+  server_time: trace.spans.server.duration,
+  network_time: trace.spans.network.duration
+};
+```
+</CodeGroup>
+
+### 2. Health Checks
+Monitor server health through the proxy:
+
+<AccordionGroup>
+  <Accordion title="Automated Health Checks" icon="heart-pulse">
+    ```json
+    {
+      "health_checks": {
+        "enabled": true,
+        "interval": 30,
+        "timeout": 5,
+        "endpoints": [
+          {
+            "server": "search-server",
+            "path": "/health",
+            "expected_status": 200
+          },
+          {
+            "server": "email-server",
+            "path": "/ping",
+            "expected_body": "pong"
+          }
+        ]
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Failure Handling" icon="life-ring">
+    ```json
+    {
+      "failure_handling": {
+        "unhealthy_threshold": 3,
+        "recovery_threshold": 2,
+        "actions": {
+          "on_failure": ["remove_from_rotation", "alert_ops"],
+          "on_recovery": ["add_to_rotation", "notify_ops"]
+        }
+      }
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Security Best Practices
+
+### 1. Authentication & Authorization
+
+<Warning>
+  Always use strong authentication and regularly rotate API keys.
+</Warning>
+
+<Steps>
+  <Step title="API Key Management">
+    Use separate API keys for different environments and applications
+  </Step>
+  <Step title="Regular Rotation">
+    Rotate API keys monthly or after any security incidents
+  </Step>
+  <Step title="Least Privilege">
+    Grant only the minimum permissions required for each use case
+  </Step>
+  <Step title="Monitoring">
+    Monitor API key usage for suspicious activity
+  </Step>
+</Steps>
+
+### 2. Network Security
+
+<CardGroup cols={2}>
+  <Card title="IP Whitelisting" icon="shield">
+    Restrict access to specific IP addresses
+  </Card>
+  <Card title="VPN Integration" icon="key">
+    Route traffic through your corporate VPN
+  </Card>
+  <Card title="Private Networks" icon="lock">
+    Use private networking for sensitive connections
+  </Card>
+  <Card title="Encryption" icon="shield-halved">
+    Encrypt all data in transit and at rest
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+### 1. Common Issues
+
+<AccordionGroup>
+  <Accordion title="Connection Timeouts" icon="clock">
+    **Symptoms:** Requests timing out or taking too long
+    
+    **Solutions:**
+    - Increase timeout values in proxy configuration
+    - Check network connectivity between proxy and servers
+    - Verify server performance and capacity
+    - Review server logs for bottlenecks
+  </Accordion>
+  
+  <Accordion title="Authentication Failures" icon="key">
+    **Symptoms:** 401 or 403 errors
+    
+    **Solutions:**
+    - Verify API key is correct and active
+    - Check server authentication configuration
+    - Ensure proper headers are being sent
+    - Review authentication logs
+  </Accordion>
+  
+  <Accordion title="Rate Limiting" icon="gauge">
+    **Symptoms:** 429 Too Many Requests errors
+    
+    **Solutions:**
+    - Review rate limiting configuration
+    - Implement exponential backoff in clients
+    - Distribute load across multiple servers
+    - Consider upgrading rate limits
+  </Accordion>
+</AccordionGroup>
+
+### 2. Debug Tools
+
+<CodeGroup>
+```bash Request Testing
+# Test proxy connectivity
+curl -H "Authorization: Bearer <your-api-key>" \
+     -H "X-Target-Server: <your-server>" \
+     https://<your-workspace>.agentflare.com/proxy/health
+
+# Test specific tool
+curl -X POST \
+     -H "Authorization: Bearer <your-api-key>" \
+     -H "X-Target-Server: <your-server>" \
+     -H "Content-Type: application/json" \
+     -d '{"method": "tools/list"}' \
+     https://<your-workspace>.agentflare.com/proxy/rpc
+```
+
+```typescript Debug Headers
+// Enable debug headers
+const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: "https://<your-workspace>.agentflare.com/proxy",
+    headers: {
+      "Authorization": `Bearer ${process.env.API_JWT_SECRET}`,
+      "X-Target-Server": "<<your-server>-name>",
+      "X-Debug": "true",
+      "X-Trace": "true"
+    }
+  })
+});
+```
+</CodeGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Custom Domains" icon="globe" href="/content/custom-domains">
+    Set up your own domain for the proxy
+  </Card>
+  <Card title="Authentication" icon="key" href="/content/authentication">
+    Configure secure authentication
+  </Card>
+  <Card title="OTEL Integration" icon="chart-line" href="/content/otel-integration">
+    Export observability data
+  </Card>
+  <Card title="Performance Analytics" icon="gauge" href="/content/performance-analytics">
+    Monitor proxy performance
+  </Card>
+</CardGroup>
+
+---
+
+<Note>
+  The MCP Proxy provides zero-configuration observability. You can start getting insights immediately without changing your existing code.
+</Note>

@@ -1,0 +1,151 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Agentflare Telepathy",
+  "description": "The essential observability platform for AI agents. Capture decision reasoning, performance metrics, and cost attribution across multiple protocols.",
+  "url": "https://docs.agentflare.com",
+  "colors": {
+    "primary": "#db5c33",
+    "light": "#f6b66d",
+    "dark": "#202836"
+  },
+  "favicon": "/favicon.ico",
+  "openGraph": {
+    "image": "/images/agentflare-logo.svg"
+  },
+  "anchors": [
+    {
+      "name": "Dashboard",
+      "icon": "chart-line",
+      "url": "https://agentflare.com/dashboard"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/agentflare-ai/agentflare"
+    },
+    {
+      "name": "Early Access",
+      "icon": "rocket",
+      "url": "https://agentflare.com/early-access"
+    }
+  ],
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting Started",
+        "icon": "play",
+        "pages": [
+          "content/introduction",
+          "content/quickstart",
+          "content/installation"
+        ]
+      },
+      {
+        "group": "Telepathy Observability",
+        "icon": "eye",
+        "pages": [
+          "content/telepathy-overview",
+          "content/thought-tracing",
+          "content/memory-replay"
+        ]
+      },
+      {
+        "group": "Analytics & Monitoring",
+        "icon": "chart-bar",
+        "pages": [
+          "content/tool-calls",
+          "content/performance-analytics",
+          "content/cost-tracking"
+        ]
+      },
+      {
+        "group": "Integration",
+        "icon": "plug",
+        "pages": [
+          "content/mcp-proxy",
+          "content/migration-guide"
+        ]
+      },
+      {
+        "group": "API Reference",
+        "icon": "book-open",
+        "pages": [
+          "api-reference/introduction",
+          "api-reference/endpoints/servers"
+        ]
+      },
+      {
+        "group": "Support",
+        "icon": "life-ring",
+        "pages": [
+          "content/troubleshooting"
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/images/agentflare-logo.svg",
+    "dark": "/images/agentflare-logo.svg",
+    "href": "https://agentflare.com"
+  },
+  "background": {
+    "color": {
+      "light": "#f2e4c9",
+      "dark": "#202836"
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Dashboard",
+        "href": "https://agentflare.com/dashboard"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/agentflare-ai/agentflare"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get Started",
+      "href": "https://agentflare.com/early-access"
+    }
+  },
+  "search": {
+    "prompt": "Search documentation..."
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/agentflare-ai/agentflare",
+      "twitter": "https://twitter.com/agentflare"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/docs/getting-started",
+      "destination": "/docs/introduction"
+    }
+  ],
+  "feedback": {
+    "thumbsRating": true,
+    "suggestEdit": true,
+    "raiseIssue": true
+  },
+  "seo": {
+    "indexHiddenPages": false
+  },
+  "metadata": {
+    "og:site_name": "Agentflare Telepathy Documentation",
+    "twitter:site": "@agentflare"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
+  },
+  "css": "style.css"
+}
