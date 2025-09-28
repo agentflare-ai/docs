@@ -88,7 +88,7 @@ The documentation automatically deploys when changes are pushed to the main bran
 ## Resources
 
 - [Mintlify Documentation](https://mintlify.com/docs)
-- [Agentflare Dashboard](https://agentflare.com/dashboard)
+- [Agentflare Dashboard](https://app.agentflare.com)
 - [GitHub Repository](https://github.com/agentflare-ai/agentflare)
 
 ## Support
