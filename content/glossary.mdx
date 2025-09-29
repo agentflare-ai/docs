@@ -1,0 +1,297 @@
+---
+title: "Glossary"
+sidebarTitle: "Glossary"
+description: "Definitions of key terms and concepts in Agentflare Telepathy"
+icon: "book"
+keywords: ["glossary", "definitions", "terminology", "MCP", "Model Context Protocol", "Telepathy", "observability", "AI agents"]
+---
+
+## Quick Find
+
+[A](#a) · [C](#c) · [D](#d) · [E](#e) · [M](#m) · [O](#o) · [P](#p) · [T](#t) · [W](#w)
+
+<Info>
+  Terms are organized alphabetically. Use Cmd/Ctrl+F to search for specific terms.
+</Info>
+
+---
+
+## A
+
+### Agent
+**Definition:** An autonomous software program that uses AI models to make decisions and perform tasks.
+
+**In Agentflare:** Agents connect through the Agentflare proxy to access MCP servers and other tools while providing full observability of their decision-making process.
+
+**See also:** MCP, [Tool Calls](/content/tool-calls)
+
+### Analytics
+**Definition:** The systematic analysis of data to discover meaningful patterns and insights.
+
+**In Agentflare:** Performance analytics track agent behavior, resource usage, and decision patterns across all tool calls and interactions.
+
+**See also:** [Performance Analytics](/content/performance-analytics), [Cost Tracking](/content/cost-tracking)
+
+---
+
+## C
+
+### Cost Attribution
+**Definition:** The process of assigning costs to specific operations, users, or resources.
+
+**In Agentflare:** Cost attribution tracks token usage, API calls, and resource consumption down to individual agent actions, enabling precise cost analysis and optimization.
+
+**Example:**
+```json
+{
+  "tool_call": "database_query",
+  "tokens_used": 1250,
+  "estimated_cost": "$0.025"
+}
+```
+
+**See also:** [Cost Tracking](#cost-tracking), [Performance Analytics](#performance-analytics)
+
+### Cost Tracking
+**Definition:** Monitoring and recording expenses associated with AI agent operations.
+
+**Usage:** Enables teams to understand and optimize the financial impact of their AI deployments by tracking costs per tool call, session, or user.
+
+**See also:** [Cost Attribution](#cost-attribution), [Token Usage](#token-usage)
+
+---
+
+## D
+
+### Decision Reasoning
+**Definition:** The logical process and context that leads an AI agent to make a specific choice or action.
+
+**In Agentflare:** Captured through thought tracing, decision reasoning provides transparency into why agents make specific tool calls or responses.
+
+**See also:** [Thought Tracing](#thought-tracing), [Memory Replay](#memory-replay)
+
+---
+
+## E
+
+### Early Access
+**Definition:** A program allowing selected users to test and provide feedback on features before general availability.
+
+**In Agentflare:** The early access program provides priority access to new Telepathy features and direct support from the Agentflare team.
+
+---
+
+## M
+
+### MCP (Model Context Protocol)
+**Definition:** A standardized protocol for communication between AI agents and external tools or services.
+
+**In Agentflare:** MCP servers act as the integration layer between your AI agents and various tools, with the Agentflare proxy sitting between them to capture observability data.
+
+**Example:**
+```json
+{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "params": {
+    "name": "database_query",
+    "arguments": {"query": "SELECT * FROM users"}
+  }
+}
+```
+
+**See also:** [MCP Proxy](#mcp-proxy), [MCP Server](#mcp-server), [Tool Calls](#tool-calls)
+
+### MCP Proxy
+**Definition:** An intermediary service that sits between AI agents and MCP servers to intercept and analyze communication.
+
+**In Agentflare:** The MCP proxy captures all interactions between agents and servers, providing observability without modifying your existing MCP implementation.
+
+**See also:** [MCP](#mcp), [Proxy](#proxy)
+
+### MCP Server
+**Definition:** A service that implements the Model Context Protocol to provide tools and capabilities to AI agents.
+
+**Usage:** MCP servers expose functions like database queries, API calls, or file operations that agents can use to complete tasks.
+
+**Example:**
+```typescript
+const server = new MCPServer({
+  name: "database-tools",
+  version: "1.0.0",
+  tools: [/* tool definitions */]
+});
+```
+
+**See also:** MCP, [Tool Calls](/content/tool-calls)
+
+### Memory Replay
+**Definition:** The ability to reconstruct and analyze an AI agent's state and context at any point in its execution history.
+
+**In Agentflare:** Memory replay helps debug agent behavior by showing exactly what information the agent had access to when making specific decisions.
+
+**See also:** [Thought Tracing](#thought-tracing), [Decision Reasoning](#decision-reasoning)
+
+### Migration Guide
+**Definition:** Documentation that provides step-by-step instructions for transitioning from one system or version to another.
+
+**In Agentflare:** The migration guide assists teams in adopting Agentflare Telepathy with minimal disruption to existing workflows.
+
+---
+
+## O
+
+### Observability
+**Definition:** The ability to understand the internal state of a system based on its external outputs.
+
+**In Agentflare:** Telepathy provides comprehensive observability for AI agents, including thought processes, tool usage, performance metrics, and cost data.
+
+**See also:** [Telepathy](#telepathy), [Thought Tracing](#thought-tracing)
+
+### OpenTelemetry (OTEL)
+**Definition:** An open-source framework for collecting, processing, and exporting telemetry data.
+
+**In Agentflare:** OTEL exporters allow integration with existing observability stacks like Datadog, Grafana, or Jaeger.
+
+**Example:**
+```yaml
+exporters:
+  - type: otlp
+    endpoint: "https://your-collector.example.com:4317"
+```
+
+**See also:** [Observability](#observability), [Telemetry](#telemetry)
+
+---
+
+## P
+
+### Performance Analytics
+**Definition:** The measurement and analysis of system efficiency, speed, and resource utilization.
+
+**In Agentflare:** Tracks latency, throughput, error rates, and resource consumption for each agent interaction and tool call.
+
+**Key Metrics:**
+- Response time (p50, p95, p99)
+- Token usage per operation
+- Tool call success rates
+- Concurrent session capacity
+
+**See also:** [Analytics](#analytics), [Cost Tracking](#cost-tracking)
+
+### Proxy
+**Definition:** An intermediary server that forwards requests between clients and servers.
+
+**In Agentflare:** The Agentflare proxy intercepts agent-to-server communication to provide observability without modifying your application code.
+
+**See also:** [MCP Proxy](#mcp-proxy)
+
+---
+
+## T
+
+### Telepathy
+**Definition:** Agentflare's observability platform that provides insight into AI agent thought processes and decision-making.
+
+**Core Features:**
+- Thought tracing for decision transparency
+- Memory replay for debugging
+- Performance and cost analytics
+- Multi-protocol support
+
+**See also:** [Observability](#observability), [Thought Tracing](#thought-tracing)
+
+### Telemetry
+**Definition:** Automated collection and transmission of data from remote systems for monitoring and analysis.
+
+**In Agentflare:** Telemetry data includes traces, metrics, and logs from agent interactions, exported via OpenTelemetry standards.
+
+**See also:** [OpenTelemetry](#opentelemetry), [Observability](#observability)
+
+### Thought Tracing
+**Definition:** The capture and visualization of an AI agent's reasoning process during task execution.
+
+**In Agentflare:** Thought tracing reveals the chain of reasoning that leads to each tool call or decision, making agent behavior interpretable and debuggable.
+
+**Example Output:**
+```
+1. User requested database information
+2. Evaluating available tools: database_query, file_read
+3. Selected database_query based on SQL context
+4. Formulating query parameters...
+```
+
+**See also:** [Decision Reasoning](#decision-reasoning), [Memory Replay](#memory-replay)
+
+### Token Usage
+**Definition:** The consumption of computational units (tokens) by language models during processing.
+
+**In Agentflare:** Token usage is tracked per operation to enable accurate cost attribution and optimization opportunities.
+
+**See also:** [Cost Attribution](#cost-attribution), [Cost Tracking](#cost-tracking)
+
+### Tool Calls
+**Definition:** Invocations of external functions or services by an AI agent to complete tasks.
+
+**In Agentflare:** Every tool call is captured with full context, including parameters, results, timing, and associated costs.
+
+**Example:**
+```json
+{
+  "tool": "web_search",
+  "parameters": {"query": "latest AI news"},
+  "duration_ms": 450,
+  "tokens_used": 230
+}
+```
+
+**See also:** [MCP](#mcp), [Agent](#agent)
+
+### Troubleshooting
+**Definition:** The systematic process of identifying and resolving problems in a system.
+
+**In Agentflare:** The troubleshooting guide provides solutions for common integration issues, performance problems, and configuration errors.
+
+---
+
+## W
+
+### WebSocket
+**Definition:** A communication protocol providing full-duplex communication channels over a single TCP connection.
+
+**In Agentflare:** WebSocket connections enable real-time streaming of agent thoughts and tool calls to the Telepathy dashboard.
+
+**Protocol Example:**
+```javascript
+const ws = new WebSocket('wss://api.agentflare.com/v1/stream');
+ws.on('message', (data) => {
+  const event = JSON.parse(data);
+  // Handle real-time agent events
+});
+```
+
+**See also:** [WebSocket Events](#websocket-events), [WebSocket Protocol](#websocket-protocol)
+
+### WebSocket Events
+**Definition:** Real-time messages transmitted over WebSocket connections to notify clients of state changes or new data.
+
+**Common Events:**
+- `thought.start` - Agent begins reasoning
+- `tool.call` - Tool invocation initiated
+- `tool.result` - Tool execution completed
+- `session.end` - Agent session terminated
+
+**See also:** [WebSocket](#websocket), [WebSocket Protocol](#websocket-protocol)
+
+### WebSocket Protocol
+**Definition:** The specification defining message format and communication rules for WebSocket connections.
+
+**In Agentflare:** Defines the structure for real-time agent monitoring, including authentication, message types, and error handling.
+
+**See also:** [WebSocket](#websocket), [WebSocket Events](#websocket-events)
+
+---
+
+<Note>
+  This glossary is continuously updated as new features and concepts are introduced. For the latest information, refer to the specific documentation sections linked from each term.
+</Note>

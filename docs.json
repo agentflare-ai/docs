@@ -76,6 +76,14 @@
         ]
       },
       {
+        "group": "Resources",
+        "icon": "books",
+        "pages": [
+          "content/glossary",
+          "content/best-practices"
+        ]
+      },
+      {
         "group": "Support",
         "icon": "life-ring",
         "pages": [
