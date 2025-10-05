@@ -294,8 +294,6 @@ html[data-mode="light"],
   .page-wrapper,
   .layout,
   .mintlify-layout {
-    display: flex;
-    flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
     gap: 3rem;
@@ -309,7 +307,6 @@ html[data-mode="light"],
   .mintlify-layout > nav {
     position: sticky;
     top: calc(var(--header-height) + 1.5rem);
-    flex: 0 0 clamp(240px, 22vw, 300px);
     width: clamp(240px, 22vw, 300px);
     max-width: clamp(240px, 22vw, 320px);
     height: max-content;
