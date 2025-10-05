@@ -157,7 +157,7 @@ header nav a,
   font-weight: 500;
   letter-spacing: 0.02em;
   padding: 0.75rem 1rem;
-  border-radius: 999px;
+  border-radius: 0;
   transition: var(--transition-standard);
 }
 
@@ -181,7 +181,7 @@ header .actions button,
   background: rgba(15, 23, 42, 0.75);
   color: var(--color-foreground);
   border: 1px solid rgba(148, 163, 184, 0.2);
-  border-radius: 999px;
+  border-radius: 0;
   padding: 0.6rem 1.1rem;
   font-size: 0.8125rem;
   letter-spacing: 0.08em;
@@ -204,7 +204,7 @@ input[type="search"],
   background: rgba(15, 23, 42, 0.7) !important;
   border: 1px solid rgba(148, 163, 184, 0.22) !important;
   color: var(--color-foreground) !important;
-  border-radius: 999px !important;
+  border-radius: 0 !important;
   padding-inline: 1.25rem !important;
   transition: var(--transition-standard);
   box-shadow: none !important;
@@ -339,7 +339,7 @@ blockquote {
 .mintlify-callout {
   background: rgba(12, 23, 43, 0.9);
   border: 1px solid rgba(148, 163, 184, 0.18);
-  border-radius: 18px;
+  border-radius: 0;
   backdrop-filter: blur(12px);
   box-shadow: var(--shadow-elevated);
   transition: var(--transition-standard);
@@ -367,7 +367,7 @@ button,
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-radius: 999px;
+  border-radius: 0;
   border: none;
   background-color: var(--color-primary);
   color: var(--color-primary-foreground);
@@ -409,7 +409,7 @@ pre button {
   background: rgba(15, 23, 42, 0.88) !important;
   border: 1px solid rgba(148, 163, 184, 0.35) !important;
   color: var(--color-foreground) !important;
-  border-radius: 8px !important;
+  border-radius: 0 !important;
   padding: 0.45rem 0.9rem !important;
   font-size: 0.75rem !important;
   letter-spacing: 0.08em !important;
@@ -458,7 +458,7 @@ table {
   border-collapse: collapse;
   background: rgba(12, 23, 43, 0.85);
   border: 1px solid rgba(148, 163, 184, 0.24);
-  border-radius: 16px;
+  border-radius: 0;
   overflow: hidden;
 }
 
@@ -498,7 +498,7 @@ pre {
   border: 1px solid rgba(148, 163, 184, 0.18);
   padding: 1.5rem;
   overflow-x: auto;
-  border-radius: 16px;
+  border-radius: 0;
   position: relative;
   box-shadow: 0 18px 40px rgba(2, 6, 12, 0.55);
 }
@@ -531,7 +531,7 @@ code:not(pre code) {
   background: rgba(15, 23, 42, 0.7);
   padding: 0.25rem 0.45rem;
   color: var(--color-foreground-subtle);
-  border-radius: 6px;
+  border-radius: 0;
   font-size: 0.95em;
 }
 
@@ -543,7 +543,7 @@ code:not(pre code) {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  border-radius: 999px;
+  border-radius: 0;
   padding: 0.4rem 0.9rem;
   background: rgba(249, 115, 22, 0.12);
   border: 1px solid rgba(249, 115, 22, 0.35);
@@ -561,7 +561,7 @@ code:not(pre code) {
   content: "";
   width: 0.5rem;
   height: 0.5rem;
-  border-radius: 50%;
+  border-radius: 0;
   background: var(--color-primary);
   box-shadow: 0 0 12px rgba(249, 115, 22, 0.55);
 }
@@ -600,7 +600,7 @@ nav {
   padding: 0.65rem 1rem;
   border-left: 0 solid transparent;
   transition: var(--transition-standard);
-  border-radius: 12px;
+  border-radius: 0;
 }
 
 .sidebar a:hover,
@@ -667,7 +667,7 @@ nav {
 .mermaid {
   background: rgba(7, 15, 30, 0.85);
   border: 1px solid rgba(148, 163, 184, 0.28);
-  border-radius: 18px;
+  border-radius: 0;
   padding: 1.5rem;
   box-shadow: var(--shadow-elevated);
 }
@@ -691,12 +691,12 @@ nav {
   stroke-width: 2;
 }
 
-.mermaid .cluster rect {
-  fill: rgba(12, 23, 43, 0.65);
-  stroke: rgba(148, 163, 184, 0.35);
-  rx: 18;
-  ry: 18;
-}
+  .mermaid .cluster rect {
+    fill: rgba(12, 23, 43, 0.65);
+    stroke: rgba(148, 163, 184, 0.35);
+    rx: 0;
+    ry: 0;
+  }
 
 /* Media queries */
 @media (max-width: 768px) {
