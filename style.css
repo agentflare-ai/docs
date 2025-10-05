@@ -710,6 +710,11 @@ table {
   padding: var(--surface-padding);
 }
 
+table[style*="display:inline-table"],
+table[style*="display: inline-table"] {
+  padding: 16px;
+}
+
 thead th {
   background: #121c23;
   border-bottom: 1px solid rgba(148, 163, 184, 0.2);
