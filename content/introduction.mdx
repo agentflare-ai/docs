@@ -1,9 +1,9 @@
 ---
 title: "Introduction"
 sidebarTitle: "Introduction"
-description: "Welcome to Agentflare Telepathy - The mind-reading observability platform for AI agents"
+description: "Protocol-level observability for AI agent tool servers"
 icon: "house"
-keywords: ["Agentflare", "Telepathy", "AI agents", "observability", "MCP", "Model Context Protocol", "thought tracing", "performance monitoring"]
+keywords: ["Agentflare", "AI agents", "observability", "MCP", "Model Context Protocol", "tool reasoning", "agent reasoning", "performance monitoring", "protocol-level"]
 ---
 
 ## Architecture Overview
@@ -11,18 +11,18 @@ keywords: ["Agentflare", "Telepathy", "AI agents", "observability", "MCP", "Mode
 ```mermaid
 graph TB
     A[AI Agent] --> B[Agentflare Proxy]
-    B --> C[MCP Server 1]
-    B --> D[MCP Server 2]
-    B --> E[Custom Protocol Server]
-    
+    B --> C[Tool Server 1]
+    B --> D[Tool Server 2]
+    B --> E[Tool Server 3]
+
     B --> F[Observability Pipeline]
-    F --> G[Telepathy Dashboard]
+    F --> G[Agentflare Dashboard]
     F --> H[OTEL Exporters]
-    
+
     H --> I[Jaeger]
     H --> J[Datadog]
     H --> K[Grafana]
-    
+
     style A fill:#DBEAFE,stroke:#2980b9,stroke-width:2px,color:#1F2937
     style B fill:#FED7AA,stroke:#e67e22,stroke-width:2px,color:#1F2937
     style C fill:#E0F2FE,stroke:#3498db,stroke-width:2px,color:#1F2937
@@ -36,57 +36,65 @@ graph TB
     style K fill:#E5E7EB,stroke:#7f8c8d,stroke-width:2px,color:#1F2937
 ```
 
-## What is Telepathy?
+## What is Agentflare?
 
-Telepathy is the first comprehensive observability service for MCP-based AI agents that captures decision reasoning, performance metrics, and cost attribution. It's designed to give developers and MCP server owners complete visibility into their agent's thought processes.
+Agentflare provides **protocol-level observability** for AI agent tool servers. Track every decision, measure tool selection performance, and validate compliance in real-time.
+
+Build transparent, reliable AI agents your team can trust.
 
 <CardGroup cols={2}>
-  <Card title="Thought Tracing" icon="brain" href="/content/thought-tracing">
-    See exactly why your AI agents make the decisions they do
+  <Card title="Tool Reasoning" icon="brain" href="/content/thought-tracing">
+    See exactly why your AI agents select specific tools
   </Card>
   <Card
-    title="Performance Analytics"
-    icon="chart-line"
-    href="/content/performance-analytics"
+    title="Agent Reasoning"
+    icon="lightbulb"
+    href="/content/thought-tracing"
   >
+    Trace step-by-step agent decision-making processes
+  </Card>
+  <Card title="Performance Analytics" icon="chart-line" href="/content/performance-analytics">
     Monitor latency, throughput, and resource usage in real-time
   </Card>
   <Card title="Cost Tracking" icon="dollar-sign" href="/content/cost-tracking">
     Track API costs per tool call, session, and model
+  </Card>
+  <Card title="Schema Studio" icon="code">
+    Fine-tune decision pathways without redeploying code
   </Card>
   <Card title="Tool Call Feed" icon="terminal" href="/content/tool-calls">
     Live feed of all tool invocations with full context
   </Card>
 </CardGroup>
 
-## Why Telepathy?
+## Why Agentflare?
 
-### The Problem vs. Solution
+### The Challenge
 
-| Without Telepathy | With Telepathy |
+| Without Observability | With Agentflare |
 |-------------------|----------------|
 | 🚫 **Opaque Decisions** - Why did the agent choose this tool? | ✅ **Complete Reasoning** - See exactly why each decision was made |
 | 🚫 **Unknown Costs** - How much is this costing me? | ✅ **Real-time Cost Tracking** - Track costs per tool, session, and model |
 | 🚫 **Performance Blindness** - Where are the bottlenecks? | ✅ **Performance Analytics** - Identify bottlenecks and optimize |
 | 🚫 **Debugging Nightmare** - Agent failed, but why? | ✅ **Rich Error Context** - Detailed error information and context |
-| 🚫 **Manual Instrumentation** - Complex observability setup | ✅ **One-Line Integration** - Change one import line, get instant observability |
+| 🚫 **Complex Setup** - Manual instrumentation required | ✅ **Simple Proxy** - Add tool server, get proxy URL, done |
 
 ### The Solution
 
-Telepathy provides complete visibility into your agent's decision-making process:
+Agentflare provides complete visibility into your agent's decision-making process:
 
 <Steps>
-  <Step title="Drop-in Integration">
-    Change one import line in your code - that's it
+  <Step title="Add Tool Server">
+    Add your MCP tool server to Agentflare via the dashboard
   </Step>
-  <Step title="Automatic Instrumentation">
-    Every tool call is captured with reasoning, timing, and cost
+  <Step title="Get Proxy URL">
+    Receive a unique proxy URL for instant observability
   </Step>
-  <Step title="Real-time Visualization">
-    See your agent's thoughts in real-time through our dashboard
+  <Step title="Configure Agent">
+    Point your AI agent to use the Agentflare proxy
   </Step>
-  <Step title="Export Anywhere">
-    Send data to your existing observability stack via OTEL
+  <Step title="Observe Everything">
+    See tool calls, reasoning, performance, and costs in real-time
   </Step>
 </Steps>
 
@@ -94,27 +102,27 @@ Telepathy provides complete visibility into your agent's decision-making process
 
 <AccordionGroup>
   <Accordion title="Multi-Tenant Proxy" icon="server">
-    Hosted proxy service providing instant observability for any MCP deployment:
+    Hosted proxy service providing instant observability for any tool server:
     - Custom domains (mcp.company.com)
-    - Zero deployment setup
-    - Model identification via self-identification
+    - Zero code changes required
+    - Automatic reasoning capture
     - Cost estimation and tracking
   </Accordion>
 
-  <Accordion title="Enhanced MCP SDKs" icon="code">
-    Drop-in replacement SDKs with OTEL instrumentation:
-    - Automatic span generation with reasoning
-    - Tool call attribution and confidence scores
-    - Cost tracking per call
-    - Performance metrics
-  </Accordion>
-
-  <Accordion title="Telepathy Dashboard" icon="desktop">
-    Real-time mind-reading visualization:
+  <Accordion title="Real-time Dashboard" icon="desktop">
+    Comprehensive visualization of agent behavior:
     - Live feed of tool calls with reasoning
     - Performance metrics and bottleneck identification
     - Cost analytics per tool/session/model
-    - Usage analytics for MCP servers
+    - Usage analytics for tool servers
+  </Accordion>
+
+  <Accordion title="Schema Studio" icon="code">
+    Fine-tune tool schemas and decision pathways:
+    - Adjust tool descriptions in real-time
+    - Test schema changes instantly
+    - Optimize tool selection without redeployment
+    - A/B test different configurations
   </Accordion>
 
   <Accordion title="Memory Replay" icon="history">
@@ -122,8 +130,108 @@ Telepathy provides complete visibility into your agent's decision-making process
     - Step-by-step replay of tool sequences
     - Reasoning visibility at each decision point
     - Cost breakdown per step
+    - Debugging and analysis tools
+  </Accordion>
+
+  <Accordion title="OTEL Export" icon="chart-line">
+    Send data to your existing observability stack:
+    - Jaeger, Datadog, New Relic, Grafana
+    - Standard OpenTelemetry format
+    - Custom exporters supported
+    - No vendor lock-in
   </Accordion>
 </AccordionGroup>
+
+## How It Works
+
+### 1. Proxy Architecture
+
+Agentflare sits between your AI agents and tool servers:
+
+```mermaid
+sequenceDiagram
+    participant Agent as AI Agent
+    participant Proxy as Agentflare Proxy
+    participant Server as Tool Server
+    participant Dashboard as Dashboard
+
+    Agent->>Proxy: Tool Call Request
+    Note over Proxy: Capture metadata
+    Proxy->>Server: Forwarded Request
+    Server->>Proxy: Tool Response
+    Note over Proxy: Log performance
+    Proxy->>Dashboard: Send observability data
+    Proxy->>Agent: Enhanced Response
+
+    Note over Dashboard: Real-time updates
+```
+
+### 2. Zero Configuration
+
+No SDK to install, no code to change:
+
+<Tabs>
+  <Tab title="Before Agentflare">
+    ```typescript
+    import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+    import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
+    // Direct connection - no observability
+    const client = new Client({
+      transport: new HTTPTransport({
+        baseUrl: "https://your-tool-server.com/mcp"
+      })
+    });
+    ```
+  </Tab>
+  <Tab title="With Agentflare">
+    ```typescript
+    import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+    import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
+    // Route through Agentflare - instant observability
+    const client = new Client({
+      transport: new HTTPTransport({
+        baseUrl: "https://proxy.agentflare.com/workspace/server-slug",
+        headers: {
+          "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+        }
+      })
+    });
+    // That's it! Full observability with one URL change
+    ```
+  </Tab>
+</Tabs>
+
+### 3. Rich Observability
+
+Automatically captures:
+- **Tool calls** - Every tool invocation with arguments and results
+- **Tool reasoning** - Why the agent selected each tool
+- **Agent reasoning** - Step-by-step decision process
+- **Performance** - Latency, throughput, error rates
+- **Cost** - API costs per call, session, and model
+- **Confidence** - Decision confidence scores and alternatives
+
+## Use Cases
+
+### Development & Debugging
+- **Debug agent behavior** - Understand why agents make specific choices
+- **Optimize tool selection** - Identify and improve poor tool choices
+- **Test prompt variations** - A/B test different prompts and schemas
+- **Validate reasoning** - Ensure agents think as expected
+
+### Production Monitoring
+- **Real-time alerting** - Get notified of issues immediately
+- **Performance tracking** - Monitor SLAs and response times
+- **Cost control** - Stay within budget and optimize spending
+- **Compliance** - Audit agent decisions for regulatory requirements
+
+### Tool Server Optimization
+- **Usage analytics** - Understand how tools are being used
+- **Schema refinement** - Optimize tool descriptions with Schema Studio
+- **Performance tuning** - Identify slow or failing tools
+- **Cost analysis** - Find expensive tools and optimize
 
 ## Getting Started
 
@@ -131,10 +239,38 @@ Telepathy provides complete visibility into your agent's decision-making process
   <Card title="Quickstart Guide" icon="rocket" href="/content/quickstart">
     Get up and running in 5 minutes
   </Card>
+  <Card title="Installation" icon="download" href="/content/installation">
+    Complete setup instructions
+  </Card>
+  <Card title="Features Overview" icon="telescope" href="/content/features-overview">
+    Explore all features in depth
+  </Card>
   <Card title="API Reference" icon="book" href="/api-reference/introduction">
     Explore our comprehensive API
   </Card>
 </CardGroup>
+
+## Supported Protocols
+
+Agentflare works with multiple protocols:
+
+<Tabs>
+  <Tab title="MCP (Model Context Protocol)">
+    Full support for MCP tool servers:
+    - HTTP/HTTPS transport
+    - WebSocket transport
+    - Stdio transport (hosted)
+    - All MCP methods and capabilities
+  </Tab>
+  <Tab title="Custom Protocols">
+    Support for custom agent protocols:
+    - REST APIs
+    - gRPC
+    - GraphQL
+    - WebSockets
+    Contact us for custom protocol support
+  </Tab>
+</Tabs>
 
 ## Join the Community
 
@@ -144,14 +280,20 @@ Have questions? Want to contribute? Join our growing community:
   <Card
     title="GitHub"
     icon="github"
-    href="https://github.com/agentflare-ai/agentflare"
+    href="https://github.com/agentflare-ai"
   >
     Star us on GitHub
   </Card>
   <Card title="Discord" icon="discord" href="https://discord.gg/agentflare">
     Join our Discord server
   </Card>
-  <Card title="Twitter" icon="twitter" href="https://twitter.com/agentflare">
-    Follow us on Twitter
+  <Card title="X" icon="x-twitter" href="https://x.com/AgentflareAI">
+    Follow us on X
   </Card>
 </CardGroup>
+
+---
+
+<Note>
+  Agentflare is designed to be minimally invasive with < 1ms latency overhead and asynchronous data collection. Your agents run at full speed while you get complete observability.
+</Note>

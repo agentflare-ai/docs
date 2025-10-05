@@ -1,7 +1,7 @@
 ---
 title: "Troubleshooting Guide"
 sidebarTitle: "Troubleshooting"
-description: "Common issues and solutions for Agentflare Telepathy"
+description: "Common issues and solutions for Agentflare Agentflare"
 icon: "wrench"
 keywords: ["troubleshooting", "debugging", "errors", "solutions", "FAQ", "problems", "issues"]
 ---
@@ -57,7 +57,7 @@ Before diving into specific issues, run these quick checks:
     1. **Verify API Key Format:**
     ```typescript
     // Correct format
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: "af_live_1234567890abcdef", // Must start with af_
       projectId: "proj_abc123"
     });
@@ -156,7 +156,7 @@ Before diving into specific issues, run these quick checks:
     
     1. **Increase Timeout Values:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       timeout: 60000, // 60 seconds
       retries: 3
@@ -165,7 +165,7 @@ Before diving into specific issues, run these quick checks:
     
     2. **Configure Proxy Settings:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       proxy: {
         host: "your-proxy.com",
@@ -177,7 +177,7 @@ Before diving into specific issues, run these quick checks:
     
     3. **Enable Connection Pooling:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       connectionPool: {
         maxConnections: 10,
@@ -214,7 +214,7 @@ Before diving into specific issues, run these quick checks:
     process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = "0";
     
     // Better solution - specify certificate bundle
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       tls: {
         ca: fs.readFileSync('/path/to/ca-bundle.crt')
@@ -230,14 +230,14 @@ Before diving into specific issues, run these quick checks:
   <Accordion title="Tool Calls Not Appearing in Dashboard" icon="eye-slash">
     **Symptoms:**
     - Tool calls execute successfully
-    - No data appears in Telepathy dashboard
+    - No data appears in Agentflare dashboard
     - Missing observability data
     
     **Diagnostic Steps:**
     
     1. **Check Client Configuration:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       projectId: process.env.AGENTFLARE_PROJECT_ID, // Required!
       enableObservability: true, // Ensure enabled
@@ -253,7 +253,7 @@ Before diving into specific issues, run these quick checks:
     });
     
     client.on('error', (error) => {
-      console.error('Telepathy error:', error);
+      console.error('Agentflare error:', error);
     });
     ```
     
@@ -261,7 +261,7 @@ Before diving into specific issues, run these quick checks:
     
     1. **Enable Debug Mode:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       projectId: process.env.AGENTFLARE_PROJECT_ID,
       debug: true,
@@ -271,7 +271,7 @@ Before diving into specific issues, run these quick checks:
     
     2. **Check Sampling Rate:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       projectId: process.env.AGENTFLARE_PROJECT_ID,
       sampling: {
@@ -286,7 +286,7 @@ Before diving into specific issues, run these quick checks:
     await client.flush();
     
     // Or disable batching temporarily
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       projectId: process.env.AGENTFLARE_PROJECT_ID,
       batching: {
@@ -412,7 +412,7 @@ Before diving into specific issues, run these quick checks:
     
     1. **Enable Connection Pooling:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       connectionPool: {
         maxConnections: 20,
@@ -424,7 +424,7 @@ Before diving into specific issues, run these quick checks:
     
     2. **Optimize Batching:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       batching: {
         enabled: true,
@@ -436,7 +436,7 @@ Before diving into specific issues, run these quick checks:
     
     3. **Use Regional Endpoints:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       endpoint: "https://us-east-1.api.agentflare.com/v1" // Use closest region
     });
@@ -475,7 +475,7 @@ Before diving into specific issues, run these quick checks:
     });
     
     // For long-running processes
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       autoCleanup: true,
       maxBufferSize: 1000
@@ -484,7 +484,7 @@ Before diving into specific issues, run these quick checks:
     
     2. **Limit Buffer Sizes:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       buffers: {
         maxSize: 1000,
@@ -519,7 +519,7 @@ Before diving into specific issues, run these quick checks:
     // At the top of your main file
     import 'dotenv/config';
     
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       projectId: process.env.AGENTFLARE_PROJECT_ID,
       environment: process.env.NODE_ENV || 'development'
@@ -528,7 +528,7 @@ Before diving into specific issues, run these quick checks:
     
     2. **Local Server Configuration:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       servers: [{
         name: "local-server",
@@ -554,7 +554,7 @@ Before diving into specific issues, run these quick checks:
     
     1. **Production Configuration:**
     ```typescript
-    const client = new TelepathyClient({
+    const client = new AgentflareClient({
       apiKey: process.env.API_JWT_SECRET,
       projectId: process.env.AGENTFLARE_PROJECT_ID,
       environment: 'production',
@@ -609,12 +609,12 @@ curl -H "Authorization: Bearer $API_JWT_SECRET" \
 
 ```typescript
 // Enable comprehensive logging
-const client = new TelepathyClient({
+const client = new AgentflareClient({
   apiKey: process.env.API_JWT_SECRET,
   debug: true,
   logLevel: 'debug',
   onError: (error) => {
-    console.error('Telepathy error:', error);
+    console.error('Agentflare error:', error);
   },
   onRequest: (request) => {
     console.log('Outgoing request:', request);
@@ -633,7 +633,7 @@ import logging
 # Enable debug logging
 logging.basicConfig(level=logging.DEBUG)
 
-client = TelepathyClient(
+client = AgentflareClient(
     api_key=os.getenv("API_JWT_SECRET"),
     debug=True,
     log_level="debug"
@@ -654,7 +654,7 @@ If you're still experiencing issues after trying these solutions:
   <Card title="Community Discord" icon="discord" href="https://discord.gg/agentflare">
     Ask questions in our community Discord
   </Card>
-  <Card title="GitHub Issues" icon="github" href="https://github.com/agentflare-ai/agentflare/issues">
+  <Card title="GitHub Issues" icon="github" href="https://github.com/agentflare-ai">
     Report bugs or request features
   </Card>
 </CardGroup>

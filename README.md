@@ -1,6 +1,6 @@
 # Agentflare Documentation
 
-Official documentation for Agentflare Telepathy - The essential observability platform for AI agents.
+Official documentation for Agentflare - Protocol-level observability for AI agent tool servers.
 
 ## Prerequisites
 
@@ -57,6 +57,8 @@ mint update
 │   ├── introduction.mdx
 │   ├── quickstart.mdx
 │   ├── installation.mdx
+│   ├── features-overview.mdx
+│   ├── mcp-proxy.mdx
 │   └── ...
 ├── api-reference/     # API documentation
 │   ├── introduction.mdx
@@ -89,7 +91,7 @@ The documentation automatically deploys when changes are pushed to the main bran
 
 - [Mintlify Documentation](https://mintlify.com/docs)
 - [Agentflare Dashboard](https://app.agentflare.com)
-- [GitHub Repository](https://github.com/agentflare-ai/agentflare)
+- [GitHub Repository](https://github.com/agentflare-ai)
 
 ## Support
 

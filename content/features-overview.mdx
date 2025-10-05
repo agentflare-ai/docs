@@ -1,14 +1,14 @@
 ---
-title: "Telepathy Overview"
-sidebarTitle: "Telepathy Overview"
-description: "Deep dive into Agentflare Telepathy's comprehensive observability features"
+title: "Features Overview"
+sidebarTitle: "Features Overview"
+description: "Protocol-level observability for AI agent tool servers"
 icon: "telescope"
-keywords: ["telepathy", "observability", "AI agents", "multi-tenant proxy", "SDK", "dashboard", "thought tracing", "performance monitoring", "cost tracking"]
+keywords: ["observability", "AI agents", "multi-tenant proxy", "dashboard", "thought tracing", "performance monitoring", "cost tracking", "tool reasoning", "agent reasoning"]
 ---
 
-## What is Telepathy?
+## What is Agentflare?
 
-Telepathy is Agentflare's flagship observability service that provides unprecedented visibility into AI agent decision-making processes. It's designed to answer the fundamental questions every AI developer faces:
+Agentflare provides protocol-level observability for AI agent tool servers, giving you complete transparency and control over your AI systems. Track every decision, measure tool selection performance, and validate compliance in real-time.
 
 - **Why did my agent make that decision?**
 - **What was the agent thinking at each step?**
@@ -17,47 +17,40 @@ Telepathy is Agentflare's flagship observability service that provides unprecede
 
 ## Core Architecture
 
-{/* Telepathy Architecture diagram will be added when available */}
-
-Telepathy operates on three foundational pillars:
+Agentflare operates on two foundational components:
 
 ### 1. Multi-Tenant Proxy
-A hosted proxy service that sits between your AI agents and MCP servers, providing:
-- **Zero-configuration observability** - No code changes required
+A hosted proxy service that sits between your AI agents and tool servers, providing:
+- **Zero-configuration observability** - Add your tool server and get a proxy URL
 - **Custom domain support** - Use your own domain (e.g., `mcp.yourcompany.com`)
-- **Automatic model detection** - Identifies AI models via self-identification
-- **Real-time cost tracking** - Tracks API costs per call, session, and model
+- **Real-time tool reasoning capture** - See why agents select specific tools
+- **Automatic tracking** - Captures reasoning, confidence, latency, and cost per decision
 
-### 2. Enhanced SDK Integration
-Drop-in replacement SDKs that instrument your existing code:
-- **Automatic span generation** - Every tool call becomes a traceable span
-- **Reasoning capture** - Records the "why" behind each decision
-- **Performance metrics** - Latency, throughput, and resource usage
-- **Confidence scoring** - Tracks decision confidence and alternatives
-
-### 3. Telepathy Dashboard
+### 2. Agentflare Dashboard
 A comprehensive web interface for visualizing agent behavior:
 - **Live tool call feed** - Real-time stream of all agent actions
-- **Thought tracing** - Step-by-step decision visualization
+- **Tool reasoning** - See why agents selected specific tools
+- **Agent reasoning** - Step-by-step decision visualization
+- **Schema Studio** - Fine-tune decision pathways without redeploying code
 - **Performance analytics** - Identify bottlenecks and optimize
 - **Cost breakdown** - Detailed cost analysis per tool, session, and model
 
 ## Key Features
 
-### Mind-Reading Capabilities
+### Decision Transparency
 
 <CardGroup cols={2}>
-  <Card title="Thought Tracing" icon="brain" href="/content/thought-tracing">
-    See exactly why your AI agents make specific decisions
+  <Card title="Tool Reasoning" icon="brain" href="/content/thought-tracing">
+    See exactly why your AI agents select specific tools
+  </Card>
+  <Card title="Agent Reasoning" icon="lightbulb" href="/content/thought-tracing">
+    Trace step-by-step agent decision-making processes
   </Card>
   <Card title="Memory Replay" icon="history" href="/content/memory-replay">
     Reconstruct complete agent decision sequences
   </Card>
-  <Card title="Confidence Scoring" icon="chart-line">
-    Track decision confidence and alternative paths considered
-  </Card>
-  <Card title="Reasoning Context" icon="lightbulb">
-    Capture rich context about each decision point
+  <Card title="Schema Studio" icon="code">
+    Fine-tune tool schemas and decision pathways in real-time
   </Card>
 </CardGroup>
 
@@ -112,40 +105,32 @@ A comprehensive web interface for visualizing agent behavior:
   </Accordion>
 </AccordionGroup>
 
-## Integration Options
+## How It Works
 
-### 1. Proxy Integration (Recommended)
-The easiest way to get started - no code changes required:
+### Simple Proxy Integration
+Getting started with Agentflare is straightforward:
+
+<Steps>
+  <Step title="Add Your Tool Server">
+    Add your MCP tool server to Agentflare via the dashboard
+  </Step>
+  <Step title="Get Proxy URL">
+    Receive a unique proxy URL for your tool server
+  </Step>
+  <Step title="Update Your Agent">
+    Point your AI agent to use the Agentflare proxy URL
+  </Step>
+  <Step title="Start Observing">
+    Instantly see tool calls, reasoning, and performance in real-time
+  </Step>
+</Steps>
 
 ```bash
-# Point your MCP client to our proxy
-export MCP_SERVER_URL="https://<your-workspace>.agentflare.com/proxy"
+# Example: Point your client to the Agentflare proxy
+export MCP_SERVER_URL="https://proxy.agentflare.com/<workspace>/<server-slug>"
 ```
 
-### 2. SDK Integration
-For maximum observability, use our enhanced SDKs:
-
-<CodeGroup>
-```typescript TypeScript
-import { TelepathyClient } from '@agentflare/telepathy-sdk';
-
-const client = new TelepathyClient({
-  apiKey: process.env.API_JWT_SECRET,
-  projectId: process.env.AGENTFLARE_PROJECT_ID
-});
-```
-
-```python Python
-from agentflare_telepathy import TelepathyClient
-
-client = TelepathyClient(
-    api_key=os.getenv("API_JWT_SECRET"),
-    project_id=os.getenv("AGENTFLARE_PROJECT_ID")
-)
-```
-</CodeGroup>
-
-### 3. OTEL Export
+### OTEL Export
 Send data to your existing observability stack:
 
 <Tabs>
@@ -164,7 +149,7 @@ Send data to your existing observability stack:
       datadog:
         api_key: ${DD_API_KEY}
         site: datadoghq.com
-        service: telepathy-agent
+        service: agentflare-agent
     ```
   </Tab>
   <Tab title="New Relic">
@@ -203,14 +188,14 @@ Send data to your existing observability stack:
   <Step title="Sign up for Agentflare">
     Create your account at [agentflare.com](https://agentflare.com)
   </Step>
-  <Step title="Get your API key">
-    Navigate to Dashboard → Settings → API Keys
+  <Step title="Add your tool server">
+    Navigate to Dashboard → Tool Servers → Add Server
   </Step>
-  <Step title="Choose integration method">
-    Proxy (easiest) or SDK (most features)
+  <Step title="Get your proxy URL">
+    Copy the generated proxy URL for your tool server
   </Step>
   <Step title="Start monitoring">
-    Make your first tool call and see the data flow
+    Point your agent to the proxy URL and see real-time observability
   </Step>
 </Steps>
 
@@ -234,5 +219,5 @@ Send data to your existing observability stack:
 ---
 
 <Note>
-  Telepathy is designed to be minimally invasive with < 1ms latency overhead and asynchronous data collection.
+  Agentflare is designed to be minimally invasive with < 1ms latency overhead and asynchronous data collection.
 </Note>

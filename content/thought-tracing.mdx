@@ -8,7 +8,7 @@ keywords: ["thought tracing", "decision reasoning", "AI agent decisions", "reaso
 
 ## What is Thought Tracing?
 
-Thought Tracing is Telepathy's flagship feature that captures and visualizes the reasoning process behind every AI agent decision. Instead of just seeing *what* your agent did, you can see *why* it made that choice.
+Thought Tracing captures and visualizes the reasoning process behind every AI agent decision. Instead of just seeing *what* your agent did, you can see *why* it made that choice.
 
 {/* Thought Tracing Example visualization will be added when available */}
 
@@ -46,7 +46,7 @@ result = await client.call_tool(
 </CodeGroup>
 
 ### 2. Decision Trees
-Telepathy automatically builds decision trees showing:
+Agentflare automatically builds decision trees showing:
 - **Primary path** - The chosen action
 - **Alternative paths** - What else was considered
 - **Confidence scores** - How certain the agent was
@@ -121,31 +121,24 @@ See the complete thought process in an intuitive timeline:
 
 ### Step 1: Enable Thought Tracing
 
-<Tabs>
-  <Tab title="SDK Configuration">
-    ```typescript
-    const client = new TelepathyClient({
-      apiKey: process.env.API_JWT_SECRET,
-      projectId: process.env.AGENTFLARE_PROJECT_ID,
-      thoughtTracing: {
-        enabled: true,
-        captureAlternatives: true,
-        includeConfidence: true,
-        maxReasoningLength: 1000
-      }
-    });
-    ```
-  </Tab>
-  <Tab title="Proxy Configuration">
-    ```bash
-    # Enable thought tracing via proxy headers
-    curl -X POST \
-      -H "X-Telepathy-Thought-Tracing: enabled" \
-      -H "X-Telepathy-Capture-Alternatives: true" \
-      https://<your-workspace>.agentflare.com/proxy/tool-call
-    ```
-  </Tab>
-</Tabs>
+Thought tracing is automatically enabled for all tool calls through the Agentflare proxy. To capture richer reasoning data, add metadata to your tool calls:
+
+```typescript
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
+const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: "https://proxy.agentflare.com/<workspace>/<server-slug>",
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
+  })
+});
+
+await client.connect();
+// Thought tracing is now enabled - all tool calls are automatically tracked
+```
 
 ### Step 2: Add Reasoning Context
 
@@ -216,7 +209,7 @@ Navigate to **Dashboard → Thought Tracing** to see:
 
 ### 1. Reasoning Patterns
 
-Telepathy identifies common reasoning patterns:
+Agentflare identifies common reasoning patterns:
 
 <CardGroup cols={2}>
   <Card title="Sequential Reasoning" icon="arrow-right">

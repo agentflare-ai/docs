@@ -1,288 +1,542 @@
 ---
 title: "Installation"
 sidebarTitle: "Installation"
-description: "Complete installation guide for Agentflare Telepathy"
+description: "Complete setup guide for Agentflare observability"
 icon: "download"
-keywords: ["installation", "setup", "npm", "pip", "yarn", "pnpm", "requirements", "environment variables", "configuration"]
+keywords: ["installation", "setup", "proxy", "configuration", "tool server", "API key", "dashboard"]
 ---
 
-## System Requirements
+## Overview
 
-Before installing Telepathy, ensure your system meets these requirements:
+Agentflare is a hosted proxy service - there's no software to install. Instead, you'll:
+
+1. Create an Agentflare account
+2. Add your tool servers via the dashboard
+3. Get proxy URLs for each server
+4. Configure your AI agents to use the proxy
+
+## Prerequisites
+
+Before getting started, ensure you have:
 
 <CardGroup cols={2}>
-  <Card title="Node.js" icon="node">
-    Version 18.0 or higher
+  <Card title="Tool Server" icon="server">
+    An MCP-compatible tool server to observe
   </Card>
-  <Card title="Python" icon="python">
-    Version 3.8 or higher
+  <Card title="AI Agent" icon="robot">
+    An AI agent or MCP client
   </Card>
-  <Card title="Memory" icon="memory">
-    Minimum 4GB RAM
+  <Card title="Network Access" icon="globe">
+    Outbound HTTPS access (port 443)
   </Card>
-  <Card title="Storage" icon="hard-drive">
-    100MB available space
+  <Card title="Modern Browser" icon="window">
+    For accessing the Agentflare dashboard
   </Card>
 </CardGroup>
 
-## Installation Methods
+## Step 1: Create Your Account
 
-Choose your preferred installation method:
+<Steps>
+  <Step title="Sign Up">
+    Navigate to [app.agentflare.com](https://app.agentflare.com/login) and create an account
+  </Step>
+  <Step title="Verify Email">
+    Check your email and verify your account
+  </Step>
+  <Step title="Create Workspace">
+    Set up your first workspace (e.g., "Production", "Development")
+  </Step>
+  <Step title="Choose Plan">
+    Select a plan that fits your needs (Free tier available)
+  </Step>
+</Steps>
+
+## Step 2: Get Your API Key
+
+<Steps>
+  <Step title="Navigate to API Keys">
+    Go to **Dashboard → Settings → API Keys**
+  </Step>
+  <Step title="Create New Key">
+    Click "Create API Key" and give it a descriptive name
+  </Step>
+  <Step title="Copy the Key">
+    Save the API key securely - you won't be able to see it again
+  </Step>
+  <Step title="Set Environment Variable">
+    Add the key to your environment:
+    ```bash
+    export AGENTFLARE_API_KEY="your_api_key_here"
+    ```
+  </Step>
+</Steps>
+
+<Warning>
+  Never commit API keys to version control. Always use environment variables or secure secret management.
+</Warning>
+
+## Step 3: Add Your Tool Server
+
+Navigate to **Dashboard → Tool Servers → Add Server** and configure your tool server:
 
 <Tabs>
-  <Tab title="npm">
-    ```bash
-    npm install @agentflare/telepathy-sdk
+  <Tab title="HTTP/HTTPS Server">
+    For HTTP/HTTPS based MCP servers:
+
+    ```json
+    {
+      "name": "search-server",
+      "description": "Search and retrieval tools",
+      "type": "http",
+      "endpoint": "https://your-server.com/mcp",
+      "authentication": {
+        "type": "bearer",
+        "token": "your-server-token"
+      },
+      "timeout": 30000
+    }
+    ```
+
+    <AccordionGroup>
+      <Accordion title="Authentication Types">
+        - **Bearer Token**: `{"type": "bearer", "token": "..."}`
+        - **API Key**: `{"type": "api_key", "key": "...", "header": "X-API-Key"}`
+        - **Basic Auth**: `{"type": "basic", "username": "...", "password": "..."}`
+        - **OAuth2**: `{"type": "oauth2", "client_id": "...", "client_secret": "..."}`
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+
+  <Tab title="WebSocket Server">
+    For WebSocket based MCP servers:
+
+    ```json
+    {
+      "name": "realtime-server",
+      "description": "Real-time collaboration tools",
+      "type": "websocket",
+      "endpoint": "wss://your-server.com/mcp",
+      "authentication": {
+        "type": "bearer",
+        "token": "your-server-token"
+      },
+      "heartbeat": {
+        "enabled": true,
+        "interval": 30000
+      }
+    }
     ```
   </Tab>
-  <Tab title="yarn">
-    ```bash
-    yarn add @agentflare/telepathy-sdk
+
+  <Tab title="Stdio Server">
+    For locally running stdio servers:
+
+    ```json
+    {
+      "name": "local-server",
+      "description": "Local development server",
+      "type": "stdio",
+      "command": "/usr/local/bin/mcp-server",
+      "args": ["--config", "/etc/mcp/config.json"],
+      "env": {
+        "MCP_SERVER_TOKEN": "your-token",
+        "LOG_LEVEL": "info"
+      },
+      "working_directory": "/app"
+    }
     ```
-  </Tab>
-  <Tab title="pnpm">
-    ```bash
-    pnpm add @agentflare/telepathy-sdk
-    ```
-  </Tab>
-  <Tab title="pip">
-    ```bash
-    pip install agentflare-telepathy
-    ```
+
+    <Note>
+      Stdio servers run on Agentflare's infrastructure. Ensure your server binary is accessible or use HTTP/WebSocket for external servers.
+    </Note>
   </Tab>
 </Tabs>
 
-## Environment Setup
+## Step 4: Get Your Proxy URL
 
-### 1. Create Environment Variables
+After adding your tool server, Agentflare generates a unique proxy URL:
 
-Create a `.env` file in your project root:
-
-```bash
-# Agentflare API credentials
-AGENTFLARE_JWT_SECRET=your_jwt_secret_here
-AGENTFLARE_PROJECT_ID=your_project_id_here
-
-# Optional: Custom API endpoint
-AGENTFLARE_API_URL=https://api.agentflare.com/v1
-
-# Optional: Export configuration
-AGENTFLARE_EXPORT_JAEGER=true
-AGENTFLARE_JAEGER_ENDPOINT=http://localhost:14268/api/traces
+```
+https://proxy.agentflare.com/<workspace-slug>/<server-slug>
 ```
 
-### 2. TypeScript Configuration
-
-If using TypeScript, add these compiler options:
-
-```json tsconfig.json
-{
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "commonjs",
-    "lib": ["ES2020"],
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "node"
-  }
-}
+**Example:**
+```
+https://proxy.agentflare.com/acme-corp/search-server
 ```
 
-### 3. Python Configuration
+Copy this URL - you'll use it to configure your AI agents.
 
-For Python projects, create a configuration file:
+## Step 5: Configure Your Agent
 
-```python config.py
+Update your AI agent or MCP client to use the Agentflare proxy:
+
+<CodeGroup>
+
+```typescript TypeScript / JavaScript
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
+const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
+  })
+});
+
+await client.connect();
+```
+
+```python Python
+from mcp import Client
+from mcp.transport import HTTPTransport
 import os
-from agentflare_telepathy import Config
 
-config = Config(
-    api_key=os.environ.get("AGENTFLARE_JWT_SECRET"),
-    project_id=os.environ.get("AGENTFLARE_PROJECT_ID"),
-    # Optional settings
-    batch_size=100,
-    flush_interval=5.0,
-    max_retries=3
+client = Client(
+    transport=HTTPTransport(
+        base_url=os.getenv("AGENTFLARE_PROXY_URL"),
+        headers={
+            "Authorization": f"Bearer {os.getenv('AGENTFLARE_API_KEY')}"
+        }
+    )
+)
+
+await client.connect()
+```
+
+```go Go
+import (
+    "github.com/modelcontextprotocol/sdk-go/client"
+    "github.com/modelcontextprotocol/sdk-go/transport"
+)
+
+client := client.New(
+    transport.NewHTTP(
+        os.Getenv("AGENTFLARE_PROXY_URL"),
+        transport.WithHeaders(map[string]string{
+            "Authorization": "Bearer " + os.Getenv("AGENTFLARE_API_KEY"),
+        }),
+    ),
 )
 ```
 
-## Verify Installation
+</CodeGroup>
 
-### TypeScript/JavaScript
+## Environment Configuration
 
-```typescript
-import { TelepathyClient } from "@agentflare/telepathy-sdk";
+### Development Environment
 
-// Verify installation
-const client = new TelepathyClient({
-  apiKey: process.env.AGENTFLARE_JWT_SECRET,
-  projectId: process.env.AGENTFLARE_PROJECT_ID,
-});
+Create a `.env` file in your project root:
 
-// Test connection
-client
-  .testConnection()
-  .then(() => console.log("✅ Telepathy connected successfully"))
-  .catch((err) => console.error("❌ Connection failed:", err));
+```bash .env
+# Agentflare Configuration
+AGENTFLARE_API_KEY=your_api_key_here
+AGENTFLARE_PROXY_URL=https://proxy.agentflare.com/your-workspace/your-server
+
+# Optional: Enable debug logging
+AGENTFLARE_DEBUG=true
 ```
 
-### Python
+### Production Environment
 
-```python
-from agentflare_telepathy import TelepathyClient
-import asyncio
+For production, use your environment's secret management:
 
-async def verify_installation():
-    # Initialize client
-    client = TelepathyClient(
-        api_key=os.getenv("AGENTFLARE_JWT_SECRET"),
-        project_id=os.getenv("AGENTFLARE_PROJECT_ID")
-    )
-
-    # Test connection
-    try:
-        await client.test_connection()
-        print("✅ Telepathy connected successfully")
-    except Exception as e:
-        print(f"❌ Connection failed: {e}")
-
-# Run verification
-asyncio.run(verify_installation())
-```
-
-## Platform-Specific Instructions
-
-<AccordionGroup>
-  <Accordion title="Docker Installation">
+<Tabs>
+  <Tab title="Docker">
     ```dockerfile
     FROM node:18-alpine
-    
+
     WORKDIR /app
-    
+
     # Install dependencies
     COPY package*.json ./
     RUN npm ci --only=production
-    
+
     # Copy application
     COPY . .
-    
-    # Set environment variables
+
+    # Environment variables passed at runtime
     ENV NODE_ENV=production
-    
+
     CMD ["node", "index.js"]
     ```
-  </Accordion>
-  
-  <Accordion title="Kubernetes Setup">
+
+    ```bash
+    docker run \
+      -e AGENTFLARE_API_KEY="your_key" \
+      -e AGENTFLARE_PROXY_URL="your_proxy_url" \
+      your-agent-image
+    ```
+  </Tab>
+
+  <Tab title="Kubernetes">
     ```yaml
-    apiVersion: v1
-    kind: ConfigMap
-    metadata:
-      name: telepathy-config
-    data:
-      AGENTFLARE_API_URL: "https://api.agentflare.com/v1"
-    ---
     apiVersion: v1
     kind: Secret
     metadata:
-      name: telepathy-secrets
+      name: agentflare-secrets
     type: Opaque
     stringData:
-      AGENTFLARE_JWT_SECRET: "your_jwt_secret_here"
-      AGENTFLARE_PROJECT_ID: "your_project_id_here"
+      AGENTFLARE_API_KEY: "your_api_key_here"
+      AGENTFLARE_PROXY_URL: "https://proxy.agentflare.com/workspace/server"
+    ---
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: ai-agent
+    spec:
+      template:
+        spec:
+          containers:
+          - name: agent
+            image: your-agent:latest
+            envFrom:
+            - secretRef:
+                name: agentflare-secrets
     ```
-  </Accordion>
-  
-  <Accordion title="AWS Lambda">
+  </Tab>
+
+  <Tab title="AWS Lambda">
     ```javascript
-    const { TelepathyClient } = require('@agentflare/telepathy-sdk');
-    
-    const client = new TelepathyClient({
-      apiKey: process.env.AGENTFLARE_JWT_SECRET,
-      projectId: process.env.AGENTFLARE_PROJECT_ID,
-      // Lambda-specific configuration
-      flushOnExit: true,
-      timeout: 5000
+    // Lambda configuration
+    const client = new Client({
+      transport: new HTTPTransport({
+        baseUrl: process.env.AGENTFLARE_PROXY_URL,
+        headers: {
+          "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+        }
+      })
     });
-    
+
     exports.handler = async (event) => {
-      // Your Lambda function code
-      await client.flush(); // Ensure data is sent before Lambda freezes
+      await client.connect();
+      // Your Lambda logic
+      return response;
     };
     ```
+
+    Set environment variables in AWS Lambda console or via IaC tools.
+  </Tab>
+</Tabs>
+
+## Verification
+
+Verify your setup is working:
+
+<Steps>
+  <Step title="Check Connection">
+    Make a test tool call from your agent
+  </Step>
+  <Step title="View Dashboard">
+    Navigate to [app.agentflare.com](https://app.agentflare.com) and check the live feed
+  </Step>
+  <Step title="Verify Data">
+    Confirm you see your tool call with timing and metadata
+  </Step>
+</Steps>
+
+### Test Script
+
+Use this script to verify your setup:
+
+<CodeGroup>
+
+```typescript TypeScript
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
+async function testConnection() {
+  const client = new Client({
+    transport: new HTTPTransport({
+      baseUrl: process.env.AGENTFLARE_PROXY_URL,
+      headers: {
+        "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+      }
+    })
+  });
+
+  try {
+    await client.connect();
+    console.log("✅ Connected to Agentflare proxy");
+
+    const tools = await client.listTools();
+    console.log("✅ Available tools:", tools);
+
+    console.log("\nCheck your Agentflare dashboard to see this connection!");
+  } catch (error) {
+    console.error("❌ Connection failed:", error);
+  }
+}
+
+testConnection();
+```
+
+```python Python
+import asyncio
+import os
+from mcp import Client
+from mcp.transport import HTTPTransport
+
+async def test_connection():
+    client = Client(
+        transport=HTTPTransport(
+            base_url=os.getenv("AGENTFLARE_PROXY_URL"),
+            headers={
+                "Authorization": f"Bearer {os.getenv('AGENTFLARE_API_KEY')}"
+            }
+        )
+    )
+
+    try:
+        await client.connect()
+        print("✅ Connected to Agentflare proxy")
+
+        tools = await client.list_tools()
+        print(f"✅ Available tools: {tools}")
+
+        print("\nCheck your Agentflare dashboard to see this connection!")
+    except Exception as e:
+        print(f"❌ Connection failed: {e}")
+
+asyncio.run(test_connection())
+```
+
+</CodeGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Authentication Errors (401)">
+    **Symptoms**: Getting "Unauthorized" errors
+
+    **Solutions**:
+    - Verify API key is correct and not expired
+    - Check the Authorization header format: `Bearer YOUR_KEY`
+    - Ensure environment variables are properly loaded
+    - Confirm API key has necessary permissions
+  </Accordion>
+
+  <Accordion title="Connection Timeouts">
+    **Symptoms**: Requests timing out or failing to connect
+
+    **Solutions**:
+    - Check network connectivity and firewall rules
+    - Verify proxy URL is correct
+    - Ensure tool server is running and accessible
+    - Check Agentflare status page for outages
+  </Accordion>
+
+  <Accordion title="Tool Server Not Found (404)">
+    **Symptoms**: "Server not found" errors
+
+    **Solutions**:
+    - Verify the server-slug in your proxy URL
+    - Check server is enabled in dashboard
+    - Confirm workspace-slug is correct
+    - Ensure server configuration is complete
+  </Accordion>
+
+  <Accordion title="Data Not Appearing">
+    **Symptoms**: Tool calls work but don't show in dashboard
+
+    **Solutions**:
+    - Verify proxy URL is being used (not direct connection)
+    - Check API key is included in requests
+    - Look for errors in application logs
+    - Wait a few seconds for data to appear (buffering)
   </Accordion>
 </AccordionGroup>
 
-## Common Installation Issues
+## Platform-Specific Notes
 
-<Warning>
-  If you encounter installation issues, check our [troubleshooting
-  guide](/docs/troubleshooting) or contact support.
-</Warning>
+<Tabs>
+  <Tab title="Node.js">
+    **Minimum Version**: Node.js 18+
 
-### Permission Errors
+    **Package Manager**: Use npm, yarn, or pnpm
 
-If you get permission errors during installation:
+    **Environment Variables**: Use `dotenv` for local development
 
-```bash
-# npm/yarn/pnpm
-sudo npm install -g @agentflare/telepathy-sdk
+    ```bash
+    npm install dotenv
+    ```
 
-# pip
-pip install --user agentflare-telepathy
-```
+    ```javascript
+    require('dotenv').config();
+    ```
+  </Tab>
 
-### Network Issues
+  <Tab title="Python">
+    **Minimum Version**: Python 3.8+
 
-Behind a corporate proxy? Configure npm/pip:
+    **Virtual Environment**: Recommended
 
-```bash
-# npm proxy configuration
-npm config set proxy http://proxy.company.com:8080
-npm config set https-proxy http://proxy.company.com:8080
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    ```
 
-# pip proxy configuration
-pip install --proxy http://proxy.company.com:8080 agentflare-telepathy
-```
+    **Environment Variables**: Use `python-dotenv`
 
-### Version Conflicts
+    ```bash
+    pip install python-dotenv
+    ```
+  </Tab>
 
-Check for conflicting package versions:
+  <Tab title="Go">
+    **Minimum Version**: Go 1.19+
 
-```bash
-# Check installed versions
-npm list @agentflare/telepathy-sdk
-pip show agentflare-telepathy
+    **Modules**: Enable Go modules
 
-# Force specific version
-npm install @agentflare/telepathy-sdk@1.2.3
-pip install agentflare-telepathy==1.2.3
-```
+    ```bash
+    go mod init your-project
+    ```
+
+    **Environment Variables**: Use `godotenv` or built-in `os.Getenv`
+  </Tab>
+</Tabs>
+
+## Security Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Rotate API Keys" icon="key">
+    Rotate keys regularly (every 90 days recommended)
+  </Card>
+  <Card title="Use Environment Variables" icon="lock">
+    Never hardcode keys in source code
+  </Card>
+  <Card title="Least Privilege" icon="shield">
+    Use keys with minimum required permissions
+  </Card>
+  <Card title="Monitor Usage" icon="eye">
+    Track API key usage for suspicious activity
+  </Card>
+</CardGroup>
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Quick Start" icon="rocket" href="/content/quickstart">
-    Get up and running in 5 minutes
+  <Card title="Quickstart" icon="rocket" href="/content/quickstart">
+    Follow the quickstart guide
   </Card>
-  <Card title="Configuration" icon="cog" href="/content/configuration">
-    Advanced configuration options
+  <Card title="MCP Proxy" icon="server" href="/content/mcp-proxy">
+    Advanced proxy configuration
   </Card>
-  <Card title="Examples" icon="code" href="/content/examples">
-    See real-world examples
+  <Card title="Features Overview" icon="telescope" href="/content/features-overview">
+    Explore all features
   </Card>
-  <Card title="API Reference" icon="book" href="/api-reference/introduction">
-    Explore the full API
+  <Card title="Best Practices" icon="lightbulb" href="/content/best-practices">
+    Learn optimization techniques
   </Card>
 </CardGroup>
 
 ## Getting Help
 
-Need assistance with installation?
+Need assistance with setup?
 
 - 📧 Email: support@agentflare.com
 - 💬 Discord: [Join our community](https://discord.gg/agentflare)
 - 📚 Docs: [Full documentation](https://docs.agentflare.com)
-- 🐛 Issues: [GitHub Issues](https://github.com/agentflare-ai/agentflare/issues)
+- 🐛 Issues: [GitHub Issues](https://github.com/agentflare-ai)

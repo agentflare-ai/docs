@@ -1,13 +1,13 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Agentflare Telepathy",
-  "description": "The essential observability platform for AI agents. Capture decision reasoning, performance metrics, and cost attribution across multiple protocols.",
+  "name": "Agentflare",
+  "description": "Protocol-level observability for AI agent tool servers. Track every decision, measure tool selection performance, and validate compliance in real-time.",
   "url": "https://docs.agentflare.com",
   "colors": {
-    "primary": "#db5c33",
-    "light": "#f6b66d",
-    "dark": "#202836"
+    "primary": "#f97316",
+    "light": "#f97316",
+    "dark": "#1e2433"
   },
   "favicon": "/favicon.ico",
   "openGraph": {
@@ -22,7 +22,7 @@
     {
       "name": "GitHub",
       "icon": "github",
-      "url": "https://github.com/agentflare-ai/agentflare"
+      "url": "https://github.com/agentflare-ai"
     },
     {
       "name": "Early Access",
@@ -42,10 +42,10 @@
         ]
       },
       {
-        "group": "Telepathy Observability",
+        "group": "Observability",
         "icon": "eye",
         "pages": [
-          "content/telepathy-overview",
+          "content/features-overview",
           "content/thought-tracing",
           "content/memory-replay"
         ]
@@ -99,8 +99,8 @@
   },
   "background": {
     "color": {
-      "light": "#f2e4c9",
-      "dark": "#202836"
+      "light": "#ffffff",
+      "dark": "#1e2433"
     }
   },
   "navbar": {
@@ -111,13 +111,13 @@
       },
       {
         "label": "GitHub",
-        "href": "https://github.com/agentflare-ai/agentflare"
+        "href": "https://github.com/agentflare-ai"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get Started",
-      "href": "https://agentflare.com/early-access"
+      "href": "https://app.agentflare.com/login"
     }
   },
   "search": {
@@ -125,8 +125,8 @@
   },
   "footer": {
     "socials": {
-      "github": "https://github.com/agentflare-ai/agentflare",
-      "twitter": "https://twitter.com/agentflare"
+      "github": "https://github.com/agentflare-ai",
+      "x": "https://x.com/AgentflareAI"
     }
   },
   "redirects": [
@@ -144,8 +144,8 @@
     "indexHiddenPages": false
   },
   "metadata": {
-    "og:site_name": "Agentflare Telepathy Documentation",
-    "twitter:site": "@agentflare"
+    "og:site_name": "Agentflare Documentation",
+    "twitter:site": "@AgentflareAI"
   },
   "contextual": {
     "options": [

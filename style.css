@@ -145,7 +145,7 @@ button:hover,
 .button:hover,
 .btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(219, 92, 51, 0.25);
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.5);
 }
 
 button:active,
@@ -202,7 +202,8 @@ input[type="search"] {
 input[type="search"]:focus {
   border-color: var(--agentflare-primary);
   box-shadow: 0 0 0 3px rgba(219, 92, 51, 0.1);
-  outline: none;
+  outline: 2px solid rgba(249, 115, 22, 0.2);
+  outline-offset: 0;
 }
 
 /* Table enhancements */

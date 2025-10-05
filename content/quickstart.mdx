@@ -1,20 +1,20 @@
 ---
 title: "Quickstart"
 sidebarTitle: "Quickstart"
-description: "Get started with Telepathy in under 5 minutes"
+description: "Get started with Agentflare in under 5 minutes"
 icon: "rocket"
-keywords: ["quickstart", "setup", "installation", "getting started", "API key", "SDK", "TypeScript", "Python", "MCP client"]
+keywords: ["quickstart", "setup", "getting started", "proxy", "tool server", "MCP", "observability"]
 ---
 
 ## 5-Minute Setup Overview
 
 ```mermaid
 graph LR
-    A[Install SDK] --> B[Get API Key]
-    B --> C[Initialize Client]
-    C --> D[Make Tool Call]
+    A[Create Account] --> B[Add Tool Server]
+    B --> C[Get Proxy URL]
+    C --> D[Configure Agent]
     D --> E[View Dashboard]
-    
+
     style A fill:#DBEAFE,stroke:#2980b9,stroke-width:2px,color:#1F2937
     style B fill:#FED7AA,stroke:#d35400,stroke-width:2px,color:#1F2937
     style C fill:#D4EDDA,stroke:#27ae60,stroke-width:2px,color:#1F2937
@@ -26,261 +26,277 @@ graph LR
 
 Before you begin, make sure you have:
 
-- An MCP-compatible AI agent
-- Node.js 18+ or Python 3.8+
-- An Agentflare account ([sign up here](/early-access))
-
-## Installation
-
-<CodeGroup>
-
-```bash npm
-npm install @agentflare/telepathy-sdk
-```
-
-```bash yarn
-yarn add @agentflare/telepathy-sdk
-```
-
-```bash pnpm
-pnpm add @agentflare/telepathy-sdk
-```
-
-```bash pip
-pip install agentflare-telepathy
-```
-
-</CodeGroup>
+- An MCP-compatible tool server (or use one of our examples)
+- An AI agent or client that can connect to MCP servers
+- An Agentflare account ([sign up here](https://app.agentflare.com/login))
 
 ## Quick Setup
 
-### Step 1: Get Your API Key
+### Step 1: Create Your Account
 
-1. Log in to your [Agentflare dashboard](/dashboard)
-2. Navigate to Settings → API Keys
-3. Create a new API key with the name "Development"
-4. Copy the key - you'll need it in the next step
+1. Go to [app.agentflare.com](https://app.agentflare.com/login)
+2. Sign up for a free account
+3. Verify your email address
 
-<Warning>
-  Never commit your API key to version control. Use environment variables
-  instead.
-</Warning>
+### Step 2: Add Your Tool Server
 
-### Step 2: Initialize Telepathy
+Navigate to **Dashboard → Tool Servers → Add Server**
 
-Transform your existing MCP client with just one line change:
+You can add a tool server in several ways:
 
 <Tabs>
-  <Tab title="Before & After">
-    <CodeGroup>
-    ```typescript Before (Standard MCP)
-    import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-    import { StdioServerTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+  <Tab title="HTTP/HTTPS Server">
+    ```json
+    {
+      "name": "my-search-server",
+      "type": "http",
+      "endpoint": "https://your-server.com/mcp",
+      "authentication": {
+        "type": "bearer",
+        "token": "your-server-token"
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="WebSocket Server">
+    ```json
+    {
+      "name": "my-realtime-server",
+      "type": "websocket",
+      "endpoint": "wss://your-server.com/mcp",
+      "authentication": {
+        "type": "bearer",
+        "token": "your-server-token"
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Stdio Server">
+    ```json
+    {
+      "name": "my-local-server",
+      "type": "stdio",
+      "command": "/path/to/mcp-server",
+      "args": ["--config", "config.json"]
+    }
+    ```
+  </Tab>
+</Tabs>
 
-    // Standard MCP client - no observability
+### Step 3: Get Your Proxy URL
+
+After adding your tool server, Agentflare will generate a unique proxy URL:
+
+```
+https://proxy.agentflare.com/<your-workspace>/<your-server-slug>
+```
+
+Copy this URL - you'll use it to configure your AI agent.
+
+### Step 4: Configure Your Agent
+
+Update your AI agent or MCP client to use the Agentflare proxy URL:
+
+<Tabs>
+  <Tab title="Standard MCP Client">
+    <CodeGroup>
+    ```typescript TypeScript
+    import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+    import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
     const client = new Client({
-      transport: new StdioServerTransport({
-        command: "mcp-server",
-        args: ["--config", "config.json"]
+      transport: new HTTPTransport({
+        baseUrl: "https://proxy.agentflare.com/<workspace>/<server-slug>",
+        headers: {
+          "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+        }
       })
     });
 
     await client.connect();
-    
-    // Basic tool call
+
+    // Make tool calls as usual - they'll be automatically tracked
     const result = await client.callTool({
       name: "search",
-      arguments: { query: "Agentflare documentation" }
+      arguments: { query: "documentation" }
     });
     ```
 
-    ```typescript After (With Telepathy)
-    import { TelepathyClient } from "@agentflare/telepathy-sdk";
-
-    // Telepathy client - instant observability
-    const client = new TelepathyClient({
-      apiKey: process.env.API_JWT_SECRET,
-      projectId: process.env.AGENTFLARE_PROJECT_ID,
-      servers: [{
-        name: "search-server",
-        transport: "stdio",
-        command: "mcp-server",
-        args: ["--config", "config.json"]
-      }]
-    });
-
-    // Enhanced tool call with reasoning
-    const result = await client.callTool({
-      name: "search",
-      arguments: { query: "Agentflare documentation" },
-      metadata: {
-        reasoning: "User requested documentation search",
-        confidence: 0.95
-      }
-    });
-    ```
-    </CodeGroup>
-  </Tab>
-  
-  <Tab title="Python">
-    <CodeGroup>
-    ```python Before (Standard MCP)
+    ```python Python
     from mcp import Client
-    from mcp.transport import StdioTransport
+    from mcp.transport import HTTPTransport
 
-    # Standard MCP client
     client = Client(
-        transport=StdioTransport(
-            command="mcp-server",
-            args=["--config", "config.json"]
+        transport=HTTPTransport(
+            base_url="https://proxy.agentflare.com/<workspace>/<server-slug>",
+            headers={
+                "Authorization": f"Bearer {os.getenv('AGENTFLARE_API_KEY')}"
+            }
         )
     )
 
     await client.connect()
-    
+
+    # Make tool calls - automatically tracked
     result = await client.call_tool(
         name="search",
-        arguments={"query": "Agentflare documentation"}
-    )
-    ```
-
-    ```python After (With Telepathy)
-    from agentflare_telepathy import TelepathyClient
-
-    # Telepathy client with observability
-    client = TelepathyClient(
-        api_key=os.getenv("API_JWT_SECRET"),
-        project_id=os.getenv("AGENTFLARE_PROJECT_ID"),
-        servers=[{
-            "name": "search-server",
-            "transport": "stdio",
-            "command": "mcp-server",
-            "args": ["--config", "config.json"]
-        }]
-    )
-
-    # Enhanced tool call
-    result = await client.call_tool(
-        name="search",
-        arguments={"query": "Agentflare documentation"},
-        metadata={
-            "reasoning": "User requested documentation search",
-            "confidence": 0.95
-        }
+        arguments={"query": "documentation"}
     )
     ```
     </CodeGroup>
   </Tab>
+
+  <Tab title="Environment Variables">
+    ```bash
+    # Set environment variables
+    export MCP_SERVER_URL="https://proxy.agentflare.com/<workspace>/<server-slug>"
+    export AGENTFLARE_API_KEY="your_api_key_here"
+
+    # Your existing agent code will automatically use these
+    ```
+  </Tab>
+
+  <Tab title="Configuration File">
+    ```json config.json
+    {
+      "mcpServers": {
+        "your-server": {
+          "url": "https://proxy.agentflare.com/<workspace>/<server-slug>",
+          "headers": {
+            "Authorization": "Bearer YOUR_API_KEY"
+          }
+        }
+      }
+    }
+    ```
+  </Tab>
 </Tabs>
 
-### Step 3: Add Reasoning Context
+### Step 5: View Your Data
 
-To get the most out of Telepathy's thought tracing, add reasoning context to your tool calls:
+Once configured, navigate to your [Agentflare dashboard](https://app.agentflare.com) to see:
+
+<CardGroup cols={2}>
+  <Card title="Live Tool Calls" icon="terminal">
+    Real-time feed of all tool invocations
+  </Card>
+  <Card title="Tool Reasoning" icon="brain">
+    See why agents selected specific tools
+  </Card>
+  <Card title="Performance Metrics" icon="chart-line">
+    Latency, throughput, and error rates
+  </Card>
+  <Card title="Cost Tracking" icon="dollar-sign">
+    Track API costs per tool and session
+  </Card>
+</CardGroup>
+
+## What Gets Tracked?
+
+Agentflare automatically captures:
+
+- **Tool calls** - Every tool invocation with arguments and results
+- **Reasoning** - Why the agent selected each tool (when provided)
+- **Performance** - Latency, throughput, error rates
+- **Cost** - API costs per call, session, and model
+- **Metadata** - Confidence scores, alternatives considered, context
+
+## Enhanced Observability (Optional)
+
+For even richer insights, add reasoning metadata to your tool calls:
 
 <CodeGroup>
 
-```typescript TypeScript
+```typescript TypeScript - Enhanced
 const result = await client.callTool({
   name: "search",
-  arguments: { query: "Agentflare documentation" },
+  arguments: { query: "customer support tickets" },
+  // Add reasoning context for better observability
   metadata: {
-    reasoning:
-      "User asked about Agentflare features, searching documentation for detailed information",
+    reasoning: "User asked about recent support issues, searching database",
     confidence: 0.95,
-    alternatives: ["browse website", "ask support"],
-  },
+    alternatives: ["search_knowledge_base", "ask_human_agent"],
+    context: "Customer service manager weekly report"
+  }
 });
 ```
 
-```python Python
+```python Python - Enhanced
 result = await client.call_tool(
     name="search",
-    arguments={"query": "Agentflare documentation"},
+    arguments={"query": "customer support tickets"},
+    # Add reasoning for richer insights
     metadata={
-        "reasoning": "User asked about Agentflare features, searching documentation for detailed information",
+        "reasoning": "User asked about recent support issues, searching database",
         "confidence": 0.95,
-        "alternatives": ["browse website", "ask support"]
+        "alternatives": ["search_knowledge_base", "ask_human_agent"]
     }
 )
 ```
 
 </CodeGroup>
 
-## View Your Data
+<Note>
+  Reasoning metadata is optional but highly recommended. It enables Agentflare's advanced features like reasoning analysis, decision trees, and pattern detection.
+</Note>
 
-Once you've made your first tool call, you can view the data in multiple ways:
+## Example: Complete Setup
 
-### 1. Telepathy Dashboard
+Here's a complete example showing the full integration:
 
-Navigate to your [Telepathy dashboard](/dashboard) to see:
+```typescript
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
 
-- Real-time tool call feed
-- Reasoning breakdown for each call
-- Performance metrics
-- Cost tracking
+// Configure client with Agentflare proxy
+const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: "https://proxy.agentflare.com/my-workspace/search-server",
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
+  })
+});
 
-### 2. Export to Your Observability Stack
+// Connect to server
+await client.connect();
 
-Telepathy supports OTEL export to popular platforms:
+// List available tools (automatically tracked)
+const tools = await client.listTools();
+console.log("Available tools:", tools);
 
-<Tabs>
-  <Tab title="Jaeger">
-    ```typescript
-    const client = new TelepathyClient({
-      apiKey: process.env.API_JWT_SECRET,
-      exporters: {
-        jaeger: {
-          endpoint: 'http://localhost:14268/api/traces'
-        }
-      }
-    });
-    ```
-  </Tab>
-  <Tab title="Datadog">
-    ```typescript
-    const client = new TelepathyClient({
-      apiKey: process.env.API_JWT_SECRET,
-      exporters: {
-        datadog: {
-          apiKey: process.env.DD_API_KEY,
-          site: 'datadoghq.com'
-        }
-      }
-    });
-    ```
-  </Tab>
-  <Tab title="New Relic">
-    ```typescript
-    const client = new TelepathyClient({
-      apiKey: process.env.API_JWT_SECRET,
-      exporters: {
-        newrelic: {
-          apiKey: process.env.NEW_RELIC_API_KEY
-        }
-      }
-    });
-    ```
-  </Tab>
-</Tabs>
+// Call a tool with reasoning (tracked in dashboard)
+const result = await client.callTool({
+  name: "search_database",
+  arguments: {
+    query: "recent customer tickets",
+    limit: 10
+  },
+  metadata: {
+    reasoning: "Generating weekly customer support report",
+    confidence: 0.92,
+    alternatives: ["manual_query", "cached_report"]
+  }
+});
+
+console.log("Result:", result);
+// Check your Agentflare dashboard to see this call tracked in real-time!
+```
 
 ## Next Steps
 
 <CardGroup cols={2}>
-  <Card
-    title="Telepathy Overview"
-    icon="telescope"
-    href="/content/telepathy-overview"
-  >
-    Deep dive into Telepathy's features
+  <Card title="Features Overview" icon="telescope" href="/content/features-overview">
+    Explore all observability features
   </Card>
   <Card title="MCP Proxy Setup" icon="server" href="/content/mcp-proxy">
-    Set up the multi-tenant proxy
+    Advanced proxy configuration
   </Card>
-  <Card title="SDK Reference" icon="code" href="/sdk/typescript">
-    Explore the full SDK capabilities
+  <Card title="Tool Reasoning" icon="brain" href="/content/thought-tracing">
+    Learn about reasoning capture
   </Card>
   <Card title="Best Practices" icon="lightbulb" href="/content/best-practices">
-    Learn optimization techniques
+    Optimization techniques
   </Card>
 </CardGroup>
 
@@ -289,21 +305,24 @@ Telepathy supports OTEL export to popular platforms:
 <AccordionGroup>
   <Accordion title="Connection Issues">
     If you're having trouble connecting:
-    1. Verify your API key is correct
-    2. Check your network allows outbound HTTPS
-    3. Ensure your project ID matches your dashboard
+    1. Verify your proxy URL is correct
+    2. Check your API key is valid and not expired
+    3. Ensure your network allows outbound HTTPS
+    4. Check the Agentflare status page
   </Accordion>
   <Accordion title="Missing Data">
-    If tool calls aren't appearing:
-    1. Check the client is initialized before use
-    2. Verify environment variables are loaded
-    3. Look for errors in your console
+    If tool calls aren't appearing in the dashboard:
+    1. Verify the proxy URL is being used
+    2. Check API key is included in headers
+    3. Look for errors in your application logs
+    4. Ensure your tool server is responding correctly
   </Accordion>
   <Accordion title="Performance Impact">
-    Telepathy is designed for minimal overhead:
+    Agentflare is designed for minimal overhead:
     - Asynchronous data collection
     - Batched exports
     - < 1ms latency impact
+    - No blocking operations
   </Accordion>
 </AccordionGroup>
 

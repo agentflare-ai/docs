@@ -1,14 +1,14 @@
 ---
 title: "Best Practices"
 sidebarTitle: "Best Practices"
-description: "Optimize your Agentflare Telepathy implementation for performance, security, and reliability"
+description: "Optimize your Agentflare implementation for performance, security, and reliability"
 icon: "lightbulb"
 keywords: ["best practices", "optimization", "performance", "security", "reliability", "guidelines"]
 ---
 
 ## Overview
 
-Follow these best practices to get the most out of Agentflare Telepathy while ensuring optimal performance, security, and reliability.
+Follow these best practices to get the most out of Agentflare while ensuring optimal performance, security, and reliability.
 
 ## Performance Optimization
 
@@ -25,58 +25,37 @@ Follow these best practices to get the most out of Agentflare Telepathy while en
 
 ```typescript
 // Optimal connection configuration
-const client = new TelepathyClient({
-  apiKey: process.env.API_JWT_SECRET,
-  projectId: process.env.AGENTFLARE_PROJECT_ID,
-  connectionPool: {
-    maxConnections: 10,        // Adjust based on your load
-    keepAlive: true,          // Enable persistent connections
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
+
+const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    },
+    // Connection options
     timeout: 30000,           // 30 second timeout
-    retryDelayMin: 1000,      // 1 second minimum retry delay
-    retryDelayMax: 30000      // 30 second maximum retry delay
-  }
+    keepAlive: true,          // Enable persistent connections
+  })
 });
 ```
 
 ### Batching and Sampling
 
-```typescript
-// Configure for high-volume production use
-const client = new TelepathyClient({
-  apiKey: process.env.API_JWT_SECRET,
-  projectId: process.env.AGENTFLARE_PROJECT_ID,
-  batching: {
-    enabled: true,
-    size: 50,                 // Batch size for better throughput
-    timeout: 5000,            // Max wait time before sending batch
-    maxBufferSize: 1000       // Prevent memory issues
-  },
-  sampling: {
-    rate: 0.1,               // 10% sampling for high-volume production
-    smartSampling: true,      // Prioritize errors and slow calls
-    alwaysSample: ['error', 'timeout', 'retry']
-  }
-});
-```
+For high-volume applications, Agentflare automatically handles batching and sampling on the server side. Configure these settings in your dashboard:
+
+- **Sampling Rate**: Adjust in Dashboard → Settings → Observability
+- **Smart Sampling**: Automatically enabled (prioritizes errors and slow calls)
+- **Batching**: Handled automatically by the proxy
 
 ### Caching Strategy
 
-```typescript
-// Enable intelligent caching
-const client = new TelepathyClient({
-  apiKey: process.env.API_JWT_SECRET,
-  projectId: process.env.AGENTFLARE_PROJECT_ID,
-  caching: {
-    enabled: true,
-    ttl: 300,                // 5-minute cache for metadata
-    maxSize: 1000,           // Maximum cache entries
-    strategies: {
-      metadata: 'aggressive',  // Cache tool schemas, server info
-      responses: 'selective'   // Cache deterministic tool responses
-    }
-  }
-});
-```
+Agentflare provides intelligent caching at the proxy level. Configure caching in your dashboard:
+
+- **Metadata Caching**: Tool schemas and server info (5-minute TTL)
+- **Response Caching**: Deterministic tool responses (configurable per tool)
+- **Cache Invalidation**: Automatic on schema changes
 
 ## Security Best Practices
 
@@ -100,7 +79,12 @@ const client = new TelepathyClient({
     Rotate API keys regularly
     ```typescript
     // Set up key rotation reminder
-    const client = new TelepathyClient({
+    const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
       apiKey: process.env.API_JWT_SECRET,
       keyRotationWarning: true,  // Warn before key expires
       keyRotationDays: 30        // Rotate every 30 days
@@ -124,7 +108,12 @@ const client = new TelepathyClient({
   <Step title="Network Security">
     Restrict network access when possible
     ```typescript
-    const client = new TelepathyClient({
+    const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
       apiKey: process.env.API_JWT_SECRET,
       allowedIPs: ['192.168.1.0/24'],  // Restrict to specific networks
       requireTLS: true,                 // Enforce TLS 1.3
@@ -140,7 +129,12 @@ For highly sensitive environments, implement double authentication:
 
 ```typescript
 // Primary authentication (Agentflare)
-const client = new TelepathyClient({
+const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
   apiKey: process.env.API_JWT_SECRET,
   projectId: process.env.AGENTFLARE_PROJECT_ID
 });
@@ -165,7 +159,7 @@ const servers = [{
 ### Comprehensive Error Handling
 
 ```typescript
-import { TelepathyError, ToolCallError, NetworkError } from "@agentflare/telepathy-sdk";
+// Standard error handling with try/catch
 
 async function robustToolCall(client, toolName, args, options = {}) {
   const maxRetries = options.maxRetries || 3;
@@ -411,7 +405,12 @@ console.log(`Tool call completed in ${endTime - startTime}ms`);
   <Tab title="Development">
     ```typescript
     // Development configuration
-    const client = new TelepathyClient({
+    const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
       apiKey: process.env.API_JWT_SECRET_DEV,
       projectId: process.env.AGENTFLARE_PROJECT_ID_DEV,
       environment: 'development',
@@ -427,7 +426,12 @@ console.log(`Tool call completed in ${endTime - startTime}ms`);
   <Tab title="Testing">
     ```typescript
     // Testing configuration
-    const client = new TelepathyClient({
+    const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
       apiKey: process.env.API_JWT_SECRET_TEST,
       projectId: process.env.AGENTFLARE_PROJECT_ID_TEST,
       environment: 'test',
@@ -442,7 +446,12 @@ console.log(`Tool call completed in ${endTime - startTime}ms`);
   <Tab title="Production">
     ```typescript
     // Production configuration
-    const client = new TelepathyClient({
+    const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
       apiKey: process.env.API_JWT_SECRET,
       projectId: process.env.AGENTFLARE_PROJECT_ID,
       environment: 'production',
@@ -466,7 +475,12 @@ console.log(`Tool call completed in ${endTime - startTime}ms`);
 describe('Tool Calls', () => {
   beforeEach(() => {
     // Use test client with mocking
-    client = new TelepathyClient({
+    client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
       apiKey: 'test-key',
       dryRun: true,
       mockResponses: {
@@ -490,7 +504,12 @@ describe('Tool Calls', () => {
 // Integration tests
 describe('Integration Tests', () => {
   it('should connect to real services in staging', async () => {
-    const client = new TelepathyClient({
+    const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
       apiKey: process.env.API_JWT_SECRET_STAGING,
       environment: 'staging'
     });
@@ -524,7 +543,12 @@ describe('Integration Tests', () => {
 
 ```typescript
 // Set up custom alerting
-const client = new TelepathyClient({
+const client = new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    }
   apiKey: process.env.API_JWT_SECRET,
   alerting: {
     enabled: true,
@@ -560,11 +584,21 @@ const client = new TelepathyClient({
 ```typescript
 // Multiple client instances for load balancing
 const clients = [
-  new TelepathyClient({ 
+  new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    } 
     apiKey: process.env.API_JWT_SECRET,
     region: 'us-east-1' 
   }),
-  new TelepathyClient({ 
+  new Client({
+  transport: new HTTPTransport({
+    baseUrl: process.env.AGENTFLARE_PROXY_URL,
+    headers: {
+      "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
+    } 
     apiKey: process.env.API_JWT_SECRET,
     region: 'us-west-2' 
   })
@@ -636,5 +670,5 @@ class ResourceManager {
 ---
 
 <Note>
-  Following these best practices will help you build reliable, performant, and secure applications with Agentflare Telepathy.
+  Following these best practices will help you build reliable, performant, and secure applications with Agentflare.
 </Note>
