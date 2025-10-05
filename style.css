@@ -45,7 +45,11 @@
   --shadow-elevated: none;
   --transition-standard: all 0.35s ease;
   --content-max-width: min(100%, 1360px);
+  --content-lateral-offset: clamp(2.5rem, 2rem + 1vw, 3.25rem);
+  --toc-width: 0px;
+  --toc-gap: 0px;
 }
+
 *,
 *::before,
 *::after {
@@ -127,6 +131,22 @@ main > div {
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
+}
+
+#content-area {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--content-max-width);
+  box-sizing: border-box;
+  margin-inline: auto;
+  padding-inline: clamp(0.75rem, 0.5rem + 1vw, 1.5rem);
+  gap: clamp(2rem, 1.75rem + 0.5vw, 3rem);
+}
+
+#content-area > * {
+  min-width: 0;
 }
 
 /* Header & Navigation */
@@ -289,8 +309,6 @@ html[data-mode="light"],
   :root:has(.sidebar[hidden]),
   :root:has(.sidebar[style*="display: none"]),
   :root:has(.sidebar[data-state="closed"]),
-  :root:has(.sidebar[aria-hidden="true"]),
-  :root:has(.sidebar[aria-expanded="false"]),
   :root:has(body.sidebar-hidden),
   :root:has(body.sidebar-collapsed) {
     --sidebar-width: 0px;
@@ -311,6 +329,14 @@ html[data-mode="light"],
     gap: clamp(2rem, 1rem + 2vw, 3rem);
   }
 
+  #content-area {
+    max-width: min(100%, calc(var(--content-max-width) - var(--sidebar-width) + var(--content-lateral-offset) - var(--toc-width)));
+    padding-inline-start: calc(var(--sidebar-width) + var(--content-lateral-offset));
+    padding-inline-end: calc(var(--content-lateral-offset) + var(--toc-gap));
+    margin-inline-start: calc(-1 * var(--content-lateral-offset));
+    margin-inline-end: var(--toc-gap);
+  }
+
   .page-wrapper > .sidebar,
   .layout > .sidebar,
   .mintlify-layout > .sidebar,
@@ -321,12 +347,41 @@ html[data-mode="light"],
     top: calc(var(--header-height) + 1.5rem);
     width: var(--sidebar-width);
     max-width: var(--sidebar-width);
-    height: max-content;
+    min-width: 0;
+    height: calc(100vh - var(--header-height) - 1.5rem);
     margin-inline-start: 0;
     align-self: flex-start;
     grid-column: 1;
     grid-row: 1;
     z-index: 3;
+    display: block;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .page-wrapper > .sidebar > :where(nav, div),
+  .layout > .sidebar > :where(nav, div),
+  .mintlify-layout > .sidebar > :where(nav, div),
+  .page-wrapper > nav > :where(div, ul, nav),
+  .layout > nav > :where(div, ul, nav),
+  .mintlify-layout > nav > :where(div, ul, nav) {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-inline-end: clamp(1.5rem, 1rem + 0.8vw, 2rem);
+    padding-block-end: clamp(2rem, 1.5rem + 1vw, 2.75rem);
+    scrollbar-gutter: stable both-edges;
+  }
+
+  .page-wrapper > .sidebar > :where(nav, div) > :where(nav, ul),
+  .layout > .sidebar > :where(nav, div) > :where(nav, ul),
+  .mintlify-layout > .sidebar > :where(nav, div) > :where(nav, ul),
+  .page-wrapper > nav > :where(div, nav) > ul,
+  .layout > nav > :where(div, nav) > ul,
+  .mintlify-layout > nav > :where(div, nav) > ul {
+    position: static;
   }
 
   .page-wrapper > :not(.sidebar):not(nav),
@@ -340,37 +395,39 @@ html[data-mode="light"],
   .page-wrapper:has(.sidebar[hidden]),
   .page-wrapper:has(.sidebar[style*="display: none"]),
   .page-wrapper:has(.sidebar[data-state="closed"]),
-  .page-wrapper:has(.sidebar[aria-hidden="true"]),
-  .page-wrapper:has(.sidebar[aria-expanded="false"]),
   .layout:has(.sidebar[hidden]),
   .layout:has(.sidebar[style*="display: none"]),
   .layout:has(.sidebar[data-state="closed"]),
-  .layout:has(.sidebar[aria-hidden="true"]),
-  .layout:has(.sidebar[aria-expanded="false"]),
   .mintlify-layout:has(.sidebar[hidden]),
   .mintlify-layout:has(.sidebar[style*="display: none"]),
-  .mintlify-layout:has(.sidebar[data-state="closed"]),
-  .mintlify-layout:has(.sidebar[aria-hidden="true"]),
-  .mintlify-layout:has(.sidebar[aria-expanded="false"]) {
+  .mintlify-layout:has(.sidebar[data-state="closed"]) {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .page-wrapper:has(.sidebar[hidden]) > :not(.sidebar):not(nav),
   .page-wrapper:has(.sidebar[style*="display: none"]) > :not(.sidebar):not(nav),
   .page-wrapper:has(.sidebar[data-state="closed"]) > :not(.sidebar):not(nav),
-  .page-wrapper:has(.sidebar[aria-hidden="true"]) > :not(.sidebar):not(nav),
-  .page-wrapper:has(.sidebar[aria-expanded="false"]) > :not(.sidebar):not(nav),
   .layout:has(.sidebar[hidden]) > :not(.sidebar):not(nav),
   .layout:has(.sidebar[style*="display: none"]) > :not(.sidebar):not(nav),
   .layout:has(.sidebar[data-state="closed"]) > :not(.sidebar):not(nav),
-  .layout:has(.sidebar[aria-hidden="true"]) > :not(.sidebar):not(nav),
-  .layout:has(.sidebar[aria-expanded="false"]) > :not(.sidebar):not(nav),
   .mintlify-layout:has(.sidebar[hidden]) > :not(.sidebar):not(nav),
   .mintlify-layout:has(.sidebar[style*="display: none"]) > :not(.sidebar):not(nav),
-  .mintlify-layout:has(.sidebar[data-state="closed"]) > :not(.sidebar):not(nav),
-  .mintlify-layout:has(.sidebar[aria-hidden="true"]) > :not(.sidebar):not(nav),
-  .mintlify-layout:has(.sidebar[aria-expanded="false"]) > :not(.sidebar):not(nav) {
+  .mintlify-layout:has(.sidebar[data-state="closed"]) > :not(.sidebar):not(nav) {
     grid-column: 1;
+  }
+}
+
+@media (min-width: 1280px) {
+  :root:has(nav[aria-label*="this page" i]:not([hidden]):not([aria-hidden="true"])),
+  :root:has(aside[aria-label*="this page" i]:not([hidden]):not([aria-hidden="true"])) {
+    --toc-width: clamp(15rem, 17vw, 20rem);
+    --toc-gap: clamp(1.5rem, 1.15rem + 0.6vw, 2.25rem);
+  }
+
+  #content-area {
+    max-width: min(100%, calc(var(--content-max-width) - var(--sidebar-width) - var(--toc-width) + var(--content-lateral-offset)));
+    padding-inline-end: calc(var(--content-lateral-offset) + var(--toc-gap));
+    margin-inline-end: var(--toc-gap);
   }
 }
 
