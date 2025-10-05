@@ -11,7 +11,7 @@
   --font-display: "Bebas Neue", "Geist", sans-serif;
 
   /* Core palette */
-  --color-primary: #f6623d;
+  --color-primary: #f97316;
   --color-primary-foreground: #ffffff;
   --color-background: #09131a;
   --color-background-elevated: #121c23;
@@ -23,16 +23,12 @@
   --color-muted-foreground: #94a3b8;
   --color-border: rgba(148, 163, 184, 0.28);
   --color-border-subtle: rgba(148, 163, 184, 0.12);
-  --color-ring: rgba(246, 98, 61, 0.65);
+  --color-ring: rgba(249, 115, 22, 0.65);
   --color-header: #121c23;
   --color-header-border: rgba(148, 163, 184, 0.16);
 
-  /* Spacing scale */
-  --surface-padding: clamp(1rem, 0.75rem + 1vw, 2rem);
-  --table-cell-padding: clamp(1rem, 0.85rem + 0.4vw, 1.75rem);
-
   /* Accent palette for charts */
-  --chart-1: #f6623d;
+  --chart-1: #f97316;
   --chart-2: #8b5cf6;
   --chart-3: #22d3ee;
   --chart-4: #22c55e;
@@ -45,25 +41,6 @@
 }
 
 /* Global layout */
-html,
-html[data-theme],
-html[data-theme="light"],
-html[data-theme="dark"] {
-  color-scheme: dark;
-  background-color: var(--color-background);
-}
-
-html[data-theme="light"] body,
-html[data-theme="light"] main,
-html[data-theme="light"] .page-wrapper,
-html[data-theme="light"] .sidebar,
-html[data-theme="light"] .content-container,
-html[data-theme="light"] .layout,
-html[data-theme="light"] .mintlify-layout {
-  background-color: var(--color-background) !important;
-  color: var(--color-foreground) !important;
-}
-
 body {
   min-height: 100vh;
   margin: 0;
@@ -190,22 +167,11 @@ header .actions button,
   box-shadow: none;
 }
 
-.mode-toggle,
-.theme-toggle,
-.mintlify-mode-toggle,
-button[aria-label*="dark mode"],
-button[aria-label*="light mode"],
-button[aria-label*="theme"],
-button[aria-label*="Dark mode"],
-button[aria-label*="Light mode"] {
-  display: none !important;
-}
-
 header .actions button:hover,
 .mintlify-header button:hover,
 .top-nav button:hover,
 .docs-navbar button:hover {
-  border-color: rgba(246, 98, 61, 0.6);
+  border-color: rgba(249, 115, 22, 0.6);
   color: #ffffff;
   background: #09131a;
 }
@@ -225,8 +191,8 @@ input[type="search"],
 .search-input:focus,
 input[type="search"]:focus,
 .mintlify-search-input:focus {
-  border-color: rgba(246, 98, 61, 0.55) !important;
-  box-shadow: 0 0 0 3px rgba(246, 98, 61, 0.2) !important;
+  border-color: rgba(249, 115, 22, 0.55) !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2) !important;
 }
 
 @media (min-width: 1024px) {
@@ -357,44 +323,11 @@ blockquote {
   transition: var(--transition-standard);
 }
 
-section,
-.section,
-.content-block,
-.mintlify-content-block,
-.mintlify-section,
-.content-block > * {
-  border-radius: 0 !important;
-}
-
-section,
-.section,
-.content-block,
-.mintlify-content-block,
-.mintlify-section,
-.card,
-.callout,
-.admonition,
-.popover,
-.mintlify-callout,
-div[class*="block"],
-div[class*="card"],
-div[class*="section"],
-div[class*="callout"],
-div[class*="panel"],
-div[class*="table"],
-div[class*="note"],
-div[class*="alert"],
-div[class*="example"],
-div[class*="feature"],
-div[class*="box"] {
-  padding: var(--surface-padding);
-}
-
 .card:hover,
 .callout:hover,
 .popover:hover,
 .mintlify-callout:hover {
-  border-color: rgba(246, 98, 61, 0.4);
+  border-color: rgba(249, 115, 22, 0.4);
   box-shadow: var(--shadow-primary);
 }
 
@@ -441,7 +374,7 @@ button.secondary {
 .button-secondary:hover,
 .btn-secondary:hover,
 button.secondary:hover {
-  border-color: rgba(246, 98, 61, 0.45);
+  border-color: rgba(249, 115, 22, 0.45);
   background: #09131a;
 }
 
@@ -462,30 +395,13 @@ pre button {
   box-shadow: none !important;
 }
 
-button[aria-label*="Copy"] svg,
-button[aria-label*="copy"] svg,
-button.copy-button svg,
-.copy-button button svg,
-.code-block button svg,
-pre button svg,
-button[aria-label*="Copy"] svg *,
-button[aria-label*="copy"] svg *,
-button.copy-button svg *,
-.copy-button button svg *,
-.code-block button svg *,
-pre button svg * {
-  fill: #ffffff !important;
-  stroke: #ffffff !important;
-  color: #ffffff !important;
-}
-
 button[aria-label*="Copy"]:hover,
 button[aria-label*="copy"]:hover,
 button.copy-button:hover,
 .copy-button button:hover,
 .code-block button:hover,
 pre button:hover {
-  border-color: rgba(246, 98, 61, 0.45) !important;
+  border-color: rgba(249, 115, 22, 0.45) !important;
   color: #ffffff !important;
   background: #09131a !important;
 }
@@ -523,7 +439,6 @@ table {
   border: 1px solid rgba(148, 163, 184, 0.24);
   border-radius: 0;
   overflow: hidden;
-  padding: var(--surface-padding);
 }
 
 thead th {
@@ -532,7 +447,7 @@ thead th {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-weight: 600;
-  padding: var(--table-cell-padding);
+  padding: 0.9rem 1rem;
   color: var(--color-foreground-subtle);
 }
 
@@ -546,7 +461,7 @@ tbody tr:hover {
 }
 
 td {
-  padding: var(--table-cell-padding);
+  padding: 0.9rem 1rem;
   color: rgba(226, 232, 240, 0.85);
 }
 
@@ -608,8 +523,8 @@ code:not(pre code) {
   gap: 0.5rem;
   border-radius: 0;
   padding: 0.4rem 0.9rem;
-  background: rgba(246, 98, 61, 0.12);
-  border: 1px solid rgba(246, 98, 61, 0.35);
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.35);
   color: var(--color-foreground);
   font-size: 0.875rem;
   font-weight: 500;
@@ -675,8 +590,8 @@ nav {
 .sidebar a.active,
 .nav-sidebar a.active {
   color: var(--color-foreground);
-  background: rgba(246, 98, 61, 0.18);
-  box-shadow: inset 0 0 0 1px rgba(246, 98, 61, 0.45);
+  background: rgba(249, 115, 22, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.45);
 }
 
 /* Grid overlay */
@@ -726,35 +641,34 @@ nav {
 
 /* Mermaid diagrams */
 .mermaid {
-  background: #e2e8f0;
+  background: #121c23;
   border: 1px solid rgba(148, 163, 184, 0.28);
   border-radius: 0;
-  padding: var(--surface-padding);
+  padding: 1.5rem;
   box-shadow: var(--shadow-elevated);
-  color: #121c23;
 }
 
 .mermaid .node rect,
 .mermaid .node circle,
 .mermaid .node ellipse {
-  stroke: rgba(15, 23, 42, 0.35);
-  fill: #f8fafc;
+  stroke: rgba(148, 163, 184, 0.55);
+  fill: #121c23;
 }
 
 .mermaid .node text,
 .mermaid .label text {
-  fill: #121c23;
+  fill: var(--color-foreground);
 }
 
 .mermaid .edgePath .path,
 .mermaid .flowchart-link {
-  stroke: rgba(246, 98, 61, 0.7);
+  stroke: rgba(249, 115, 22, 0.7);
   stroke-width: 2;
 }
 
   .mermaid .cluster rect {
-    fill: #f1f5f9;
-    stroke: rgba(15, 23, 42, 0.25);
+    fill: #121c23;
+    stroke: rgba(148, 163, 184, 0.35);
     rx: 0;
     ry: 0;
   }

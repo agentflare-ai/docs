@@ -5,8 +5,8 @@
   "description": "Protocol-level observability for AI agent tool servers. Track every decision, measure tool selection performance, and validate compliance in real-time.",
   "url": "https://docs.agentflare.com",
   "colors": {
-    "primary": "#f6623d",
-    "light": "#f6623d",
+    "primary": "#f97316",
+    "light": "#f97316",
     "dark": "#09131a"
   },
   "favicon": "/favicon.ico",
@@ -14,6 +14,16 @@
     "image": "/images/agentflare-logo.svg"
   },
   "anchors": [
+    {
+      "name": "Dashboard",
+      "icon": "chart-line",
+      "url": "https://app.agentflare.com"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/agentflare-ai"
+    },
     {
       "name": "Early Access",
       "icon": "rocket",
@@ -94,7 +104,16 @@
     }
   },
   "navbar": {
-    "links": [],
+    "links": [
+      {
+        "label": "Dashboard",
+        "href": "https://app.agentflare.com"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/agentflare-ai"
+      }
+    ],
     "primary": {
       "type": "button",
       "label": "Get Started",
