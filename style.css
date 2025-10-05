@@ -10,37 +10,45 @@
   --font-mono: "Geist Mono", "Fira Code", "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --font-display: "Bebas Neue", "Geist", sans-serif;
 
-  /* Colors */
-  --color-primary: oklch(0.68 0.19 35);
-  --color-primary-foreground: oklch(0.98 0 0);
-  --color-background: oklch(0.18 0.02 240);
-  --color-foreground: oklch(0.95 0 0);
-  --color-card: oklch(0.22 0.02 240);
-  --color-secondary: oklch(0.25 0.02 240);
-  --color-muted: oklch(0.3 0.02 240);
-  --color-muted-foreground: oklch(0.6 0.02 240);
-  --color-border: oklch(0.3 0.02 240 / 1);
-  --color-border-subtle: oklch(0.3 0.02 240 / 0.1);
-  --color-ring: oklch(0.68 0.19 35);
+  /* Core palette */
+  --color-primary: #f97316;
+  --color-primary-foreground: #030712;
+  --color-background: #050b17;
+  --color-background-elevated: #071123;
+  --color-foreground: #e2e8f0;
+  --color-foreground-subtle: #cbd5f5;
+  --color-card: #0c172b;
+  --color-secondary: #0f1b2d;
+  --color-muted: #152238;
+  --color-muted-foreground: #94a3b8;
+  --color-border: rgba(148, 163, 184, 0.28);
+  --color-border-subtle: rgba(148, 163, 184, 0.12);
+  --color-ring: rgba(249, 115, 22, 0.65);
+  --color-header: rgba(5, 11, 23, 0.9);
+  --color-header-border: rgba(148, 163, 184, 0.16);
 
   /* Accent palette for charts */
-  --chart-1: oklch(0.68 0.19 35);
-  --chart-2: oklch(0.7 0.22 285);
-  --chart-3: oklch(0.68 0.2 145);
-  --chart-4: oklch(0.72 0.18 65);
-  --chart-5: oklch(0.65 0.23 335);
+  --chart-1: #f97316;
+  --chart-2: #8b5cf6;
+  --chart-3: #22d3ee;
+  --chart-4: #22c55e;
+  --chart-5: #f472b6;
 
-  --shadow-primary: 0 0 80px rgba(249, 115, 22, 0.6);
+  --shadow-primary: 0 20px 60px rgba(249, 115, 22, 0.35);
+  --shadow-elevated: 0 20px 60px rgba(15, 23, 42, 0.45);
   --transition-standard: all 0.35s ease;
-  --content-max-width: min(100%, 1400px);
+  --content-max-width: min(100%, 1360px);
 }
 
 /* Global layout */
 body {
   min-height: 100vh;
   margin: 0;
-  background-color: var(--color-background);
-  color: color-mix(in oklab, var(--color-foreground) 80%, transparent);
+  background: radial-gradient(circle at 5% -10%, rgba(37, 99, 235, 0.18) 0, transparent 55%),
+    radial-gradient(circle at 80% -20%, rgba(248, 113, 113, 0.1) 0, transparent 60%),
+    radial-gradient(circle at 20% 85%, rgba(45, 212, 191, 0.12) 0, transparent 60%),
+    linear-gradient(160deg, var(--color-background) 0%, var(--color-background-elevated) 60%, #020617 100%);
+  color: var(--color-foreground);
   font-family: var(--font-sans);
   font-size: 1.0625rem;
   line-height: 1.75;
@@ -55,16 +63,16 @@ body {
 body::before {
   content: "";
   position: fixed;
-  inset: -20vw;
+  inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at top left, rgba(249, 115, 22, 0.28) 0%, transparent 55%),
-    radial-gradient(circle at bottom right, rgba(120, 109, 255, 0.18) 0%, transparent 60%),
-    radial-gradient(circle at 20% 80%, rgba(74, 220, 157, 0.18) 0%, transparent 60%);
-  filter: blur(80px);
+  background: radial-gradient(circle at 20% 10%, rgba(249, 115, 22, 0.18) 0, transparent 55%),
+    radial-gradient(circle at 80% 15%, rgba(59, 130, 246, 0.16) 0, transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(56, 189, 248, 0.12) 0, transparent 60%);
+  opacity: 0.45;
+  filter: blur(90px);
   mix-blend-mode: screen;
-  opacity: 0.65;
   z-index: -3;
-  animation: float-orbs 18s ease-in-out infinite alternate;
+  animation: float-orbs 22s ease-in-out infinite alternate;
 }
 
 body::after {
@@ -73,14 +81,13 @@ body::after {
   inset: 0;
   pointer-events: none;
   z-index: -2;
-  mix-blend-mode: screen;
-  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><filter id="n" x="0" y="0"><feTurbulence type="fractalNoise" baseFrequency="2.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="200" height="200" filter="url(%23n)" opacity="0.05"/></svg>');
-  background-size: 80px 80px, 80px 80px, 200px 200px;
+  background: linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at center, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0) 70%);
+  background-size: 72px 72px, 72px 72px, 100% 100%;
   mask-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
-  opacity: 0.3;
-  animation: grid-shift 20s linear infinite;
+  opacity: 0.35;
+  animation: grid-shift 28s linear infinite;
 }
 
 @keyframes float-orbs {
@@ -122,6 +129,103 @@ main > div {
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
+}
+
+/* Header & Navigation */
+header,
+.mintlify-header,
+.top-nav,
+.navbar,
+.docs-navbar {
+  background: var(--color-header);
+  border-bottom: 1px solid var(--color-header-border);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-elevated);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+header .logo,
+.mintlify-header .logo,
+.navbar .logo,
+.top-nav .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-foreground);
+}
+
+header nav a,
+.navbar a,
+.top-nav a,
+.docs-navbar a {
+  color: color-mix(in srgb, var(--color-foreground) 75%, transparent);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  transition: var(--transition-standard);
+}
+
+header nav a:hover,
+.navbar a:hover,
+.top-nav a:hover,
+.docs-navbar a:hover,
+header nav a.active,
+.navbar a.active,
+.top-nav a.active,
+.docs-navbar a.active {
+  color: var(--color-foreground);
+  background: rgba(15, 118, 110, 0.18);
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.24);
+}
+
+header .actions button,
+.mintlify-header button,
+.top-nav button,
+.docs-navbar button {
+  background: rgba(15, 23, 42, 0.75);
+  color: var(--color-foreground);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: none;
+}
+
+header .actions button:hover,
+.mintlify-header button:hover,
+.top-nav button:hover,
+.docs-navbar button:hover {
+  border-color: rgba(249, 115, 22, 0.6);
+  color: var(--color-primary);
+  background: rgba(15, 23, 42, 0.9);
+}
+
+.search-input,
+input[type="search"],
+.mintlify-search-input {
+  background: rgba(15, 23, 42, 0.7) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  color: var(--color-foreground) !important;
+  border-radius: 999px !important;
+  padding-inline: 1.25rem !important;
+  transition: var(--transition-standard);
+  box-shadow: none !important;
+}
+
+.search-input:focus,
+input[type="search"]:focus,
+.mintlify-search-input:focus {
+  border-color: rgba(249, 115, 22, 0.55) !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2) !important;
 }
 
 @media (min-width: 1024px) {
@@ -177,7 +281,7 @@ ul,
 ol,
 li,
 blockquote {
-  color: color-mix(in oklab, var(--color-foreground) 80%, transparent);
+  color: rgba(226, 232, 240, 0.88);
 }
 
 small,
@@ -185,7 +289,7 @@ small,
 label {
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--color-muted-foreground) 90%, transparent);
+  color: color-mix(in srgb, var(--color-muted-foreground) 85%, transparent);
 }
 
 /* Links */
@@ -230,11 +334,12 @@ li::marker {
 
 /* Blockquote */
 blockquote {
-  border-left: 4px solid var(--color-primary);
-  background: color-mix(in oklab, var(--color-primary) 12%, transparent);
-  padding: 1rem 1.5rem;
+  border-left: 3px solid rgba(148, 163, 184, 0.4);
+  background: rgba(15, 23, 42, 0.65);
+  padding: 1.25rem 1.5rem;
   font-style: italic;
-  color: color-mix(in oklab, var(--color-foreground) 70%, transparent);
+  color: rgba(226, 232, 240, 0.8);
+  box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.08);
 }
 
 /* Cards & Surfaces */
@@ -243,11 +348,11 @@ blockquote {
 .admonition,
 .popover,
 .mintlify-callout {
-  background: var(--color-card);
-  border: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
-  border-radius: 0;
-  backdrop-filter: blur(6px);
-  box-shadow: none;
+  background: rgba(12, 23, 43, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-elevated);
   transition: var(--transition-standard);
 }
 
@@ -255,7 +360,7 @@ blockquote {
 .callout:hover,
 .popover:hover,
 .mintlify-callout:hover {
-  border-color: color-mix(in oklab, var(--color-primary) 40%, var(--color-border) 60%);
+  border-color: rgba(249, 115, 22, 0.4);
   box-shadow: var(--shadow-primary);
 }
 
@@ -273,9 +378,9 @@ button,
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-radius: 0;
+  border-radius: 999px;
   border: none;
-  background: var(--color-primary);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.92), rgba(248, 191, 96, 0.95));
   color: var(--color-primary-foreground);
   box-shadow: var(--shadow-primary);
   transition: var(--transition-standard);
@@ -286,15 +391,15 @@ button:hover,
 .btn:hover,
 .mintlify-button:hover,
 .button-primary:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.05);
   transform: translateY(-2px);
 }
 
 .button-secondary,
 .btn-secondary,
 button.secondary {
-  background: transparent;
-  border: 2px solid color-mix(in oklab, var(--color-border) 60%, transparent);
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.28);
   color: var(--color-foreground);
   box-shadow: none;
 }
@@ -302,8 +407,35 @@ button.secondary {
 .button-secondary:hover,
 .btn-secondary:hover,
 button.secondary:hover {
-  border-color: color-mix(in oklab, var(--color-primary) 50%, var(--color-border) 50%);
-  background: color-mix(in oklab, var(--color-primary) 15%, transparent);
+  border-color: rgba(249, 115, 22, 0.45);
+  background: rgba(15, 23, 42, 0.85);
+}
+
+button[aria-label*="Copy"],
+button[aria-label*="copy"],
+button.copy-button,
+.copy-button button,
+.code-block button,
+pre button {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border: 1px solid rgba(148, 163, 184, 0.35) !important;
+  color: var(--color-foreground) !important;
+  border-radius: 8px !important;
+  padding: 0.45rem 0.9rem !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
+}
+
+button[aria-label*="Copy"]:hover,
+button[aria-label*="copy"]:hover,
+button.copy-button:hover,
+.copy-button button:hover,
+.code-block button:hover,
+pre button:hover {
+  border-color: rgba(249, 115, 22, 0.45) !important;
+  color: var(--color-primary) !important;
 }
 
 /* Inputs */
@@ -335,34 +467,34 @@ input[type="search"]:focus {
 table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--color-card);
-  border: 1px solid color-mix(in oklab, var(--color-border) 50%, transparent);
-  border-radius: 0;
+  background: rgba(12, 23, 43, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 16px;
   overflow: hidden;
 }
 
 thead th {
-  background: color-mix(in oklab, var(--color-primary) 10%, transparent);
-  border-bottom: 2px solid color-mix(in oklab, var(--color-primary) 30%, transparent);
+  background: rgba(15, 23, 42, 0.9);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-weight: 600;
   padding: 0.9rem 1rem;
-  color: var(--color-primary);
+  color: var(--color-foreground-subtle);
 }
 
 tbody tr {
-  border-bottom: 1px solid color-mix(in oklab, var(--color-border) 60%, transparent);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
   transition: var(--transition-standard);
 }
 
 tbody tr:hover {
-  background: color-mix(in oklab, var(--color-foreground) 5%, transparent);
+  background: rgba(15, 23, 42, 0.72);
 }
 
 td {
   padding: 0.9rem 1rem;
-  color: color-mix(in oklab, var(--color-foreground) 80%, transparent);
+  color: rgba(226, 232, 240, 0.85);
 }
 
 /* Code Blocks */
@@ -372,13 +504,14 @@ code {
 }
 
 pre {
-  background: #0d1117;
-  color: #c9d1d9;
-  border: 1px solid #30363d;
-  padding: 1.25rem;
+  background: linear-gradient(145deg, rgba(10, 21, 38, 0.95), rgba(8, 15, 31, 0.92));
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  padding: 1.5rem;
   overflow-x: auto;
-  border-radius: 0;
+  border-radius: 16px;
   position: relative;
+  box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.08);
 }
 
 pre code {
@@ -400,15 +533,15 @@ pre code > span::before {
   width: 2.5rem;
   text-align: right;
   padding-right: 1rem;
-  color: #6e7681;
-  background-color: #010409;
+  color: rgba(148, 163, 184, 0.7);
+  background: rgba(3, 7, 18, 0.75);
 }
 
 code:not(pre code) {
-  background: color-mix(in oklab, var(--color-muted) 30%, transparent);
-  padding: 0.2rem 0.4rem;
-  color: var(--color-primary);
-  border-radius: 0;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 0.25rem 0.45rem;
+  color: var(--color-foreground-subtle);
+  border-radius: 6px;
   font-size: 0.95em;
 }
 
@@ -422,9 +555,9 @@ code:not(pre code) {
   gap: 0.5rem;
   border-radius: 999px;
   padding: 0.4rem 0.9rem;
-  background: color-mix(in oklab, var(--color-primary) 8%, transparent);
-  border: 1px solid color-mix(in oklab, var(--color-primary) 30%, transparent);
-  color: var(--color-primary);
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  color: var(--color-foreground);
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0.08em;
@@ -440,19 +573,7 @@ code:not(pre code) {
   height: 0.5rem;
   border-radius: 50%;
   background: var(--color-primary);
-  animation: pulse 1.8s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(0.75);
-  }
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.55);
 }
 
 /* Scrollbar */
@@ -478,33 +599,33 @@ code:not(pre code) {
 .sidebar,
 .nav-sidebar,
 nav {
-  background: var(--color-secondary);
-  border-right: 1px solid color-mix(in oklab, var(--color-border) 70%, transparent);
+  background: rgba(8, 15, 31, 0.72);
+  border-right: 1px solid rgba(148, 163, 184, 0.18);
+  backdrop-filter: blur(18px);
 }
 
 .sidebar a,
 .nav-sidebar a {
-  color: color-mix(in oklab, var(--color-foreground) 70%, transparent);
-  padding: 0.75rem 1rem;
+  color: color-mix(in srgb, var(--color-foreground) 80%, transparent);
+  padding: 0.65rem 1rem;
   border-left: 0 solid transparent;
   transition: var(--transition-standard);
-  border-radius: 0;
+  border-radius: 12px;
 }
 
 .sidebar a:hover,
 .nav-sidebar a:hover {
   color: var(--color-foreground);
-  border-left-width: 4px;
-  border-left-color: var(--color-primary);
-  background: color-mix(in oklab, var(--color-primary) 10%, transparent);
-  box-shadow: var(--shadow-primary);
+  border-left-width: 0;
+  background: rgba(15, 118, 110, 0.15);
+  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.25);
 }
 
 .sidebar a.active,
 .nav-sidebar a.active {
-  color: var(--color-primary);
-  border-left: 4px solid var(--color-primary);
-  background: color-mix(in oklab, var(--color-primary) 12%, transparent);
+  color: var(--color-foreground);
+  background: rgba(249, 115, 22, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(249, 115, 22, 0.45);
 }
 
 /* Grid overlay */
@@ -553,15 +674,38 @@ nav {
 }
 
 /* Mermaid diagrams */
+.mermaid {
+  background: rgba(7, 15, 30, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 18px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-elevated);
+}
+
 .mermaid .node rect,
 .mermaid .node circle,
 .mermaid .node ellipse {
-  stroke: var(--color-primary);
-  fill: color-mix(in oklab, var(--color-primary) 15%, transparent);
+  stroke: rgba(148, 163, 184, 0.55);
+  fill: rgba(15, 23, 42, 0.92);
+  filter: drop-shadow(0 8px 18px rgba(2, 6, 23, 0.6));
 }
 
-.mermaid .edgePath .path {
-  stroke: var(--color-primary);
+.mermaid .node text,
+.mermaid .label text {
+  fill: var(--color-foreground);
+}
+
+.mermaid .edgePath .path,
+.mermaid .flowchart-link {
+  stroke: rgba(249, 115, 22, 0.7);
+  stroke-width: 2;
+}
+
+.mermaid .cluster rect {
+  fill: rgba(12, 23, 43, 0.65);
+  stroke: rgba(148, 163, 184, 0.35);
+  rx: 18;
+  ry: 18;
 }
 
 /* Media queries */
