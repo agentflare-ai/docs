@@ -417,8 +417,7 @@ html[data-mode="light"],
 
 @media (min-width: 1280px) {
   #content-area {
-    max-width: min(100%, calc(var(--content-max-width) - 28rem));
-    padding-inline-end: calc(var(--content-lateral-offset) + 1.25rem);
+    padding-top: 2rem;
   }
 }
 
