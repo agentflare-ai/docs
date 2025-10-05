@@ -294,10 +294,9 @@ html[data-mode="light"],
   .page-wrapper,
   .layout,
   .mintlify-layout {
-    display: grid;
-    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
-    column-gap: 3rem;
+    display: flex;
     align-items: flex-start;
+    column-gap: 3rem;
   }
 
   .page-wrapper > .sidebar,
@@ -308,8 +307,12 @@ html[data-mode="light"],
   .mintlify-layout > nav {
     position: sticky;
     top: calc(var(--header-height) + 1.5rem);
-    align-self: start;
+    align-self: flex-start;
+    flex: 0 0 clamp(240px, 22vw, 300px);
+    max-width: clamp(240px, 22vw, 320px);
+    margin-right: 0;
     height: max-content;
+    z-index: 3;
   }
 
   .page-wrapper > .sidebar + *,
@@ -318,6 +321,7 @@ html[data-mode="light"],
   .page-wrapper > nav + *,
   .layout > nav + *,
   .mintlify-layout > nav + * {
+    flex: 1 1 0;
     min-width: 0;
   }
 }
@@ -836,7 +840,7 @@ nav {
 
 .mermaid .node text,
 .mermaid .label text {
-  fill: var(--color-foreground);
+  fill: var(--color-background);
 }
 
 .mermaid .edgePath .path,
