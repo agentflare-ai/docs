@@ -12,19 +12,19 @@
 
   /* Core palette */
   --color-primary: #f97316;
-  --color-primary-foreground: #030712;
-  --color-background: #04070f;
-  --color-background-elevated: #071222;
+  --color-primary-foreground: #ffffff;
+  --color-background: #09131a;
+  --color-background-elevated: #121c23;
   --color-foreground: #e2e8f0;
   --color-foreground-subtle: #cbd5f5;
-  --color-card: #0b1624;
-  --color-secondary: #101c2c;
-  --color-muted: #142335;
+  --color-card: #121c23;
+  --color-secondary: #121c23;
+  --color-muted: #121c23;
   --color-muted-foreground: #94a3b8;
   --color-border: rgba(148, 163, 184, 0.28);
   --color-border-subtle: rgba(148, 163, 184, 0.12);
   --color-ring: rgba(249, 115, 22, 0.65);
-  --color-header: rgba(5, 11, 23, 0.9);
+  --color-header: #121c23;
   --color-header-border: rgba(148, 163, 184, 0.16);
 
   /* Accent palette for charts */
@@ -34,8 +34,8 @@
   --chart-4: #22c55e;
   --chart-5: #f472b6;
 
-  --shadow-primary: 0 20px 60px rgba(249, 115, 22, 0.35);
-  --shadow-elevated: 0 20px 60px rgba(15, 23, 42, 0.45);
+  --shadow-primary: none;
+  --shadow-elevated: none;
   --transition-standard: all 0.35s ease;
   --content-max-width: min(100%, 1360px);
 }
@@ -55,28 +55,6 @@ body {
   align-items: center;
   position: relative;
   overflow-x: hidden;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-color: rgba(249, 115, 22, 0.06);
-  opacity: 0.18;
-  filter: blur(140px);
-  mix-blend-mode: normal;
-  z-index: -3;
-}
-
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -2;
-  background-color: rgba(2, 6, 23, 0.75);
-  opacity: 0.2;
 }
 
 @keyframes float-orbs {
@@ -178,9 +156,9 @@ header .actions button,
 .mintlify-header button,
 .top-nav button,
 .docs-navbar button {
-  background: rgba(15, 23, 42, 0.75);
-  color: var(--color-foreground);
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: #121c23;
+  color: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.3);
   border-radius: 0;
   padding: 0.6rem 1.1rem;
   font-size: 0.8125rem;
@@ -194,15 +172,15 @@ header .actions button:hover,
 .top-nav button:hover,
 .docs-navbar button:hover {
   border-color: rgba(249, 115, 22, 0.6);
-  color: var(--color-primary);
-  background: rgba(15, 23, 42, 0.9);
+  color: #ffffff;
+  background: #09131a;
 }
 
 .search-input,
 input[type="search"],
 .mintlify-search-input {
-  background: rgba(15, 23, 42, 0.7) !important;
-  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  background: #121c23 !important;
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
   color: var(--color-foreground) !important;
   border-radius: 0 !important;
   padding-inline: 1.25rem !important;
@@ -324,7 +302,7 @@ li::marker {
 /* Blockquote */
 blockquote {
   border-left: 3px solid rgba(148, 163, 184, 0.4);
-  background: rgba(15, 23, 42, 0.65);
+  background: #121c23;
   padding: 1.25rem 1.5rem;
   font-style: italic;
   color: rgba(226, 232, 240, 0.8);
@@ -337,7 +315,7 @@ blockquote {
 .admonition,
 .popover,
 .mintlify-callout {
-  background: rgba(12, 23, 43, 0.9);
+  background: #121c23;
   border: 1px solid rgba(148, 163, 184, 0.18);
   border-radius: 0;
   backdrop-filter: blur(12px);
@@ -387,9 +365,9 @@ button:hover,
 .button-secondary,
 .btn-secondary,
 button.secondary {
-  background: rgba(15, 23, 42, 0.65);
+  background: #121c23;
   border: 1px solid rgba(148, 163, 184, 0.28);
-  color: var(--color-foreground);
+  color: #ffffff;
   box-shadow: none;
 }
 
@@ -397,7 +375,7 @@ button.secondary {
 .btn-secondary:hover,
 button.secondary:hover {
   border-color: rgba(249, 115, 22, 0.45);
-  background: rgba(15, 23, 42, 0.85);
+  background: #09131a;
 }
 
 button[aria-label*="Copy"],
@@ -406,9 +384,9 @@ button.copy-button,
 .copy-button button,
 .code-block button,
 pre button {
-  background: rgba(15, 23, 42, 0.88) !important;
+  background: #121c23 !important;
   border: 1px solid rgba(148, 163, 184, 0.35) !important;
-  color: var(--color-foreground) !important;
+  color: #ffffff !important;
   border-radius: 0 !important;
   padding: 0.45rem 0.9rem !important;
   font-size: 0.75rem !important;
@@ -424,7 +402,8 @@ button.copy-button:hover,
 .code-block button:hover,
 pre button:hover {
   border-color: rgba(249, 115, 22, 0.45) !important;
-  color: var(--color-primary) !important;
+  color: #ffffff !important;
+  background: #09131a !important;
 }
 
 /* Inputs */
@@ -456,14 +435,14 @@ input[type="search"]:focus {
 table {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(12, 23, 43, 0.85);
+  background: #121c23;
   border: 1px solid rgba(148, 163, 184, 0.24);
   border-radius: 0;
   overflow: hidden;
 }
 
 thead th {
-  background: rgba(15, 23, 42, 0.9);
+  background: #121c23;
   border-bottom: 1px solid rgba(148, 163, 184, 0.2);
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -478,7 +457,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  background: rgba(15, 23, 42, 0.72);
+  background: #09131a;
 }
 
 td {
@@ -493,14 +472,13 @@ code {
 }
 
 pre {
-  background-color: rgba(5, 11, 20, 0.96);
+  background-color: #121c23;
   color: #e2e8f0;
   border: 1px solid rgba(148, 163, 184, 0.18);
   padding: 1.5rem;
   overflow-x: auto;
   border-radius: 0;
   position: relative;
-  box-shadow: 0 18px 40px rgba(2, 6, 12, 0.55);
 }
 
 pre code {
@@ -528,7 +506,7 @@ pre code > span::before {
 }
 
 code:not(pre code) {
-  background: rgba(15, 23, 42, 0.7);
+  background: #121c23;
   padding: 0.25rem 0.45rem;
   color: var(--color-foreground-subtle);
   border-radius: 0;
@@ -563,7 +541,6 @@ code:not(pre code) {
   height: 0.5rem;
   border-radius: 0;
   background: var(--color-primary);
-  box-shadow: 0 0 12px rgba(249, 115, 22, 0.55);
 }
 
 /* Scrollbar */
@@ -578,7 +555,6 @@ code:not(pre code) {
 
 ::-webkit-scrollbar-thumb {
   background: var(--color-primary);
-  box-shadow: 0 0 10px rgba(249, 115, 22, 0.45);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -589,7 +565,7 @@ code:not(pre code) {
 .sidebar,
 .nav-sidebar,
 nav {
-  background: rgba(8, 15, 31, 0.72);
+  background: #121c23;
   border-right: 1px solid rgba(148, 163, 184, 0.18);
   backdrop-filter: blur(18px);
 }
@@ -665,7 +641,7 @@ nav {
 
 /* Mermaid diagrams */
 .mermaid {
-  background: rgba(7, 15, 30, 0.85);
+  background: #121c23;
   border: 1px solid rgba(148, 163, 184, 0.28);
   border-radius: 0;
   padding: 1.5rem;
@@ -676,8 +652,7 @@ nav {
 .mermaid .node circle,
 .mermaid .node ellipse {
   stroke: rgba(148, 163, 184, 0.55);
-  fill: rgba(15, 23, 42, 0.92);
-  filter: drop-shadow(0 8px 18px rgba(2, 6, 23, 0.6));
+  fill: #121c23;
 }
 
 .mermaid .node text,
@@ -692,7 +667,7 @@ nav {
 }
 
   .mermaid .cluster rect {
-    fill: rgba(12, 23, 43, 0.65);
+    fill: #121c23;
     stroke: rgba(148, 163, 184, 0.35);
     rx: 0;
     ry: 0;

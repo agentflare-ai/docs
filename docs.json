@@ -7,7 +7,7 @@
   "colors": {
     "primary": "#f97316",
     "light": "#f97316",
-    "dark": "#1e2433"
+    "dark": "#09131a"
   },
   "favicon": "/favicon.ico",
   "openGraph": {
@@ -100,7 +100,7 @@
   "background": {
     "color": {
       "light": "#ffffff",
-      "dark": "#1e2433"
+      "dark": "#09131a"
     }
   },
   "navbar": {
