@@ -31,7 +31,6 @@
   --sidebar-width: clamp(240px, 22vw, 300px);
 
   /* Spacing scale */
-  --surface-padding: clamp(1rem, 0.75rem + 1vw, 2rem);
   --table-cell-padding: clamp(1rem, 0.85rem + 0.4vw, 1.75rem);
 
   /* Accent palette for charts */
@@ -46,7 +45,10 @@
   --transition-standard: all 0.35s ease;
   --content-max-width: min(100%, 1360px);
   --content-lateral-offset: clamp(2.5rem, 2rem + 1vw, 3.25rem);
+  --toc-width: 0px;
+  --toc-gap: 0px;
 }
+
 *,
 *::before,
 *::after {
