@@ -31,7 +31,6 @@
   --sidebar-width: clamp(240px, 22vw, 300px);
 
   /* Spacing scale */
-  --surface-padding: clamp(1rem, 0.75rem + 1vw, 2rem);
   --table-cell-padding: clamp(1rem, 0.85rem + 0.4vw, 1.75rem);
 
   /* Accent palette for charts */
@@ -330,11 +329,10 @@ html[data-mode="light"],
   }
 
   #content-area {
-    max-width: min(100%, calc(var(--content-max-width) - var(--sidebar-width) + var(--content-lateral-offset) - var(--toc-width)));
+    max-width: min(100%, calc(var(--content-max-width) - var(--sidebar-width) + var(--content-lateral-offset)));
     padding-inline-start: calc(var(--sidebar-width) + var(--content-lateral-offset));
-    padding-inline-end: calc(var(--content-lateral-offset) + var(--toc-gap));
+    padding-inline-end: var(--content-lateral-offset);
     margin-inline-start: calc(-1 * var(--content-lateral-offset));
-    margin-inline-end: var(--toc-gap);
   }
 
   .page-wrapper > .sidebar,
@@ -418,16 +416,9 @@ html[data-mode="light"],
 }
 
 @media (min-width: 1280px) {
-  :root:has(nav[aria-label*="this page" i]:not([hidden]):not([aria-hidden="true"])),
-  :root:has(aside[aria-label*="this page" i]:not([hidden]):not([aria-hidden="true"])) {
-    --toc-width: clamp(15rem, 17vw, 20rem);
-    --toc-gap: clamp(1.5rem, 1.15rem + 0.6vw, 2.25rem);
-  }
-
   #content-area {
-    max-width: min(100%, calc(var(--content-max-width) - var(--sidebar-width) - var(--toc-width) + var(--content-lateral-offset)));
-    padding-inline-end: calc(var(--content-lateral-offset) + var(--toc-gap));
-    margin-inline-end: var(--toc-gap);
+    max-width: min(100%, calc(var(--content-max-width) - 28rem));
+    padding-inline-end: calc(var(--content-lateral-offset) + 1.25rem);
   }
 }
 
