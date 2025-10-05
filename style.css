@@ -294,7 +294,8 @@ html[data-mode="light"],
   .page-wrapper,
   .layout,
   .mintlify-layout {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(240px, 22vw, 320px);
     align-items: flex-start;
     column-gap: 3rem;
   }
@@ -308,7 +309,8 @@ html[data-mode="light"],
     position: sticky;
     top: calc(var(--header-height) + 1.5rem);
     align-self: flex-start;
-    flex: 0 0 clamp(240px, 22vw, 300px);
+    grid-column: 2;
+    width: clamp(240px, 22vw, 300px);
     max-width: clamp(240px, 22vw, 320px);
     margin-right: 0;
     height: max-content;
@@ -321,7 +323,7 @@ html[data-mode="light"],
   .page-wrapper > nav + *,
   .layout > nav + *,
   .mintlify-layout > nav + * {
-    flex: 1 1 0;
+    grid-column: 1;
     min-width: 0;
   }
 }
@@ -371,7 +373,7 @@ ul,
 ol,
 li,
 blockquote {
-  color: rgba(226, 232, 240, 0.88);
+  color: var(--color-foreground);
 }
 
 small,
