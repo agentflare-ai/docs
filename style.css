@@ -319,12 +319,41 @@ html[data-mode="light"],
     top: calc(var(--header-height) + 1.5rem);
     width: var(--sidebar-width);
     max-width: var(--sidebar-width);
-    height: max-content;
+    min-width: 0;
+    height: calc(100vh - var(--header-height) - 1.5rem);
     margin-inline-start: 0;
     align-self: flex-start;
     grid-column: 1;
     grid-row: 1;
     z-index: 3;
+    display: block;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .page-wrapper > .sidebar > :where(nav, div),
+  .layout > .sidebar > :where(nav, div),
+  .mintlify-layout > .sidebar > :where(nav, div),
+  .page-wrapper > nav > :where(div, ul, nav),
+  .layout > nav > :where(div, ul, nav),
+  .mintlify-layout > nav > :where(div, ul, nav) {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-inline-end: clamp(1.5rem, 1rem + 0.8vw, 2rem);
+    padding-block-end: clamp(2rem, 1.5rem + 1vw, 2.75rem);
+    scrollbar-gutter: stable both-edges;
+  }
+
+  .page-wrapper > .sidebar > :where(nav, div) > :where(nav, ul),
+  .layout > .sidebar > :where(nav, div) > :where(nav, ul),
+  .mintlify-layout > .sidebar > :where(nav, div) > :where(nav, ul),
+  .page-wrapper > nav > :where(div, nav) > ul,
+  .layout > nav > :where(div, nav) > ul,
+  .mintlify-layout > nav > :where(div, nav) > ul {
+    position: static;
   }
 
   .page-wrapper > :not(.sidebar):not(nav),
