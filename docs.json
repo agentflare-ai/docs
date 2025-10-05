@@ -20,6 +20,11 @@
       "url": "https://app.agentflare.com"
     },
     {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://github.com/agentflare-ai"
+    },
+    {
       "name": "Early Access",
       "icon": "rocket",
       "url": "https://agentflare.com/early-access"
@@ -94,8 +99,8 @@
   },
   "background": {
     "color": {
-      "light": "#f3f6f9",
-      "dark": "#f3f6f9"
+      "light": "#ffffff",
+      "dark": "#09131a"
     }
   },
   "navbar": {
@@ -103,6 +108,10 @@
       {
         "label": "Dashboard",
         "href": "https://app.agentflare.com"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/agentflare-ai"
       }
     ],
     "primary": {
