@@ -289,8 +289,6 @@ html[data-mode="light"],
   :root:has(.sidebar[hidden]),
   :root:has(.sidebar[style*="display: none"]),
   :root:has(.sidebar[data-state="closed"]),
-  :root:has(.sidebar[aria-hidden="true"]),
-  :root:has(.sidebar[aria-expanded="false"]),
   :root:has(body.sidebar-hidden),
   :root:has(body.sidebar-collapsed) {
     --sidebar-width: 0px;
@@ -340,36 +338,24 @@ html[data-mode="light"],
   .page-wrapper:has(.sidebar[hidden]),
   .page-wrapper:has(.sidebar[style*="display: none"]),
   .page-wrapper:has(.sidebar[data-state="closed"]),
-  .page-wrapper:has(.sidebar[aria-hidden="true"]),
-  .page-wrapper:has(.sidebar[aria-expanded="false"]),
   .layout:has(.sidebar[hidden]),
   .layout:has(.sidebar[style*="display: none"]),
   .layout:has(.sidebar[data-state="closed"]),
-  .layout:has(.sidebar[aria-hidden="true"]),
-  .layout:has(.sidebar[aria-expanded="false"]),
   .mintlify-layout:has(.sidebar[hidden]),
   .mintlify-layout:has(.sidebar[style*="display: none"]),
-  .mintlify-layout:has(.sidebar[data-state="closed"]),
-  .mintlify-layout:has(.sidebar[aria-hidden="true"]),
-  .mintlify-layout:has(.sidebar[aria-expanded="false"]) {
+  .mintlify-layout:has(.sidebar[data-state="closed"]) {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .page-wrapper:has(.sidebar[hidden]) > :not(.sidebar):not(nav),
   .page-wrapper:has(.sidebar[style*="display: none"]) > :not(.sidebar):not(nav),
   .page-wrapper:has(.sidebar[data-state="closed"]) > :not(.sidebar):not(nav),
-  .page-wrapper:has(.sidebar[aria-hidden="true"]) > :not(.sidebar):not(nav),
-  .page-wrapper:has(.sidebar[aria-expanded="false"]) > :not(.sidebar):not(nav),
   .layout:has(.sidebar[hidden]) > :not(.sidebar):not(nav),
   .layout:has(.sidebar[style*="display: none"]) > :not(.sidebar):not(nav),
   .layout:has(.sidebar[data-state="closed"]) > :not(.sidebar):not(nav),
-  .layout:has(.sidebar[aria-hidden="true"]) > :not(.sidebar):not(nav),
-  .layout:has(.sidebar[aria-expanded="false"]) > :not(.sidebar):not(nav),
   .mintlify-layout:has(.sidebar[hidden]) > :not(.sidebar):not(nav),
   .mintlify-layout:has(.sidebar[style*="display: none"]) > :not(.sidebar):not(nav),
-  .mintlify-layout:has(.sidebar[data-state="closed"]) > :not(.sidebar):not(nav),
-  .mintlify-layout:has(.sidebar[aria-hidden="true"]) > :not(.sidebar):not(nav),
-  .mintlify-layout:has(.sidebar[aria-expanded="false"]) > :not(.sidebar):not(nav) {
+  .mintlify-layout:has(.sidebar[data-state="closed"]) > :not(.sidebar):not(nav) {
     grid-column: 1;
   }
 }
