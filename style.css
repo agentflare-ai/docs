@@ -707,7 +707,7 @@ table {
   border: 1px solid rgba(148, 163, 184, 0.24);
   border-radius: 0;
   overflow: hidden;
-  padding: var(--surface-padding);
+  padding: 16px;
 }
 
 table[style*="display:inline-table"],
