@@ -192,7 +192,7 @@ No SDK to install, no code to change:
     // Route through Agentflare - instant observability
     const client = new Client({
       transport: new HTTPTransport({
-        baseUrl: "https://proxy.agentflare.com/workspace/server-slug",
+        baseUrl: "https://server-slug.proxy.agentflare.com",
         headers: {
           "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
         }

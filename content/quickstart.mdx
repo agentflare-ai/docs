@@ -88,7 +88,7 @@ You can add a tool server in several ways:
 After adding your tool server, Agentflare will generate a unique proxy URL:
 
 ```
-https://proxy.agentflare.com/<your-workspace>/<your-server-slug>
+https://<your-server-slug>.proxy.agentflare.com
 ```
 
 Copy this URL - you'll use it to configure your AI agent.
@@ -98,6 +98,28 @@ Copy this URL - you'll use it to configure your AI agent.
 Update your AI agent or MCP client to use the Agentflare proxy URL:
 
 <Tabs>
+  <Tab title="IDE/Agent Platform">
+    Using an AI IDE like Claude Desktop, Cursor, Cline, or Windsurf?
+
+    See our comprehensive platform integration guide:
+
+    <Card
+      title="Agent Platform Setup Guide"
+      icon="puzzle-piece"
+      href="/content/agent-integration"
+    >
+      Step-by-step guides for Claude Desktop, Cursor, Cline, Windsurf, and Continue.dev
+    </Card>
+
+    **Quick Summary:**
+    1. Find your platform's MCP configuration file
+    2. Add your Agentflare proxy URL and API key
+    3. Restart your IDE/platform
+    4. Verify tools are available
+
+    Each platform has specific configuration file locations and formats. Follow the detailed guide for your platform.
+  </Tab>
+
   <Tab title="Standard MCP Client">
     <CodeGroup>
     ```typescript TypeScript
@@ -106,7 +128,7 @@ Update your AI agent or MCP client to use the Agentflare proxy URL:
 
     const client = new Client({
       transport: new HTTPTransport({
-        baseUrl: "https://proxy.agentflare.com/<workspace>/<server-slug>",
+        baseUrl: "https://<server-slug>.proxy.agentflare.com",
         headers: {
           "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
         }
@@ -128,7 +150,7 @@ Update your AI agent or MCP client to use the Agentflare proxy URL:
 
     client = Client(
         transport=HTTPTransport(
-            base_url="https://proxy.agentflare.com/<workspace>/<server-slug>",
+            base_url="https://<server-slug>.proxy.agentflare.com",
             headers={
                 "Authorization": f"Bearer {os.getenv('AGENTFLARE_API_KEY')}"
             }
@@ -149,7 +171,7 @@ Update your AI agent or MCP client to use the Agentflare proxy URL:
   <Tab title="Environment Variables">
     ```bash
     # Set environment variables
-    export MCP_SERVER_URL="https://proxy.agentflare.com/<workspace>/<server-slug>"
+    export MCP_SERVER_URL="https://<server-slug>.proxy.agentflare.com"
     export AGENTFLARE_API_KEY="your_api_key_here"
 
     # Your existing agent code will automatically use these
@@ -161,7 +183,7 @@ Update your AI agent or MCP client to use the Agentflare proxy URL:
     {
       "mcpServers": {
         "your-server": {
-          "url": "https://proxy.agentflare.com/<workspace>/<server-slug>",
+          "url": "https://<server-slug>.proxy.agentflare.com",
           "headers": {
             "Authorization": "Bearer YOUR_API_KEY"
           }
@@ -251,7 +273,7 @@ import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
 // Configure client with Agentflare proxy
 const client = new Client({
   transport: new HTTPTransport({
-    baseUrl: "https://proxy.agentflare.com/my-workspace/search-server",
+    baseUrl: "https://search-server.proxy.agentflare.com",
     headers: {
       "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
     }

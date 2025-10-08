@@ -1,0 +1,814 @@
+---
+title: "Adding to Your Agent Platform"
+sidebarTitle: "Agent Platform Setup"
+description: "Add Agentflare proxied MCP servers to popular AI agent platforms and IDEs"
+icon: "puzzle-piece"
+keywords: ["Claude Desktop", "Cursor", "Cline", "Windsurf", "Continue", "agent integration", "IDE setup", "MCP configuration"]
+---
+
+## Overview
+
+This guide shows you how to add your Agentflare proxied MCP servers to popular AI agent platforms and IDEs. Once configured, your agents will route through Agentflare, providing instant observability for all tool calls.
+
+<Note>
+  This guide covers **IDE and agent platform integration**. If you're building a custom agent with the MCP SDK, see the [Quickstart](/content/quickstart) for programmatic integration examples.
+</Note>
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+<Steps>
+  <Step title="Agentflare Account">
+    Sign up at [app.agentflare.com](https://app.agentflare.com)
+  </Step>
+  <Step title="Tool Server Added">
+    Add your MCP tool server via the Agentflare dashboard
+  </Step>
+  <Step title="Get Proxy URL & API Key">
+    Get your server's unique proxy URL from the Agentflare dashboard after adding your server:
+
+    `https://<server-slug>.proxy.agentflare.com`
+
+    Generate an API key from **Dashboard → Settings → API Keys**
+  </Step>
+</Steps>
+
+## Platform Integration Guides
+
+Select your platform below to see detailed setup instructions:
+
+<Tabs>
+  <Tab title="Claude Desktop">
+    ## Claude Desktop Setup
+
+    Claude Desktop is the most popular MCP client with two setup methods.
+
+    ### Method 1: Desktop Extensions (Recommended)
+
+    <Note>
+      This method is not yet supported for Agentflare proxy servers. Use the manual configuration method below instead.
+    </Note>
+
+    ### Method 2: Manual Configuration
+
+    <Steps>
+      <Step title="Locate Configuration File">
+        Find your Claude Desktop configuration file:
+
+        **macOS:**
+        ```bash
+        ~/Library/Application Support/Claude/claude_desktop_config.json
+        ```
+
+        **Windows:**
+        ```bash
+        %APPDATA%\Claude\claude_desktop_config.json
+        ```
+
+        {/* SCREENSHOT: Claude Desktop Settings > Developer tab showing "Edit Config" button */}
+
+        <Tip>
+          **Quick Access**: Open Claude Desktop → Settings (gear icon) → Developer tab → Click "Edit Config"
+        </Tip>
+      </Step>
+
+      <Step title="Add Agentflare Server">
+        Add your Agentflare proxied server to the configuration:
+
+        ```json claude_desktop_config.json
+        {
+          "mcpServers": {
+            "agentflare-your-server": {
+              "command": "node",
+              "args": [
+                "/path/to/mcp-client-stdio-http.js",
+                "https://<server-slug>.proxy.agentflare.com"
+              ],
+              "env": {
+                "AGENTFLARE_API_KEY": "your_api_key_here"
+              }
+            }
+          }
+        }
+        ```
+
+        <Accordion title="Alternative: Using SSE Transport">
+          If your Agentflare setup supports SSE (Server-Sent Events):
+
+          ```json claude_desktop_config.json
+          {
+            "mcpServers": {
+              "agentflare-your-server": {
+                "url": "https://<server-slug>.proxy.agentflare.com/sse",
+                "transport": "sse",
+                "headers": {
+                  "Authorization": "Bearer your_api_key_here"
+                }
+              }
+            }
+          }
+          ```
+        </Accordion>
+
+        <Warning>
+          Replace `<server-slug>` and `your_api_key_here` with your actual values.
+        </Warning>
+      </Step>
+
+      <Step title="Save and Restart">
+        1. Save the configuration file
+        2. **Quit Claude Desktop completely** (not just close the window)
+        3. Restart Claude Desktop
+      </Step>
+
+      <Step title="Verify Connection">
+        Look for the **MCP indicator** in the bottom-right corner of the message input box.
+
+        {/* SCREENSHOT: Claude Desktop message box showing MCP server indicator icon */}
+
+        Try asking: "What MCP tools are available?"
+
+        You should see your Agentflare proxied tools listed.
+      </Step>
+    </Steps>
+
+    ### Troubleshooting
+
+    <AccordionGroup>
+      <Accordion title="MCP indicator not appearing">
+        - Check the configuration file syntax (valid JSON)
+        - Ensure you fully quit and restarted Claude Desktop
+        - Verify the proxy URL is correct
+        - Check Claude Desktop logs for errors
+      </Accordion>
+
+      <Accordion title="Connection timeout">
+        - Verify your API key is valid
+        - Check network connectivity
+        - Ensure the tool server is running and accessible via Agentflare
+      </Accordion>
+
+      <Accordion title="Tools not showing up">
+        - Verify the server is properly configured in Agentflare dashboard
+        - Check that the proxy URL includes the correct workspace and server slug
+        - Try refreshing the Claude Desktop session
+      </Accordion>
+    </AccordionGroup>
+
+  </Tab>
+
+  <Tab title="Cursor IDE">
+    ## Cursor IDE Setup
+
+    Cursor provides both one-click and manual MCP server configuration.
+
+    ### Method 1: One-Click Setup (If Available)
+
+    <Steps>
+      <Step title="Open MCP Settings">
+        Press `Cmd/Ctrl + Shift + P` → Type "Cursor Settings" → Find the MCP section
+
+        {/* SCREENSHOT: Cursor Settings UI showing MCP section */}
+      </Step>
+
+      <Step title="Add Server via UI">
+        Click "Add MCP Server" and provide:
+        - **Server Name**: `agentflare-your-server`
+        - **Server URL**: `https://<server-slug>.proxy.agentflare.com`
+        - **Authentication**: Bearer Token → Your Agentflare API key
+      </Step>
+    </Steps>
+
+    ### Method 2: Manual Configuration
+
+    <Steps>
+      <Step title="Choose Configuration Location">
+        **For project-specific setup:**
+        ```bash
+        .cursor/mcp.json
+        ```
+        Create this file in your project root.
+
+        **For global setup (all projects):**
+        ```bash
+        ~/.cursor/mcp.json
+        ```
+
+        {/* SCREENSHOT: Cursor file explorer showing .cursor folder */}
+      </Step>
+
+      <Step title="Add Agentflare Configuration">
+        ```json .cursor/mcp.json or ~/.cursor/mcp.json
+        {
+          "mcpServers": {
+            "agentflare-your-server": {
+              "url": "https://<server-slug>.proxy.agentflare.com",
+              "headers": {
+                "Authorization": "Bearer your_api_key_here"
+              }
+            }
+          }
+        }
+        ```
+
+        <Tip>
+          **Environment Variables**: You can reference environment variables for your API key:
+          ```json
+          {
+            "headers": {
+              "Authorization": "Bearer ${AGENTFLARE_API_KEY}"
+            }
+          }
+          ```
+          Then set `AGENTFLARE_API_KEY` in your environment or `.env` file.
+        </Tip>
+      </Step>
+
+      <Step title="Reload Cursor">
+        Press `Cmd/Ctrl + Shift + P` → Type "Reload Window"
+      </Step>
+
+      <Step title="Verify Connection">
+        Open Cursor's AI chat and ask: "What MCP tools are available?"
+
+        Your Agentflare proxied tools should appear.
+      </Step>
+    </Steps>
+
+    ### OAuth Support
+
+    Cursor supports OAuth authentication for MCP servers. If your Agentflare setup uses OAuth:
+
+    ```json
+    {
+      "mcpServers": {
+        "agentflare-your-server": {
+          "url": "https://<server-slug>.proxy.agentflare.com",
+          "auth": {
+            "type": "oauth2",
+            "authorizationUrl": "https://api.agentflare.com/oauth/authorize",
+            "tokenUrl": "https://api.agentflare.com/oauth/token",
+            "clientId": "your_client_id",
+            "scope": "mcp:read mcp:write"
+          }
+        }
+      }
+    }
+    ```
+
+    ### Troubleshooting
+
+    <AccordionGroup>
+      <Accordion title="Configuration not loading">
+        - Verify JSON syntax is valid
+        - Check file location (project vs global)
+        - Ensure Cursor has read permissions
+        - Try reloading the window
+      </Accordion>
+
+      <Accordion title="Authentication errors">
+        - Verify API key is correct and active
+        - Check Authorization header format
+        - Ensure environment variables are loaded
+        - Try hardcoding the API key for testing
+      </Accordion>
+    </AccordionGroup>
+
+  </Tab>
+
+  <Tab title="Cline (VSCode)">
+    ## Cline VSCode Extension Setup
+
+    Cline is a popular VSCode extension with MCP support.
+
+    <Steps>
+      <Step title="Install Cline Extension">
+        Install the Cline extension from the VSCode marketplace if you haven't already.
+      </Step>
+
+      <Step title="Access MCP Settings">
+        Click the **MCP Servers** icon in the Cline panel's top navigation bar
+
+        {/* SCREENSHOT: Cline panel showing MCP Servers icon */}
+
+        Or click "Configure MCP Servers" in the Installed tab.
+      </Step>
+
+      <Step title="Add Configuration File">
+        Create or edit `cline_mcp_settings.json`:
+
+        ```json cline_mcp_settings.json
+        {
+          "mcpServers": {
+            "agentflare-your-server": {
+              "url": "https://<server-slug>.proxy.agentflare.com",
+              "headers": {
+                "Authorization": "Bearer your_api_key_here"
+              }
+            }
+          }
+        }
+        ```
+
+        <Note>
+          The configuration file location is managed by Cline. Access it via the "Advanced MCP Settings" link in the MCP Servers panel.
+        </Note>
+      </Step>
+
+      <Step title="Enable the Server">
+        1. Find your Agentflare server in the "Installed" tab
+        2. Toggle the switch to **enable** it
+        3. The server will start automatically
+
+        {/* SCREENSHOT: Cline MCP Servers panel showing enabled server with toggle */}
+      </Step>
+
+      <Step title="Configure Network Timeout (Optional)">
+        If your tool server requires longer response times:
+
+        1. Click on your server name in the Installed tab
+        2. Find the "Network Timeout" setting
+        3. Set between 30 seconds and 1 hour (default is 1 minute)
+      </Step>
+
+      <Step title="Verify Connection">
+        - Look for a green status indicator next to your server
+        - Try asking Cline to list available tools
+        - Check the MCP server logs in the panel for connection status
+      </Step>
+    </Steps>
+
+    ### Managing Your Server
+
+    <CardGroup cols={2}>
+      <Card title="Restart Server" icon="rotate">
+        Click the Restart button to reload the server configuration
+      </Card>
+      <Card title="View Logs" icon="file-lines">
+        Check server logs for debugging in the MCP panel
+      </Card>
+      <Card title="Enable/Disable" icon="toggle-on">
+        Use the toggle switch to start/stop the server
+      </Card>
+      <Card title="Delete Server" icon="trash">
+        Click the trash icon to remove the server completely
+      </Card>
+    </CardGroup>
+
+    ### Troubleshooting
+
+    <AccordionGroup>
+      <Accordion title="Server not starting">
+        - Check the server logs in the MCP panel
+        - Verify the proxy URL is correct
+        - Ensure API key is valid
+        - Try restarting VSCode
+      </Accordion>
+
+      <Accordion title="Timeout errors">
+        - Increase the network timeout setting
+        - Check if the tool server is responding via Agentflare dashboard
+        - Verify network connectivity
+      </Accordion>
+
+      <Accordion title="Tools not visible">
+        - Ensure the server is enabled (toggle on)
+        - Restart the server
+        - Check Agentflare dashboard to verify server is active
+      </Accordion>
+    </AccordionGroup>
+
+  </Tab>
+
+  <Tab title="Windsurf IDE">
+    ## Windsurf IDE Setup
+
+    Windsurf provides both a plugin store and manual configuration.
+
+    ### Method 1: Plugin Store (If Available)
+
+    <Steps>
+      <Step title="Access Plugin Store">
+        Click the **Plugins** icon in the top right menu of the Cascade panel
+
+        Or go to: **Windsurf Settings → Cascade → Plugins**
+
+        {/* SCREENSHOT: Windsurf Plugins section in Cascade panel */}
+      </Step>
+
+      <Step title="Search for Agentflare">
+        <Note>
+          Agentflare may not be in the plugin store yet. Use manual configuration below.
+        </Note>
+      </Step>
+    </Steps>
+
+    ### Method 2: Manual Configuration
+
+    <Steps>
+      <Step title="Open Settings">
+        - Click "Windsurf - Settings" button (bottom right)
+        - Or press `Cmd+Shift+P` (Mac) / `Ctrl+Shift+P` (Windows/Linux)
+        - Type "Open Windsurf Settings"
+      </Step>
+
+      <Step title="Enable MCP">
+        1. Scroll to the **Cascade** section in Advanced Settings
+        2. Find the "Model Context Protocol" option
+        3. **Enable MCP** to allow Windsurf to connect to MCP servers
+
+        {/* SCREENSHOT: Windsurf Settings showing MCP toggle in Cascade section */}
+      </Step>
+
+      <Step title="Edit Configuration File">
+        Open `~/.codeium/windsurf/mcp_config.json`:
+
+        **macOS/Linux:**
+        ```bash
+        ~/.codeium/windsurf/mcp_config.json
+        ```
+
+        **Windows:**
+        ```bash
+        %USERPROFILE%\.codeium\windsurf\mcp_config.json
+        ```
+
+        Add your Agentflare server:
+
+        ```json mcp_config.json
+        {
+          "mcpServers": {
+            "agentflare-your-server": {
+              "url": "https://<server-slug>.proxy.agentflare.com",
+              "headers": {
+                "Authorization": "Bearer your_api_key_here"
+              }
+            }
+          }
+        }
+        ```
+
+        <Tip>
+          The configuration follows the same schema as Claude Desktop's config file.
+        </Tip>
+      </Step>
+
+      <Step title="Restart Windsurf">
+        Completely quit and restart Windsurf IDE.
+      </Step>
+
+      <Step title="Verify Connection">
+        Ask Cascade (Windsurf's AI): "What MCP servers are connected?"
+
+        Your Agentflare server should be listed with available tools.
+      </Step>
+    </Steps>
+
+    ### Supported Transport Types
+
+    Windsurf supports:
+    - **stdio**: Local processes (for self-hosted Agentflare)
+    - **http/https**: Remote HTTP servers (for Agentflare cloud proxy)
+
+    ### Troubleshooting
+
+    <AccordionGroup>
+      <Accordion title="MCP not enabling">
+        - Ensure you're in Advanced Settings, not Basic Settings
+        - Check Cascade section specifically
+        - Verify MCP toggle is switched on
+        - Restart Windsurf after enabling
+      </Accordion>
+
+      <Accordion title="Configuration file not found">
+        - Create the `.codeium/windsurf` directory if it doesn't exist
+        - Manually create `mcp_config.json` in that directory
+        - Ensure proper JSON formatting
+      </Accordion>
+
+      <Accordion title="Connection refused">
+        - Verify the proxy URL is accessible
+        - Check API key is correct
+        - Ensure MCP is enabled in Windsurf settings
+        - Review Windsurf logs for detailed errors
+      </Accordion>
+    </AccordionGroup>
+
+  </Tab>
+
+  <Tab title="Continue.dev">
+    ## Continue.dev Setup
+
+    Continue.dev supports MCP through YAML or JSON configuration files.
+
+    <Note>
+      MCP can only be used in **agent mode** in Continue.dev.
+    </Note>
+
+    <Steps>
+      <Step title="Create MCP Configuration Directory">
+        In your workspace root, create:
+        ```bash
+        .continue/mcpServers/
+        ```
+
+        {/* SCREENSHOT: VSCode file explorer showing .continue/mcpServers directory */}
+      </Step>
+
+      <Step title="Add Agentflare Configuration">
+        Create a YAML file in `.continue/mcpServers/`:
+
+        ```yaml .continue/mcpServers/agentflare.yaml
+        name: agentflare-your-server
+        version: 1.0.0
+        schema: 1.0.0
+
+        mcpServers:
+          agentflare-your-server:
+            transport:
+              type: http
+              url: https://<server-slug>.proxy.agentflare.com
+              headers:
+                Authorization: Bearer your_api_key_here
+        ```
+
+        <Accordion title="Alternative: JSON Format">
+          If you prefer JSON or are migrating from Claude Desktop/Cursor:
+
+          ```json .continue/mcpServers/agentflare.json
+          {
+            "mcpServers": {
+              "agentflare-your-server": {
+                "transport": {
+                  "type": "http",
+                  "url": "https://<server-slug>.proxy.agentflare.com",
+                  "headers": {
+                    "Authorization": "Bearer your_api_key_here"
+                  }
+                }
+              }
+            }
+          }
+          ```
+        </Accordion>
+      </Step>
+
+      <Step title="Use Environment Variables for Secrets">
+        Instead of hardcoding API keys, reference environment variables:
+
+        ```yaml .continue/mcpServers/agentflare.yaml
+        mcpServers:
+          agentflare-your-server:
+            transport:
+              type: http
+              url: https://<server-slug>.proxy.agentflare.com
+              headers:
+                Authorization: Bearer ${AGENTFLARE_API_KEY}
+        ```
+
+        Set the environment variable:
+        ```bash
+        export AGENTFLARE_API_KEY="your_api_key_here"
+        ```
+
+        Or add to `.env` file in your workspace root.
+      </Step>
+
+      <Step title="Reload Continue">
+        Reload the VSCode window:
+        `Cmd/Ctrl + Shift + P` → "Reload Window"
+      </Step>
+
+      <Step title="Verify in Agent Mode">
+        1. Open Continue panel in VSCode
+        2. Switch to **Agent Mode**
+        3. Ask: "What MCP tools are available?"
+        4. Your Agentflare tools should be listed
+      </Step>
+    </Steps>
+
+    ### Supported Transport Types
+
+    Continue.dev supports multiple MCP transports:
+
+    <Tabs>
+      <Tab title="HTTP">
+        ```yaml
+        transport:
+          type: http
+          url: https://<server-slug>.proxy.agentflare.com
+          headers:
+            Authorization: Bearer ${AGENTFLARE_API_KEY}
+        ```
+      </Tab>
+
+      <Tab title="SSE (Server-Sent Events)">
+        ```yaml
+        transport:
+          type: streamable-http
+          url: https://<server-slug>.proxy.agentflare.com/sse
+          headers:
+            Authorization: Bearer ${AGENTFLARE_API_KEY}
+        ```
+      </Tab>
+
+      <Tab title="stdio (Local)">
+        ```yaml
+        transport:
+          type: stdio
+          command: node
+          args:
+            - /path/to/mcp-client.js
+            - https://<server-slug>.proxy.agentflare.com
+          env:
+            AGENTFLARE_API_KEY: ${AGENTFLARE_API_KEY}
+        ```
+      </Tab>
+    </Tabs>
+
+    ### Docker Integration
+
+    Continue.dev has partnered with Docker for secure MCP block execution:
+
+    ```yaml .continue/mcpServers/agentflare-docker.yaml
+    mcpServers:
+      agentflare-your-server:
+        docker:
+          image: agentflare/mcp-proxy:latest
+          env:
+            AGENTFLARE_API_KEY: ${AGENTFLARE_API_KEY}
+            PROXY_URL: https://<server-slug>.proxy.agentflare.com
+    ```
+
+    ### Troubleshooting
+
+    <AccordionGroup>
+      <Accordion title="MCP not available">
+        - Ensure you're in **Agent Mode** (not chat mode)
+        - Check that YAML/JSON syntax is valid
+        - Verify `.continue/mcpServers/` directory exists
+        - Reload VSCode window
+      </Accordion>
+
+      <Accordion title="Environment variables not loading">
+        - Ensure `.env` file is in workspace root
+        - Check variable syntax: `${VAR_NAME}`
+        - Restart VSCode after adding environment variables
+        - Try hardcoding the value temporarily for testing
+      </Accordion>
+
+      <Accordion title="Connection errors">
+        - Verify proxy URL is correct
+        - Check API key is valid
+        - Test URL in browser or with curl
+        - Review Continue extension logs
+      </Accordion>
+    </AccordionGroup>
+
+  </Tab>
+</Tabs>
+
+## Verification Steps
+
+After configuring your platform, verify the integration is working:
+
+<Steps>
+  <Step title="Check Dashboard">
+    Open your [Agentflare Dashboard](https://app.agentflare.com) and navigate to the live feed
+  </Step>
+
+  <Step title="Make a Test Call">
+    In your agent/IDE, ask it to use one of your MCP tools:
+
+    "List available MCP tools" or "Use [tool-name] to [do something]"
+  </Step>
+
+  <Step title="Verify in Dashboard">
+    You should see the tool call appear in your Agentflare dashboard in real-time with:
+    - Tool name and arguments
+    - Response time
+    - Success/failure status
+    - Any reasoning metadata (if provided)
+  </Step>
+
+  <Step title="Check for Errors">
+    If the call doesn't appear:
+    - Check platform-specific troubleshooting above
+    - Verify proxy URL and API key
+    - Check platform logs for errors
+    - Ensure server is active in Agentflare dashboard
+  </Step>
+</Steps>
+
+## Common Issues Across Platforms
+
+<AccordionGroup>
+  <Accordion title="401 Unauthorized Errors" icon="key">
+    **Symptoms**: Authentication failures
+
+    **Solutions**:
+    - Verify API key is correct and not expired
+    - Check header format: `Authorization: Bearer YOUR_KEY`
+    - Regenerate API key in Agentflare dashboard
+    - Ensure no extra spaces in the key
+  </Accordion>
+
+  <Accordion title="Connection Timeouts" icon="clock">
+    **Symptoms**: Requests timing out
+
+    **Solutions**:
+    - Check network connectivity
+    - Verify proxy URL is correct
+    - Ensure tool server is running (check Agentflare dashboard)
+    - Increase timeout settings in platform config (if available)
+  </Accordion>
+
+  <Accordion title="Tools Not Appearing" icon="wrench">
+    **Symptoms**: MCP connected but no tools visible
+
+    **Solutions**:
+    - Verify server is active in Agentflare dashboard
+    - Check server-slug in proxy URL is correct
+    - Restart the platform/IDE
+    - Check platform logs for tool listing errors
+  </Accordion>
+
+  <Accordion title="Invalid JSON Configuration" icon="code">
+    **Symptoms**: Config file not loading
+
+    **Solutions**:
+    - Validate JSON syntax with a JSON validator
+    - Check for missing commas, brackets, or quotes
+    - Remove trailing commas (invalid in JSON)
+    - Use a JSON formatter/linter
+  </Accordion>
+</AccordionGroup>
+
+## Security Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Environment Variables" icon="shield">
+    Store API keys in environment variables, not config files
+  </Card>
+  <Card title="Project-Specific Configs" icon="folder">
+    Use project-specific configs when possible to isolate credentials
+  </Card>
+  <Card title="Gitignore Config Files" icon="file-excel">
+    Add config files with secrets to `.gitignore`
+  </Card>
+  <Card title="Rotate Keys Regularly" icon="rotate">
+    Rotate API keys every 90 days or after security incidents
+  </Card>
+</CardGroup>
+
+### Example `.gitignore` Entries
+
+```bash .gitignore
+# Claude Desktop
+.claude_desktop_config.json
+
+# Cursor
+.cursor/mcp.json
+
+# Continue.dev (if using .env)
+.continue/.env
+
+# Cline
+cline_mcp_settings.json
+
+# Windsurf
+.codeium/windsurf/mcp_config.json
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart Guide" icon="rocket" href="/content/quickstart">
+    Learn more about Agentflare features
+  </Card>
+  <Card title="MCP Proxy" icon="server" href="/content/mcp-proxy">
+    Deep dive into proxy configuration
+  </Card>
+  <Card title="Best Practices" icon="lightbulb" href="/content/best-practices">
+    Optimize your agent observability
+  </Card>
+  <Card title="Troubleshooting" icon="life-ring" href="/content/troubleshooting">
+    Get help with common issues
+  </Card>
+</CardGroup>
+
+## Getting Help
+
+Need assistance with platform integration?
+
+- **Email**: support@agentflare.com
+- **Discord**: [Join our community](https://discord.gg/agentflare)
+- **GitHub**: [Report issues](https://github.com/agentflare-ai)
+- **Docs**: [View all documentation](https://docs.agentflare.com)
+
+---
+
+<Tip>
+  **Pro Tip**: Start with your preferred platform's configuration, test it works, then add additional platforms as needed. Each platform can use the same Agentflare proxy URL and API key.
+</Tip>

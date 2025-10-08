@@ -157,12 +157,12 @@ Navigate to **Dashboard → Tool Servers → Add Server** and configure your too
 After adding your tool server, Agentflare generates a unique proxy URL:
 
 ```
-https://proxy.agentflare.com/<workspace-slug>/<server-slug>
+https://<server-slug>.proxy.agentflare.com
 ```
 
 **Example:**
 ```
-https://proxy.agentflare.com/acme-corp/search-server
+https://search-server.proxy.agentflare.com
 ```
 
 Copy this URL - you'll use it to configure your AI agents.
@@ -233,7 +233,7 @@ Create a `.env` file in your project root:
 ```bash .env
 # Agentflare Configuration
 AGENTFLARE_API_KEY=your_api_key_here
-AGENTFLARE_PROXY_URL=https://proxy.agentflare.com/your-workspace/your-server
+AGENTFLARE_PROXY_URL=https://your-server.proxy.agentflare.com
 
 # Optional: Enable debug logging
 AGENTFLARE_DEBUG=true
@@ -280,7 +280,7 @@ For production, use your environment's secret management:
     type: Opaque
     stringData:
       AGENTFLARE_API_KEY: "your_api_key_here"
-      AGENTFLARE_PROXY_URL: "https://proxy.agentflare.com/workspace/server"
+      AGENTFLARE_PROXY_URL: "https://server.proxy.agentflare.com"
     ---
     apiVersion: apps/v1
     kind: Deployment

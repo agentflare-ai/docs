@@ -129,7 +129,7 @@ import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
 
 const client = new Client({
   transport: new HTTPTransport({
-    baseUrl: "https://proxy.agentflare.com/<workspace>/<server-slug>",
+    baseUrl: "https://<server-slug>.proxy.agentflare.com",
     headers: {
       "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
     }

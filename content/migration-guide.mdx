@@ -51,7 +51,7 @@ import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
 // Connect through Agentflare proxy - instant observability
 const client = new Client({
   transport: new HTTPTransport({
-    baseUrl: "https://proxy.agentflare.com/<workspace>/<server-slug>",
+    baseUrl: "https://<server-slug>.proxy.agentflare.com",
     headers: {
       "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
     }
@@ -127,7 +127,7 @@ import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
 const client = new Client({
   transport: new HTTPTransport({
     // Changed: Use Agentflare proxy URL
-    baseUrl: "https://proxy.agentflare.com/<workspace>/<server-slug>",
+    baseUrl: "https://<server-slug>.proxy.agentflare.com",
     headers: {
       // Changed: Use Agentflare API key
       "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
@@ -219,7 +219,7 @@ import { HTTPTransport } from "@modelcontextprotocol/sdk/client/http.js";
 // Create clients for each server, all routing through Agentflare
 const searchClient = new Client({
   transport: new HTTPTransport({
-    baseUrl: "https://proxy.agentflare.com/<workspace>/search-server",
+    baseUrl: "https://search-server.proxy.agentflare.com",
     headers: {
       "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
     }
@@ -228,7 +228,7 @@ const searchClient = new Client({
 
 const databaseClient = new Client({
   transport: new HTTPTransport({
-    baseUrl: "https://proxy.agentflare.com/<workspace>/database-server",
+    baseUrl: "https://database-server.proxy.agentflare.com",
     headers: {
       "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
     }
@@ -237,7 +237,7 @@ const databaseClient = new Client({
 
 const emailClient = new Client({
   transport: new HTTPTransport({
-    baseUrl: "https://proxy.agentflare.com/<workspace>/email-server",
+    baseUrl: "https://email-server.proxy.agentflare.com",
     headers: {
       "Authorization": `Bearer ${process.env.AGENTFLARE_API_KEY}`
     }
@@ -305,7 +305,7 @@ const searchResult = await callTool(
     baseUrl: "https://your-server.com/mcp"
 
     // After
-    baseUrl: "https://proxy.agentflare.com/<workspace>/<server-slug>"
+    baseUrl: "https://<server-slug>.proxy.agentflare.com"
     ```
   </Step>
 
@@ -349,7 +349,7 @@ MCP_SERVER_TOKEN=your-server-token
 ```bash
 # New configuration
 AGENTFLARE_API_KEY=your_agentflare_api_key
-AGENTFLARE_PROXY_URL=https://proxy.agentflare.com/<workspace>/<server-slug>
+AGENTFLARE_PROXY_URL=https://<server-slug>.proxy.agentflare.com
 
 # Keep these for backup/testing
 # MCP_SERVER_URL=https://your-server.com/mcp

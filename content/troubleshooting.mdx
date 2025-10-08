@@ -30,7 +30,7 @@ Before diving into specific issues, run these quick checks:
   <Step title="Verify Environment Variables">
     Check that required environment variables are set
     ```bash
-    echo $API_JWT_SECRET
+    echo $AGENTFLARE_API_KEY
     echo $AGENTFLARE_PROJECT_ID
     ```
   </Step>
@@ -594,12 +594,11 @@ curl -H "Authorization: Bearer $API_JWT_SECRET" \
      https://api.agentflare.com/v1/servers
 
 # Test proxy connectivity
-curl -H "Authorization: Bearer $API_JWT_SECRET" \
-     -H "X-Target-Server: your-server" \
-     https://your-workspace.agentflare.com/proxy/health
+curl -H "Authorization: Bearer $AGENTFLARE_API_KEY" \
+     https://your-server.proxy.agentflare.com/health
 
 # Enable debug headers
-curl -H "Authorization: Bearer $API_JWT_SECRET" \
+curl -H "Authorization: Bearer $AGENTFLARE_API_KEY" \
      -H "X-Debug: true" \
      -H "X-Trace: true" \
      https://api.agentflare.com/v1/servers

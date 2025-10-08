@@ -53,6 +53,7 @@
         "group": "Integration",
         "icon": "plug",
         "pages": [
+          "content/agent-integration",
           "content/mcp-proxy",
           "content/migration-guide"
         ]
